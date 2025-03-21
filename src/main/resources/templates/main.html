@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>메인 페이지</title>
+</head>
+<body>
+<div class="tour-destination">
+  <h2>랜덤 관광 명소</h2>
+  <div class="row justify-content-center">
+    <!-- Thymeleaf를 사용하여 리스트를 반복 -->
+    <div th:each="attraction : ${attractions}" class="col-md-4">
+      <div class="card">
+        <img th:src="${attraction.imageUrl}" class="card-img-top" alt="관광지 이미지">
+        <div class="card-body">
+          <h5 class="card-title" th:text="${attraction.name}">관광지 이름</h5>
+          <p class="card-text" th:text="${attraction.description}">관광지 설명</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
