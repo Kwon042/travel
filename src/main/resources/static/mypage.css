@@ -1,0 +1,222 @@
+/* 기본적인 스타일 초기화 */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+/* 컨테이너 */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 사용자 정보 제목 */
+h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+/* 정보 테이블 스타일 */
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px; /* 아래 여백 추가 */
+}
+
+.info-table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    vertical-align: middle; /* 수직 정렬 */
+}
+
+.profile-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #ddd;
+}
+
+.action-button {
+    color: black;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.action-button:hover {
+    text-decoration: underline;
+}
+
+/* 비밀번호 수정 폼 */
+#changePasswordForm {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+#changePasswordForm label {
+    font-size: 16px;
+    margin-bottom: 5px;
+    display: block;
+}
+
+#changePasswordForm input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+#changePasswordForm button {
+    padding: 10px 15px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+#changePasswordForm button:hover {
+    background-color: #218838;
+}
+
+/* 찜한 여행지 목록 */
+h3 {
+    font-size: 24px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* 찜한 여행지 목록 스타일 */
+#favouritePlaces {
+    list-style-type: none;
+    padding: 0;
+}
+
+/* 프로필 이미지 수정 폼 */
+#profileImageFormBlock {
+    display: none; /* 초기에는 숨김 */
+    margin-top: 15px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+/* 버튼 스타일 */
+.btn {
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    margin-top: 20px;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+.text-end {
+    text-align: end;
+}
+
+/* 모달 배경 스타일 */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 어두운 배경 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* 모달 내용 스타일 */
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 15px; /* 모서리 둥글게 */
+    max-width: 500px; /* 최대 크기 제한 */
+    width: auto; /* 내용에 맞춰 크기 조정 */
+    box-sizing: border-box; /* 패딩을 포함하여 크기 계산 */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* 부드러운 그림자 */
+    overflow: hidden;
+}
+
+/* 모달 닫기 버튼 스타일 */
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* 모달 내용 텍스트 스타일 */
+.modal-content h4 {
+    margin-bottom: 20px;
+}
+
+.modal-content p {
+    margin: 10px 0;
+    font-size: 16px;
+    color: #333;
+}
+
+/* 버튼 스타일 */
+.modal-content button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.modal-content button:hover {
+    background-color: #45a049;
+}
+
+/* 액션 버튼 스타일 (수정 버튼) */
+.action-button {
+    cursor: pointer;
+    color: Black;
+    font-size: 18px;
+}
+
+/* 버튼 호버 스타일 */
+.action-button:hover {
+    text-decoration: underline;
+}
+
+/* "숨겨진" 클래스 (모달을 숨기는 용도) */
+.hidden {
+    display: none;
+}
