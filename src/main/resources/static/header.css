@@ -1,58 +1,51 @@
+/* 📌 기본 스타일 초기화 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* 패딩과 보더를 포함하여 크기 계산 */
+}
+
 /* 📌 헤더 스타일 */
 header {
-    background-color: ##5b30a4; /* 보라색 배경 */
+    background-color: #5b30a4; /* 보라색 배경 */
     color: white;
-    padding: 10px;
+    padding: 10px 20px; /* 상하 10px, 좌우 20px 패딩 */
+    height: 90px; /* 고정 높이 설정 */
 }
 
 /* 📌 중앙 정렬을 위한 스타일 */
 .header-container {
-    display: flex;
+    display: flex; /* Flexbox 사용 */
     justify-content: space-between; /* 왼쪽과 오른쪽으로 분할 */
     align-items: center; /* 수직 중앙 정렬 */
-    width: 100%;
-    position: relative; /* 위치 조정 */
+    width: 100%; /* 전체 너비 */
 }
 
-/* 중앙 브랜드 스타일 */
-.navbar-brand {
-    position: absolute; /* 절대 위치 설정 */
-    left: 50%; /* 왼쪽 기준으로 50% */
-    transform: translateX(-50%); /* 중앙으로 이동 */
-    color: white !important;
-    font-weight: bold;
-    font-size: 2.5rem; /* 제목 크기 조정 */
-}
-
-/* 좌측 메뉴를 왼쪽으로 붙이기 */
+/* 좌측 메뉴 스타일 */
 .left-nav {
-    display: flex;
+    display: flex; /* Flexbox 사용 */
+    align-items: center; /* 수직 중앙 정렬 */
 }
 
-/* 우측 메뉴를 오른쪽으로 붙이기 */
+/* 우측 메뉴 스타일 */
 .right-nav {
-    display: flex;
+    display: flex; /* Flexbox 사용 */
+    align-items: center; /* 수직 중앙 정렬 */
 }
 
-/* 나머지 스타일은 그대로 유지 */
-.navbar-toggler {
-    background-color: transparent !important;
+/* 링크 스타일 */
+.right-nav a {
+    color: white; /* 링크 색상 */
+    margin-left: 15px; /* 링크 간의 간격 */
+    text-decoration: none; /* 밑줄 제거 */
 }
 
-.navbar-toggler-icon {
-    filter: invert(1); /* 햄버거 메뉴 색상 반전 */
+.right-nav a:hover {
+    color: #d6a1e1; /* 마우스 오버 시 연보라색으로 변경 */
+    text-decoration: none; /* 마우스 오버 시 밑줄 제거 */
 }
 
-.nav-link {
-    color: white !important; /* 링크 색상 */
-    margin-right: 10px; /* 링크 사이 간격 */
-}
-
-.nav-link:hover {
-    color: #ffd700 !important; /* 마우스 오버 시 금색 */
-}
-
-/* 드롭다운 메뉴 스타일 */
+/* 드롭다운 메뉴 스타일 (필요 시) */
 .dropdown-menu {
     background-color: #f9f9f9; /* 드롭다운 배경 */
     border-radius: 5px;
@@ -60,4 +53,10 @@ header {
 
 .dropdown-menu .dropdown-item:hover {
     background-color: #ddd;
+}
+
+/* 추가적인 스타일 (필요 시) */
+.navbar-brand img {
+    width: 80px; /* 로고 이미지 너비 설정 */
+    height: auto; /* 자동 높이 설정 */
 }
