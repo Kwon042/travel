@@ -1,5 +1,6 @@
 package com.example.travelProj.user;
 
+import com.example.travelProj.Image;
 import com.example.travelProj.board.ReviewBoard;
 import com.example.travelProj.comment.Comment;
 import jakarta.persistence.*;
@@ -43,7 +44,10 @@ public class SiteUser implements UserDetails {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @Column(name = "profile_image_url")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "profile_image_id")
+    private Image profileImage;
+
     private String profileImageUrl;
 
     // 연관관계 설정: 사용자가 작성한 리뷰와 댓글

@@ -19,6 +19,7 @@ header {
     justify-content: space-between; /* 왼쪽과 오른쪽으로 분할 */
     align-items: center; /* 수직 중앙 정렬 */
     width: 100%; /* 전체 너비 */
+    height: 100%; /* 전체 헤더 높이로 중앙 정렬 */
 }
 
 /* 좌측 메뉴 스타일 */

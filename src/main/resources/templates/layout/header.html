@@ -13,13 +13,13 @@
   <div class="container-fluid header-container">
     <div class="left-nav">
       <a class="navbar-brand" href="/">
-        <img src="/images/korea.png" alt="걸어서 전국속으로" style="width: 80px; height: auto;">
+        <img src="/images/logo.png" alt="걸어서 전국속으로" style="width: 80px; height: auto;">
       </a>
     </div>
     <div class="right-nav">
       <a href="/">홈</a>
       <a href="#">지도</a>
-      <a href="#">여행리뷰</a>
+      <a href="/board/reviewBoard">여행리뷰</a>
       <a sec:authorize="isAnonymous()" th:href="@{/user/login}">로그인</a>
       <a id="logoutButton" sec:authorize="isAuthenticated()" th:href="@{/user/logout}">로그아웃</a>
       <a href="/user/mypage" sec:authorize="isAuthenticated()">마이페이지</a>

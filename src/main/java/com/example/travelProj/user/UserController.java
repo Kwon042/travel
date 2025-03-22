@@ -73,7 +73,7 @@ public class UserController {
         }
         SiteUser user = (SiteUser) authentication.getPrincipal();
         // profileImageUrl 값을 출력
-        System.out.println("Profile Image URL: " + user.getProfileImageUrl());
+        System.out.println("Profile Image URL: " + user.getProfileImage());
         model.addAttribute("user", user);
 
         return "user/mypage";
@@ -91,8 +91,11 @@ public class UserController {
                                  @AuthenticationPrincipal SiteUser currentUser) throws IOException {
         currentUser.setNickname(updatedUser.getNickname());
 
-        String imageUrl = userService.uploadProfileImage(currentUser.getId(), file);
-        currentUser.setProfileImageUrl(imageUrl);
+        // 프로필 이미지 업로드
+        if (file != null && !file.isEmpty()) {
+            String imageUrl = userService.uploadProfileImage(currentUser.getId(), file);
+            currentUser.setProfileImageUrl(imageUrl); // 이미지 URL을 프로필에 설정
+        }
 
         userService.updateUser(currentUser);
         return "redirect:/mypage";

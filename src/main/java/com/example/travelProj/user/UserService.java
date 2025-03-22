@@ -1,5 +1,6 @@
 package com.example.travelProj.user;
 
+import com.example.travelProj.Image;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -105,23 +106,26 @@ public class UserService {
             // 프로필 이미지 업로드 디렉토리 확인 및 생성
             Path profileImagePath = Paths.get(System.getProperty("user.dir"), "uploads/profile_images/" + userId);
             if (!Files.exists(profileImagePath)) {
-                try {
-                    Files.createDirectories(profileImagePath);
-                } catch (IOException e) {
-                    throw new RuntimeException("업로드 디렉토리 생성 오류: " + e.getMessage());
-                }
+                Files.createDirectories(profileImagePath); // 업로드 디렉토리 생성
             }
 
             String fileName = System.currentTimeMillis() + "_" + originalFilename;
             Path imageFilePath = profileImagePath.resolve(fileName);
-            file.transferTo(imageFilePath.toFile());
+            file.transferTo(imageFilePath.toFile()); // 파일 저장
 
             // 이미지 URL을 사용자에게 저장
             String imageUrl = "/uploads/profile_images/" + userId + "/" + fileName;
-            user.setProfileImageUrl(imageUrl);
-            userRepository.save(user);
 
-            return imageUrl;
+            // 이미지 정보를 새로운 Image 객체로 생성
+            Image profileImage = new Image();
+            profileImage.setFilename(fileName);
+            profileImage.setFilepath(imageUrl);
+
+            // 이미지 추가 및 사용자 정보 저장
+            user.setProfileImage(profileImage); // Image를 User에 연결
+            userRepository.save(user); // 사용자 정보 저장
+
+            return imageUrl; // 이미지 URL 반환
         } catch (Exception e) {
             System.err.println("오류 발생: " + e.getMessage());
             throw new RuntimeException("프로필 이미지 업로드 중 오류가 발생했습니다: " + e.getMessage());

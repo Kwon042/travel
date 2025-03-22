@@ -1,10 +1,13 @@
 package com.example.travelProj.attraction;
 
+import com.example.travelProj.Image;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,10 +18,9 @@ public class Attraction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-    private String description;
-    private String imageUrl;
-    private String location;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "attraction_id")
+    private List<Image> attraction_images = new ArrayList<>(); // 관광지와 연결된 이미지 리스트
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

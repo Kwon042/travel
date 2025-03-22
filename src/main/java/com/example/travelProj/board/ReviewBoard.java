@@ -1,5 +1,6 @@
 package com.example.travelProj.board;
 
+import com.example.travelProj.Image;
 import com.example.travelProj.comment.Comment;
 import com.example.travelProj.user.SiteUser;
 import jakarta.persistence.*;
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -34,7 +36,6 @@ public class ReviewBoard {
     private String content;
 
     private String region;
-    private Long originalPostId;
 
     @Column(name = "created_at",updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -68,12 +69,10 @@ public class ReviewBoard {
         this.updatedAt = LocalDateTime.now();
     }
 
-    @Column(name = "reviewfile_img")
-    private String reviewFileImg;
-
-    public String getImageName() {
-        return reviewFileImg;
-    }
+    // cascade = CascadeType.ALL : 부모 엔티티(reviewBoard)에서 생성, 업데이트, 삭제되면 image도 동일하게 처리
+    // orphanRemoval = true : 부모 엔티티(reviewBoard)에서 image를 참조 제거하면 image엔티티에서도 DB에서 삭제
+    @OneToMany(mappedBy = "reviewBoard", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Image> review_images = new ArrayList<>();
 
     public Long getId() { return id; }
 
