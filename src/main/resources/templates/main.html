@@ -3,23 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <title>메인 페이지</title>
+  <link rel="stylesheet" href="/header.css">
+<!--  <link rel="stylesheet" href="/main.css">-->
+  <link rel="stylesheet" href="/footer.css">
 </head>
 <body>
-<div class="tour-destination">
-  <h2>랜덤 관광 명소</h2>
-  <div class="row justify-content-center">
-    <!-- Thymeleaf를 사용하여 리스트를 반복 -->
-    <div th:each="attraction : ${attractions}" class="col-md-4">
-      <div class="card">
-        <img th:src="${attraction.imageUrl}" class="card-img-top" alt="관광지 이미지">
-        <div class="card-body">
-          <h5 class="card-title" th:text="${attraction.name}">관광지 이름</h5>
-          <p class="card-text" th:text="${attraction.description}">관광지 설명</p>
+  <div class="tour-destination">
+    <header th:replace="~{layout/header :: navbarFragment}"></header>
+
+    <h2>랜덤 관광 명소</h2>
+    <div class="row justify-content-center">
+      <!-- Thymeleaf를 사용하여 리스트를 반복 -->
+      <div th:each="attraction : ${attractions}" class="col-md-4">
+        <div class="card">
+          <img th:src="${attraction.imageUrl}" class="card-img-top" alt="관광지 이미지">
+          <div class="card-body">
+            <h5 class="card-title" th:text="${attraction.name}">관광지 이름</h5>
+            <p class="card-text" th:text="${attraction.description}">관광지 설명</p>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-</div>
+      </div>
+      <footer th:replace="~{layout/footer}"></footer>
 
+    </div>
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -32,7 +32,7 @@ dependencies {
 
 	implementation 'org.springframework.security:spring-security-web:6.3.5'
 	implementation 'org.springframework.security:spring-security-config:6.3.5'
-	implementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+//	implementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'
 
 
 	// 나머지 의존성들
@@ -45,7 +45,7 @@ dependencies {
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 
 	compileOnly 'org.projectlombok:lombok'
-	compileOnly 'javax.servlet:javax.servlet-api:4.0.1' // 서블릿 API 의존성 추가
+//	compileOnly 'javax.servlet:javax.servlet-api:4.0.1' // 서블릿 API 의존성 추가
 	annotationProcessor 'org.projectlombok:lombok'
 
 	runtimeOnly 'com.mysql:mysql-connector-j'
