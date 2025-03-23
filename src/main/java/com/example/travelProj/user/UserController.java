@@ -93,7 +93,7 @@ public class UserController {
 
         // 프로필 이미지 업로드
         if (file != null && !file.isEmpty()) {
-            String imageUrl = userService.uploadProfileImage(currentUser.getId(), file);
+            String imageUrl = userService.uploadProfileImage(currentUser.getId(), file, "profile");
             currentUser.setProfileImageUrl(imageUrl); // 이미지 URL을 프로필에 설정
         }
 
@@ -144,7 +144,7 @@ public class UserController {
             }
 
             // 프로필 이미지 업로드 로직
-            String imageUrl = userService.uploadProfileImage(user.getId(), file);
+            String imageUrl = userService.uploadProfileImage(user.getId(), file, "profile");
             System.out.println("Uploaded image URL: " + imageUrl); // 새로 업로드한 이미지 URL 출력
 
             return ResponseEntity.ok(Map.of("success", true, "newProfileImageUrl", imageUrl));

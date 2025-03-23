@@ -13,21 +13,22 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @RestController
-@RequestMapping("/uploads")
 public class FileController {
 
-    private final String uploadDir = "/uploads/profile_images/"; // 상대 경로
+    private final String uploadDir = "/uploads"; // 정적 파일 경로 변경
 
-    @GetMapping("/{filename:.+}")
-    public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
+    @GetMapping("/{folderType}/{userId}/{filename:.+}")
+    public ResponseEntity<Resource> serveFile(@PathVariable String folderType,
+                                              @PathVariable Long userId,
+                                              @PathVariable String filename) {
         try {
-            // 업로드 디렉토리 경로가 유효해야 함
-            Path file = Paths.get(uploadDir).resolve(filename).normalize();
-            Resource resource = new UrlResource(file.toUri());
+            // 업로드 디렉토리 경로를 동적으로 설정
+            Path filePath = Paths.get(uploadDir, folderType, String.valueOf(userId), filename).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
 
             // 파일 존재 여부 확인
             if (!resource.exists() || !resource.isReadable()) {
-                throw new RuntimeException("File not found");
+                throw new RuntimeException("파일을 찾을 수 없습니다.");
             }
 
             return ResponseEntity.ok()

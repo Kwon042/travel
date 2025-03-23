@@ -43,6 +43,7 @@ h2 {
     border-radius: 50%;
     object-fit: cover;
     border: 3px solid #ddd;
+    z-index: 10;
 }
 
 .action-button {
@@ -143,6 +144,7 @@ h3 {
 
 /* 모달 배경 스타일 */
 .modal {
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
@@ -219,4 +221,9 @@ h3 {
 /* "숨겨진" 클래스 (모달을 숨기는 용도) */
 .hidden {
     display: none;
+}
+
+/* show 클래스가 추가되면 모달을 표시 */
+.modal.show {
+    display: block; /* 모달이 보이도록 설정 */
 }

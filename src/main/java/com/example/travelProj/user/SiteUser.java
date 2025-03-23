@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
@@ -64,15 +65,9 @@ public class SiteUser implements UserDetails {
         }
     }
 
-    public void setAuthorities(List<GrantedAuthority> authorities) {
-
-        this.authorities = authorities;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // 권한을 반환하는 로직 (예: role에 따라 설정)
-        return List.of(() -> role.name());
+        return List.of(new SimpleGrantedAuthority(role.getValue()));
     }
 
     @Override
