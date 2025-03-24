@@ -1,5 +1,6 @@
 package com.example.travelProj.user;
 
+import com.example.travelProj.ImageService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -28,6 +29,7 @@ public class UserController {
 
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+    private final ImageService imageService;
 
     @GetMapping("/signup")
     public String signup(@ModelAttribute UserCreateForm userCreateForm) {
@@ -93,7 +95,8 @@ public class UserController {
 
         // 프로필 이미지 업로드
         if (file != null && !file.isEmpty()) {
-            String imageUrl = userService.uploadProfileImage(currentUser.getId(), file, "profile");
+            // ImageService의 uploadProfileImage 메서드 호출
+            String imageUrl = imageService.uploadProfileImage(currentUser.getId(), file);
             currentUser.setProfileImageUrl(imageUrl); // 이미지 URL을 프로필에 설정
         }
 
@@ -142,22 +145,17 @@ public class UserController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(Map.of("success", false, "message", "로그인이 필요합니다."));
             }
-
-            // 프로필 이미지 업로드 로직
-            String imageUrl = userService.uploadProfileImage(user.getId(), file, "profile");
-            System.out.println("Uploaded image URL: " + imageUrl); // 새로 업로드한 이미지 URL 출력
-
-            return ResponseEntity.ok(Map.of("success", true, "newProfileImageUrl", imageUrl));
+            userService.updateProfileImage(user.getId(), file);
+            return ResponseEntity.ok(Map.of("success", true, "message", "프로필 이미지가 성공적으로 업로드되었습니다."));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("success", false, "message", e.getMessage()));
         } catch (IOException e) {
-            // 예외 발생 시 로그를 남깁니다.
+            // 예외 발생 시 로그를 남긴다.
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("success", false, "message", "파일 업로드 중 오류가 발생했습니다."));
         } catch (Exception e) {
             e.printStackTrace();
-
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("success", false, "message", "예기치 않은 오류가 발생했습니다."));
         }

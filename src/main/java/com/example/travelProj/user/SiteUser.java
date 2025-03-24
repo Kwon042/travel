@@ -45,7 +45,7 @@ public class SiteUser implements UserDetails {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "siteUser", cascade = CascadeType.ALL)
     @JoinColumn(name = "profile_image_id")
     private Image profileImage;
 

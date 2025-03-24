@@ -218,9 +218,8 @@ h3 {
     text-decoration: underline;
 }
 
-/* "숨겨진" 클래스 (모달을 숨기는 용도) */
-.hidden {
-    display: none;
+.modal.hidden {
+    display: none; /* 'hidden' 클래스가 있을 때 숨김 */
 }
 
 /* show 클래스가 추가되면 모달을 표시 */

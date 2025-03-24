@@ -93,7 +93,7 @@ public class UserService {
 
     public void updateProfileImage(Long userId, MultipartFile file) throws IOException {
         // 이미지 업로드
-        String imageUrl = imageService.uploadFile(userId, file, "profile");
+        String imageUrl = imageService.uploadProfileImage(userId, file);
 
         // 사용자 정보 업데이트
         SiteUser user = userRepository.findById(userId).orElseThrow(() ->

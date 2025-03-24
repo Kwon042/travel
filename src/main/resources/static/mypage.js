@@ -37,8 +37,12 @@ document.addEventListener("DOMContentLoaded", function () {
         const modal = document.getElementById('profileImageModal');
         const input = document.getElementById('profileImageInput');
         if (modal) {
-            modal.classList.add('hidden');  // 'hidden' 클래스를 추가하여 모달 닫기
+            modal.classList.add('hidden'); // 모달 닫기
+            modal.classList.remove('show');
             input.value = '';  // 파일 입력 초기화
+            console.log("프로필 이미지 모달이 닫혔습니다.");
+        } else {
+            console.error("모달을 찾을 수 없습니다!");
         }
     }
 
@@ -57,37 +61,36 @@ document.addEventListener("DOMContentLoaded", function () {
          formData.append('profileImage', file);
          formData.append('folderType', 'profile');
 
-
          // 서버로 파일 전송
          fetch('/user/uploadProfileImage', {
              method: 'POST',
              body: formData
          })
-             .then(response => {
-                 if (!response.ok) {
-                     return response.json().then(data => {
-                         throw new Error(data.message || `서버에서 오류가 발생했습니다. 상태 코드: ${response.status}`);
-                     });
+         .then(response => {
+             if (!response.ok) {
+                 return response.json().then(data => {
+                     throw new Error(data.message || `서버에서 오류가 발생했습니다. 상태 코드: ${response.status}`);
+                 });
+             }
+             return response.json(); // JSON 응답 처리
+         })
+         .then(data => {
+             if (data.success) {
+                 // 업로드 성공 시 프로필 이미지 갱신
+                 const profileImage = document.querySelector('.profile-image');
+                 if (profileImage) {
+                     profileImage.src = data.newProfileImageUrl; // 새 URL로 갱신
                  }
-                 return response.json(); // JSON 응답 처리
-             })
-             .then(data => {
-                 if (data.success) {
-                     // 업로드 성공 시 프로필 이미지 갱신
-                     const profileImage = document.querySelector('.profile-image');
-                     if (profileImage) {
-                         profileImage.src = data.newProfileImageUrl; // 새 URL로 갱신
-                     }
-                     alert("프로필 이미지가 성공적으로 업로드 되었습니다.");
-                     closeProfileImageModal();
-                 } else {
-                     alert(data.message);
-                 }
-             })
-             .catch(error => {
-                 console.error("업로드 중 오류 발생:", error);
-                 alert("업로드 중 오류가 발생했습니다.");
-             });
+                 alert("프로필 이미지가 성공적으로 업로드 되었습니다.");
+                 closeProfileImageModal();
+             } else {
+                 alert(data.message);
+             }
+         })
+         .catch(error => {
+             console.error("업로드 중 오류 발생:", error);
+             alert("업로드 중 오류가 발생했습니다.");
+         });
      }
 
     // 🔹 비밀번호 수정 폼 보이기/숨기기
@@ -222,23 +225,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // URL 체크
     if (window.location.pathname === '/user/mypage/change_password') {
-        openChangePasswordModal(); // 모달 열기
-    }
+        modal.classList.remove('hidden'); // 모달 열기
+        }
+
     // 비밀번호 수정 모달 열기 (DOMContentLoaded 이벤트 안에 정의- window. 붙어야)
     window.openChangePasswordModal = function() {
         const modal = document.getElementById('changePasswordModal');
         if (modal) {
             modal.classList.remove('hidden'); // 'hidden' 클래스를 제거하여 모달 열기
+            modal.classList.add('show'); // 'show' 클래스를 추가하여 모달 표시
         }
     }
 
     // 비밀번호 수정 모달 닫기
-    function closeChangePasswordModal() {
+    window.closeChangePasswordModal = function() {
         const modal = document.getElementById('changePasswordModal');
         if (modal) {
-            modal.classList.add('hidden'); // 'hidden' 클래스를 추가하여 모달 닫기
+            modal.classList.add('hidden'); // 모달 닫기
+            modal.classList.remove('show'); // 필요하면 'show' 클래스 제거
             document.getElementById('currentPassword').value = '';
             document.getElementById('newPassword').value = '';
+            document.getElementById('newPasswordConfirm').value = '';
         }
     }
 
