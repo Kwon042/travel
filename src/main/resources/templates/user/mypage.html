@@ -17,7 +17,8 @@
             <td><strong>프로필 사진</strong></td>
             <td></td>
             <td class="text-end">
-                <img th:src="${user.profileImageUrl}" alt="Profile Image" class="profile-image" onclick="openProfileImageModal()">
+                <img id="profileImage" th:src="${user.profileImageUrl != null ? user.profileImageUrl : '/images/default-profile.jpg'}"
+                     alt="Profile Image" class="profile-image" onclick="openProfileImageModal()">
             </td>
         </tr>
         <tr>

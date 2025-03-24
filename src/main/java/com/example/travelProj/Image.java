@@ -19,8 +19,10 @@ public class Image {
     private String filename;  // 파일명
     private String filepath;  // 파일경로
 
+    private String url;
+
     @OneToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "site_user_id")
     private SiteUser siteUser;
 
     @ManyToOne
@@ -28,5 +30,7 @@ public class Image {
     // JSON으로 변환 시, 참조하는 객체의 값을 넣지 않음
     @JsonBackReference
     private ReviewBoard reviewBoard;  // 연관관계의 게시글
+
+
 
 }

@@ -99,7 +99,12 @@ public class UserService {
         SiteUser user = userRepository.findById(userId).orElseThrow(() ->
                 new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        user.setProfileImageUrl(imageUrl);
+        // profileImage 객체를 업데이트
+        if (user.getProfileImage() == null) {
+            user.setProfileImage(new Image());
+        }
+
+        user.getProfileImage().setUrl(imageUrl);
         userRepository.save(user);
     }
 

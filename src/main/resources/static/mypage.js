@@ -9,26 +9,23 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (data.success) {
                     currentUserId = data.userId; // 사용자 ID 저장
                 } else {
-                    console.error("사용자 ID를 가져오는 데 실패했습니다.");
+                    console.error("Failed to retrieve the user ID.");
                 }
             })
-            .catch(error => console.error("오류 발생:", error));
+            .catch(error => console.error("An error occurred:", error));
     }
     // 페이지 로드 시 사용자 ID 가져옴
     fetchCurrentUserId();
 
     // 🔹 프로필 이미지 모달 열기
     function openProfileImageModal() {
-        console.log("프로필 이미지 모달 열기 함수 호출");
 
         const modal = document.getElementById('profileImageModal');
-        console.log("모달 상태: ", modal.classList);  // 모달의 클래스 상태 확인
         const input = document.getElementById('profileImageInput');
 
         if (modal) {
             modal.classList.remove('hidden');  // 'hidden' 클래스를 제거
             modal.classList.add('show'); // 'show' 클래스를 추가하여 모달 표시
-            console.log("모달이 열렸습니다.");
         }
     }
 
@@ -40,9 +37,8 @@ document.addEventListener("DOMContentLoaded", function () {
             modal.classList.add('hidden'); // 모달 닫기
             modal.classList.remove('show');
             input.value = '';  // 파일 입력 초기화
-            console.log("프로필 이미지 모달이 닫혔습니다.");
         } else {
-            console.error("모달을 찾을 수 없습니다!");
+            console.error("Unable to find the modal.");
         }
     }
 
@@ -52,12 +48,11 @@ document.addEventListener("DOMContentLoaded", function () {
          const file = input.files[0]; // 선택된 파일 가져오기
 
          if (!file) {
-             alert("파일을 선택해 주세요.");
+             alert("Choose the file.");
              return;
          }
 
          const formData = new FormData();
-         formData.append('userId', currentUserId);
          formData.append('profileImage', file);
          formData.append('folderType', 'profile');
 
@@ -81,15 +76,15 @@ document.addEventListener("DOMContentLoaded", function () {
                  if (profileImage) {
                      profileImage.src = data.newProfileImageUrl; // 새 URL로 갱신
                  }
-                 alert("프로필 이미지가 성공적으로 업로드 되었습니다.");
+                 alert("The profile image has been successfully uploaded.");
                  closeProfileImageModal();
              } else {
                  alert(data.message);
              }
          })
          .catch(error => {
-             console.error("업로드 중 오류 발생:", error);
-             alert("업로드 중 오류가 발생했습니다.");
+             console.error("An error occurred during file upload: ", error);
+             alert("An error occurred during file upload.");
          });
      }
 
@@ -194,7 +189,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         })
         .catch(error => {
-            console.error("업데이트 중 오류 발생:", error.message);
+            console.error("An error occurred while updating: ", error.message);
             showErrorModal(error.message);
         });
     }
@@ -289,18 +284,18 @@ document.addEventListener("DOMContentLoaded", function () {
             return response.text();
         })
         .then(data => {
-            alert("비밀번호가 성공적으로 변경되었습니다.");
+            alert("Your password has been successfully changed.");
             closeChangePasswordModal(); // 모달 닫기
         })
         .catch(error => {
-            console.error("비밀번호 변경 중 오류:", error);
-            alert("비밀번호 변경 중 오류가 발생했습니다.");
+            console.error("Error during password change: ", error);
+            alert("An error occurred while changing the password.");
         });
     }
 
     // 회원 탈퇴 버튼 클릭 이벤트
     document.getElementById('deleteAccountButton').addEventListener('click', function () {
-        if (confirm("정말로 회원 탈퇴를 하시겠습니까?")) {
+        if (confirm("Are you sure you want to delete your account?")) {
             fetch('/user/deleteAccount', {
                 method: 'POST',
                 headers: {
@@ -309,7 +304,7 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error("회원 탈퇴 실패");
+                    throw new Error("Account deletion failed.");
                 }
                 return response.json();
             })
@@ -318,8 +313,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 window.location.href = "/";
             })
             .catch(error => {
-                console.error("업로드 중 오류 발생:", error);
-                alert("업로드 중 오류가 발생했습니다.");
+                console.error("Error during upload: ", error);
+                alert("An error occurred during the upload.");
             });
         }
     });

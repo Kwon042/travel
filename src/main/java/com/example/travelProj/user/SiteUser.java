@@ -46,10 +46,14 @@ public class SiteUser implements UserDetails {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToOne(mappedBy = "siteUser", cascade = CascadeType.ALL)
-    @JoinColumn(name = "profile_image_id")
     private Image profileImage;
 
-    private String profileImageUrl;
+    public String getProfileImageUrl() {
+        if (profileImage != null && profileImage.getUrl() != null) {
+            return profileImage.getUrl();
+        }
+        return "/images/default-profile.jpg";
+    }
 
     // 연관관계 설정: 사용자가 작성한 리뷰와 댓글
     @OneToMany(mappedBy = "user")

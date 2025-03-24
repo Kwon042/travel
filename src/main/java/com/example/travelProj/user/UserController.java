@@ -1,5 +1,6 @@
 package com.example.travelProj.user;
 
+import com.example.travelProj.Image;
 import com.example.travelProj.ImageService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -52,7 +53,7 @@ public class UserController {
                     userCreateForm.getEmail(), userCreateForm.getPassword1(), userCreateForm.getNickname());
         }catch(DataIntegrityViolationException e) {
             e.printStackTrace();
-            bindingResult.reject("signupFailed", "이미 등록된 사용자입니다.");
+            bindingResult.reject("signupFailed", "User already exists.");
             return "signup_form";
         }catch(Exception e) {
             e.printStackTrace();
@@ -68,15 +69,22 @@ public class UserController {
     }
 
     @GetMapping("/mypage")
-    public String getMypage(Model model) {
+    public String showMypage(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             return "redirect:/user/login";
         }
         SiteUser user = (SiteUser) authentication.getPrincipal();
-        // profileImageUrl 값을 출력
-        System.out.println("Profile Image URL: " + user.getProfileImage());
+
+        // 프로필 이미지 URL을 출력
+        String profileImageUrl = null;
+        if (user.getProfileImage() != null) {
+            profileImageUrl = user.getProfileImage().getUrl(); // Image 객체에서 URL을 가져옴
+        }
+        System.out.println("Profile Image URL: " + profileImageUrl);
+
         model.addAttribute("user", user);
+        model.addAttribute("profileImageUrl", profileImageUrl);
 
         return "user/mypage";
     }
@@ -91,13 +99,19 @@ public class UserController {
     public String updateUserInfo(@ModelAttribute SiteUser updatedUser,
                                  @RequestParam("file") MultipartFile file,
                                  @AuthenticationPrincipal SiteUser currentUser) throws IOException {
+        // 닉네임 업데이트
         currentUser.setNickname(updatedUser.getNickname());
 
         // 프로필 이미지 업로드
         if (file != null && !file.isEmpty()) {
             // ImageService의 uploadProfileImage 메서드 호출
             String imageUrl = imageService.uploadProfileImage(currentUser.getId(), file);
-            currentUser.setProfileImageUrl(imageUrl); // 이미지 URL을 프로필에 설정
+
+            // profileImage 객체의 URL을 설정
+            if (currentUser.getProfileImage() == null) {
+                currentUser.setProfileImage(new Image());
+            }
+            currentUser.getProfileImage().setUrl(imageUrl); // 이미지 URL을 프로필에 설정
         }
 
         userService.updateUser(currentUser);
@@ -110,7 +124,7 @@ public class UserController {
                                             @AuthenticationPrincipal SiteUser user) {
         if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("success", false, "message", "로그인이 필요합니다."));
+                    .body(Map.of("success", false, "message", "Login is required."));
         }
 
         try {
@@ -123,15 +137,15 @@ public class UserController {
                     break;
                 default:
                     return ResponseEntity.badRequest()
-                            .body(Map.of("success", false, "message", "잘못된 요청입니다."));
+                            .body(Map.of("success", false, "message", "Invalid request."));
             }
-            return ResponseEntity.ok(Map.of("success", true, "message", "성공적으로 변경되었습니다."));
+            return ResponseEntity.ok(Map.of("success", true, "message", "Successfully updated."));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
                     .body(Map.of("success", false, "message", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("success", false, "message", "변경 중 오류가 발생했습니다."));
+                    .body(Map.of("success", false, "message", "An error occurred during file upload."));
         }
     }
 
@@ -143,21 +157,36 @@ public class UserController {
         try {
             if (user == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(Map.of("success", false, "message", "로그인이 필요합니다."));
+                        .body(Map.of("success", false, "message", "Login is required."));
             }
-            userService.updateProfileImage(user.getId(), file);
-            return ResponseEntity.ok(Map.of("success", true, "message", "프로필 이미지가 성공적으로 업로드되었습니다."));
+
+            // ImageService에서 프로필 이미지 업로드 처리
+            String imageUrl = imageService.uploadProfileImage(user.getId(), file);
+
+            // 프로필 이미지 URL을 SiteUser 객체에 설정
+            if (user.getProfileImage() == null) {
+                user.setProfileImage(new Image());
+            }
+            user.getProfileImage().setUrl(imageUrl);
+
+            // 사용자 정보 업데이트
+            userService.updateUser(user);
+
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "message", "The profile image has been successfully uploaded.",
+                    "newProfileImageUrl", imageUrl // 새로운 프로필 이미지 URL 추가
+            ));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("success", false, "message", e.getMessage()));
         } catch (IOException e) {
-            // 예외 발생 시 로그를 남긴다.
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("success", false, "message", "파일 업로드 중 오류가 발생했습니다."));
+                    .body(Map.of("success", false, "message", "An error occurred during file upload."));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("success", false, "message", "예기치 않은 오류가 발생했습니다."));
+                    .body(Map.of("success", false, "message", "An unexpected error occurred."));
         }
     }
 
@@ -198,7 +227,7 @@ public class UserController {
     public ResponseEntity<?> deleteAccount(@AuthenticationPrincipal SiteUser user, HttpServletRequest request, HttpServletResponse response) {
         if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("success", false, "message", "로그인이 필요합니다."));
+                    .body(Map.of("success", false, "message", "Login is required."));
         }
 
         try {
@@ -208,10 +237,10 @@ public class UserController {
             SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
             logoutHandler.logout(request, response, SecurityContextHolder.getContext().getAuthentication()); // Authentication 추가
 
-            return ResponseEntity.ok(Map.of("success", true, "message", "계정이 삭제되었습니다."));
+            return ResponseEntity.ok(Map.of("success", true, "message", "The account has been deleted."));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("success", false, "message", "계정 삭제 중 오류가 발생했습니다."));
+                    .body(Map.of("success", false, "message", "An error occurred while deleting the account."));
         }
     }
 
