@@ -42,8 +42,19 @@ public class ImageService {
             throw new IllegalArgumentException("No file uploaded.");
         }
 
-        // 파일 유효성 검사
-        validateFile(file);
+        // 기존 이미지 조회
+        Image existingImage = user.getProfileImage();
+
+        // 기존 이미지가 있는 경우 삭제
+        if (existingImage != null) {
+            Path existingFilePath = Paths.get(existingImage.getFilepath());
+            try {
+                Files.deleteIfExists(existingFilePath); // 기존 파일 삭제
+                imageRepository.delete(existingImage);  // DB에서 삭제
+            } catch (IOException e) {
+                throw new RuntimeException("Error occurred while deleting the existing file: " + e.getMessage());
+            }
+        }
 
         // 파일 경로 설정 및 저장
         return saveFile(userId, "profile", file, user);
@@ -62,69 +73,35 @@ public class ImageService {
         return saveFile(reviewBoardId, "reviewBoard", file, null);
     }
 
-    // 공통 파일 저장 메서드
     private String saveFile(Long id, String folderType, MultipartFile file, SiteUser user) throws IOException {
-        // 고유한 파일명 생성
         String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
 
-        // 업로드 디렉토리 경로 설정 (프로젝트 루트에서 상대 경로 사용)
-        String projectDir = System.getProperty("user.dir");  // 프로젝트 루트 디렉토리
-        String uploadDir = projectDir + "/uploads";  // 업로드 폴더 경로
-        Path uploadPath = Paths.get(uploadDir, folderType, String.valueOf(id));
+        // 사용자의 업로드 경로 설정
+        String projectDir = System.getProperty("user.dir");
+        Path uploadPath = Paths.get(projectDir + "/uploads", folderType, String.valueOf(id));
 
         // 디렉토리가 없으면 생성
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
-            System.out.println("Created Directory: " + uploadPath.toString());
         }
-
-        // userId로 SiteUser 객체 조회
-        if (user == null) {
-            throw new IllegalArgumentException("User cannot be null");
-        }
-
-        // 기존 이미지를 삭제하는 로직
-        if (user.getProfileImage() != null) {
-            // 기존 이미지가 있을 경우, 삭제 후 새 이미지 업로드
-            Image existingImage = user.getProfileImage();
-            Path existingFilePath = Paths.get(existingImage.getFilepath());
-            try {
-                Files.delete(existingFilePath);  // 파일 삭제
-                imageRepository.delete(existingImage);  // DB에서 삭제
-                System.out.println("Deleted existing image: " + existingImage.getFilename());
-            } catch (IOException e) {
-                System.err.println("Error occurred while deleting the file: " + e.getMessage());
-                throw new RuntimeException("Error occurred while deleting the existing file: " + e.getMessage());
-            }
-        }
-
-        Path filePath = uploadPath.resolve(fileName); // 파일 경로 생성
 
         // 파일 저장
-        try {
-            file.transferTo(filePath.toFile());
-        } catch (IOException e) {
-            System.err.println("Error occurred while saving the file: " + e.getMessage());
-            throw new RuntimeException("Error occurred while saving the file: " + e.getMessage());
-        }
-
-        // 저장 후 확인
-        if (!Files.exists(filePath)) {
-            throw new RuntimeException("The file was not saved: " + filePath.toString());
-        }
+        Path filePath = uploadPath.resolve(fileName);
+        file.transferTo(filePath.toFile());
 
         // 새로운 프로필 이미지 정보 객체 생성
         Image profileImage = new Image();
         profileImage.setFilename(file.getOriginalFilename());
         profileImage.setFilepath(filePath.toString());
-        profileImage.setSiteUser(user);  // 올바른 사용자 정보 설정
-        profileImage.setUrl("/uploads/profile/" + id + "/" + file.getOriginalFilename());
+        profileImage.setSiteUser(user);
+        // 프로필 이미지 URL 설정 (외부 URL)
+        profileImage.setUrl("/uploads/" + folderType + "/" + id + "/" + fileName);
 
         // 데이터베이스에 저장
         imageRepository.save(profileImage);
+        System.out.println("Profile image saved at: " + profileImage.getUrl());
 
-        // 프로필 이미지 URL 반환
-        return "/uploads/" + folderType + "/" + id + "/" + fileName; // 요청 URL 형식으로 리턴
+        return profileImage.getUrl();  // 저장된 프로필 이미지 URL 반환
     }
 
     // 파일 유효성 검사 메서드

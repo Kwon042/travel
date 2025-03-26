@@ -48,13 +48,6 @@ public class SiteUser implements UserDetails {
     @OneToOne(mappedBy = "siteUser", cascade = CascadeType.ALL)
     private Image profileImage;
 
-    public String getProfileImageUrl() {
-        if (profileImage != null && profileImage.getUrl() != null) {
-            return profileImage.getUrl();
-        }
-        return "/images/default-profile.jpg";
-    }
-
     // 연관관계 설정: 사용자가 작성한 리뷰와 댓글
     @OneToMany(mappedBy = "user")
     private List<ReviewBoard> reviewBoards;
@@ -67,6 +60,13 @@ public class SiteUser implements UserDetails {
         if (this.createdAt == null) {
             this.createdAt = LocalDateTime.now();
         }
+    }
+
+    public String getProfileImageUrl() {
+        if (profileImage != null && profileImage.getUrl() != null) {
+            return profileImage.getUrl();
+        }
+        return "/images/default-profile.jpg";
     }
 
     @Override

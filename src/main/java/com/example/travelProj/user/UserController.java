@@ -44,8 +44,8 @@ public class UserController {
         }
 
         if (!userCreateForm.getPassword1().equals(userCreateForm.getPassword2())) {
-            bindingResult.rejectValue("password2", "passwordInCorrect",
-                    "2개의 패스워드가 일치하지 않습니다.");
+            bindingResult.rejectValue("password2", "notEqual",
+                    "Passwords do not match.");
             return "signup_form";
         }
         try {
@@ -69,24 +69,22 @@ public class UserController {
     }
 
     @GetMapping("/mypage")
-    public String showMypage(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
+    public String showMypage(Model model, @AuthenticationPrincipal SiteUser user) {
+        // 현재 인증된 사용자가 없거나 인증되지 않은 경우 로그인 페이지로 리다이렉트
+        if (user == null) {
             return "redirect:/user/login";
         }
-        SiteUser user = (SiteUser) authentication.getPrincipal();
 
         // 프로필 이미지 URL을 출력
-        String profileImageUrl = null;
-        if (user.getProfileImage() != null) {
-            profileImageUrl = user.getProfileImage().getUrl(); // Image 객체에서 URL을 가져옴
-        }
+        String profileImageUrl = (user.getProfileImage() != null) ? user.getProfileImage().getUrl() : null;
+
         System.out.println("Profile Image URL: " + profileImageUrl);
 
+        // 모델에 사용자 정보 및 프로필 이미지 URL 추가
         model.addAttribute("user", user);
         model.addAttribute("profileImageUrl", profileImageUrl);
 
-        return "user/mypage";
+        return "user/mypage"; // 사용자 마이페이지로 이동
     }
 
     @GetMapping("/mypage/edit")
@@ -97,24 +95,19 @@ public class UserController {
 
     @PostMapping("/mypage/edit")
     public String updateUserInfo(@ModelAttribute SiteUser updatedUser,
-                                 @RequestParam("file") MultipartFile file,
-                                 @AuthenticationPrincipal SiteUser currentUser) throws IOException {
+                                 @RequestParam(value = "file", required = false) MultipartFile file,
+                                 @AuthenticationPrincipal SiteUser user) throws IOException {
         // 닉네임 업데이트
-        currentUser.setNickname(updatedUser.getNickname());
+        user.setNickname(updatedUser.getNickname());
 
         // 프로필 이미지 업로드
         if (file != null && !file.isEmpty()) {
-            // ImageService의 uploadProfileImage 메서드 호출
-            String imageUrl = imageService.uploadProfileImage(currentUser.getId(), file);
-
-            // profileImage 객체의 URL을 설정
-            if (currentUser.getProfileImage() == null) {
-                currentUser.setProfileImage(new Image());
-            }
-            currentUser.getProfileImage().setUrl(imageUrl); // 이미지 URL을 프로필에 설정
+            // UserService의 updateProfileImage 메서드 호출
+            userService.updateProfileImage(user.getId(), file);
         }
 
-        userService.updateUser(currentUser);
+        // 사용자 정보 저장
+        userService.updateUser(user); // 현재 사용자 정보 업데이트
         return "redirect:/mypage";
     }
 
@@ -160,22 +153,12 @@ public class UserController {
                         .body(Map.of("success", false, "message", "Login is required."));
             }
 
-            // ImageService에서 프로필 이미지 업로드 처리
-            String imageUrl = imageService.uploadProfileImage(user.getId(), file);
-
-            // 프로필 이미지 URL을 SiteUser 객체에 설정
-            if (user.getProfileImage() == null) {
-                user.setProfileImage(new Image());
-            }
-            user.getProfileImage().setUrl(imageUrl);
-
-            // 사용자 정보 업데이트
-            userService.updateUser(user);
+            // UserService의 updatedProfileImage를 호출
+            userService.updateProfileImage(user.getId(), file);
 
             return ResponseEntity.ok(Map.of(
                     "success", true,
-                    "message", "The profile image has been successfully uploaded.",
-                    "newProfileImageUrl", imageUrl // 새로운 프로필 이미지 URL 추가
+                    "message", "The profile image has been successfully uploaded."
             ));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("success", false, "message", e.getMessage()));

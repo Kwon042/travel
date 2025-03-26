@@ -92,20 +92,18 @@ public class UserService {
     }
 
     public void updateProfileImage(Long userId, MultipartFile file) throws IOException {
-        // 이미지 업로드
-        String imageUrl = imageService.uploadProfileImage(userId, file);
-
-        // 사용자 정보 업데이트
+        // 사용자 정보 가져오기
         SiteUser user = userRepository.findById(userId).orElseThrow(() ->
                 new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        // profileImage 객체를 업데이트
+        // 프로필 이미지 업로드 처리
+        String imageUrl = imageService.uploadProfileImage(userId, file);
+
+        // 이미지 URL 업데이트
         if (user.getProfileImage() == null) {
             user.setProfileImage(new Image());
         }
-
         user.getProfileImage().setUrl(imageUrl);
-        userRepository.save(user);
     }
 
 

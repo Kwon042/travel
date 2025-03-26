@@ -54,7 +54,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
          const formData = new FormData();
          formData.append('profileImage', file);
-         formData.append('folderType', 'profile');
 
          // 서버로 파일 전송
          fetch('/user/uploadProfileImage', {
@@ -71,10 +70,16 @@ document.addEventListener("DOMContentLoaded", function () {
          })
          .then(data => {
              if (data.success) {
-                 // 업로드 성공 시 프로필 이미지 갱신
                  const profileImage = document.querySelector('.profile-image');
+
                  if (profileImage) {
-                     profileImage.src = data.newProfileImageUrl; // 새 URL로 갱신
+                     if (data.newProfileImageUrl) {
+                         profileImage.src = data.newProfileImageUrl; // 새 URL로 갱신
+                     } else {
+                         alert("새 프로필 이미지 URL이 없습니다.");
+                         // 대체 이미지 경로로 변경
+                         profileImage.src = '/images/default-profile.jpg';
+                     }
                  }
                  alert("The profile image has been successfully uploaded.");
                  closeProfileImageModal();
