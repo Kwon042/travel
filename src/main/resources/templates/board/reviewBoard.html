@@ -24,46 +24,63 @@
             <div class="divider"></div>
             <hr style="border: 1px solid #5b30a4; margin: 20px 0;"> <!-- 구분선 추가 -->
 
-            <!-- 게시판 내용 테이블 -->
+            <!-- 지역 필터링 테이블 추가 -->
+            <table class="travel-table table table-bordered text-center">
+                <tr>
+                    <th><a th:href="@{/Boards/reviewBoard(region='전체')}">전체</a></th>
+                    <th><a th:href="@{/Boards/reviewBoard(region='서울')}">서울</a></th>
+                    <th><a th:href="@{/Boards/reviewBoard(region='대전')}">대전</a></th>
+                    <th><a th:href="@{/Boards/reviewBoard(region='대구')}">대구</a></th>
+                    <th><a th:href="@{/Boards/reviewBoard(region='광주')}">광주</a></th>
+                    <th><a th:href="@{/Boards/reviewBoard(region='부산')}">부산</a></th>
+                    <th><a th:href="@{/Boards/reviewBoard(region='울산')}">울산</a></th>
+                    <th><a th:href="@{/Boards/reviewBoard(region='세종')}">세종</a></th>
+                    <th><a th:href="@{/Boards/reviewBoard(region='경기')}">경기</a></th>
+                </tr>
+                <tr>
+                    <th><a th:href="@{/Boards/reviewBoard(region='인천')}">인천</a></th>
+                    <th><a th:href="@{/Boards/reviewBoard(region='강원')}">강원</a></th>
+                    <th><a th:href="@{/Boards/reviewBoard(region='충북')}">충북</a></th>
+                    <th><a th:href="@{/Boards/reviewBoard(region='충남')}">충남</a></th>
+                    <th><a th:href="@{/Boards/reviewBoard(region='경북')}">경북</a></th>
+                    <th><a th:href="@{/Boards/reviewBoard(region='경남')}">경남</a></th>
+                    <th><a th:href="@{/Boards/reviewBoard(region='전북')}">전북</a></th>
+                    <th><a th:href="@{/Boards/reviewBoard(region='전남')}">전남</a></th>
+                    <th><a th:href="@{/Boards/reviewBoard(region='제주')}">제주</a></th>
+                </tr>
+            </table>
+
+            <hr style="border: 1px solid #5b30a4; margin: 20px 0;"> <!-- 구분선 추가 -->
+
+            <!-- 게시판 카드 내용 -->
             <div id="board-content" class="mt-4">
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>게시글 번호</th>
-                        <th>지역</th>
-                        <th>제목</th>
-                        <th>작성자</th>
-                        <th>생성일시</th>
-                        <th>조회수</th>
-                        <th>메인 이미지</th> <!-- 메인 이미지 칼럼 추가 -->
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <!-- Thymeleaf를 사용하여 서버에서 넘긴 게시판 내용 출력 -->
-                    <tr th:each="board : ${boards}">
-                        <td th:text="${board.id}"></td>
-                        <td th:text="${board.region}"></td>
-                        <td>
-                            <a th:href="@{'/Boards/detail/' + ${boardType} + '/' + ${board.id} + '?region=' + ${board.region}}" th:text="${board.title}"></a>
-                        </td>
-                        <td th:text="${board.nickname}"></td>
-                        <td th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
-                        <td th:text="${board.hit}"></td>
-                        <td>
-                            <img th:src="@{${board.mainImageUrl}}" alt="메인 이미지" style="width: 150px; height: auto;" />
-                        </td> <!-- 메인 이미지 표시 -->
-                    </tr>
-                    </tbody>
-                </table>
+                <!-- Thymeleaf를 사용하여 서버에서 넘긴 게시판 내용 출력 -->
+                <div th:each="board : ${boards}">
+                    <div class="review-card">
+                        <div class="image-container">
+                            <img th:src="@{${board.mainImageUrl}}" alt="메인 이미지" />
+                        </div>
+                        <div class="content-container">
+                            <h3 class="title">
+                                <a th:href="@{'/Boards/detail/' + ${boardType} + '/' + ${board.id} + '?region=' + ${board.region}}" th:text="${board.title}"></a>
+                            </h3>
+                            <p class="excerpt" th:text="${board.excerpt}"></p>
+                            <div class="meta-info">
+                                <span class="author" th:text="'작성자: ' + ${board.nickname}"></span>
+                                <span class="date" th:text="'생성일시: ' + ${#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
+                                <span class="views" th:text="'조회수: ' + ${board.hit}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <a id="writeButton"
                    th:if="${region} != '전체'"
-                   th:href="@{/Boards/write(region=${region}, boardType='reviewBoard')}"
+                   th:href="@{/board/write(region=${region}, boardType='reviewBoard')}"
                    class="btn btn-success write-button">글쓰기</a>
             </div>
         </main>
     </div>
 </div>
-
 
 <!-- 풋터 추가 -->
 <footer th:replace="~{layout/footer}"></footer>
@@ -80,7 +97,7 @@
 
         const writeButton = document.getElementById('writeButton');
         if (writeButton) { // writeButton이 null인지 확인
-            writeButton.href = `/Boards/write?region=${region}&boardType=reviewBoard`;
+            writeButton.href = `/board/write?region=${region}&boardType=reviewBoard`;
         } else {
             console.warn("Write button not found!");
         }

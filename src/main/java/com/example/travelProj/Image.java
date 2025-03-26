@@ -31,6 +31,8 @@ public class Image {
     @JsonBackReference
     private ReviewBoard reviewBoard;  // 연관관계의 게시글
 
-
+    public String getImageUrl() {
+        return url; // url 필드를 반환
+    }
 
 }

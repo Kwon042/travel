@@ -37,46 +37,58 @@ aside {
     border-radius: 4px;
 }
 
-/* 게시판 목록 스타일 */
-.board-list h3 {
-    font-size: 1.5em; /* 제목 크기 증가 */
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: #333; /* 텍스트 색상 조정 */
+/* 게시판 카드 스타일 */
+.review-card {
+    display: flex;
+    background-color: #f9f9f9; /* 카드 배경색 */
+    border: 1px solid #ddd; /* 카드 테두리 */
+    border-radius: 8px; /* 카드 모서리 둥글게 */
+    margin-bottom: 20px; /* 카드 간격 */
+    overflow: hidden; /* 내용이 카드 밖으로 나가지 않도록 */
+    transition: box-shadow 0.3s; /* 박스 그림자 변화 */
 }
 
-.board-list .divider {
-    height: 1px;
-    background-color: #ccc;
-    margin: 10px 0;
+.review-card:hover {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* 호버 시 그림자 효과 */
 }
 
-.board-list ul {
-    list-style-type: none;
-    padding: 0;
+.image-container {
+    flex: 1; /* 1/4 너비 */
+    max-width: 25%; /* 최대 너비 설정 */
+    overflow: hidden; /* 이미지가 카드 밖으로 나가지 않도록 */
+    min-height: 150px; /* 최소 높이 설정 (원하는 값으로 조정) */
+    display: flex; /* Flexbox 사용 */
+    justify-content: center; /* 수평 중앙 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
 }
 
-.board-list ul li {
-    margin: 8px 0;
+.image-container img {
+    max-width: 100%; /* 이미지 너비 100% */
+    max-height: 100%; /* 이미지 최대 높이 100%로 설정하여 영역을 벗어나지 않게 함 */
+    height: auto; /* 비율 유지 */
 }
 
-.board-list ul li a {
-    text-decoration: none;
-    color: #007bff;
-    font-weight: bold;
-    transition: color 0.3s; /* 부드러운 변화 추가 */
+.content-container {
+    flex: 3; /* 3/4 너비 */
+    padding: 15px; /* 패딩 */
+    min-height: 150px; /* 최소 높이 설정 (원하는 값으로 조정) */
 }
 
-.board-list ul li a:hover {
-    color: #0056b3;
+.title {
+    font-size: 1.5em; /* 제목 크기 */
+    margin: 0; /* 기본 여백 제거 */
+    text-decoration: none; /* 기본 밑줄 제거 */
+
 }
 
-/* 게시판 메인 콘텐츠 */
-main {
-    background-color: #fff;
-    padding: 20px; /* 패딩 증가 */
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 그림자 효과 증가 */
+.excerpt {
+    margin: 10px 0; /* 내용 간격 */
+    color: #555; /* 내용 색상 */
+}
+
+.meta-info {
+    font-size: 0.9em; /* 메타 정보 크기 */
+    color: #777; /* 메타 정보 색상 */
 }
 
 /* 게시판 제목 */
@@ -85,48 +97,30 @@ main {
     font-weight: bold;
     margin-bottom: 10px;
     color: #333; /* 텍스트 색상 조정 */
-}
-
-/* 게시판 테이블 스타일 */
-#board-content table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-}
-
-#board-content th, #board-content td {
-    border: 1px solid #ddd;
-    padding: 12px;
-    text-align: center;
-}
-
-#board-content th {
-    background-color: #f0f0f0;
-    font-weight: bold;
-    color: #333; /* 헤더 텍스트 색상 조정 */
-}
-
-#board-content tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-#board-content tr:hover {
-    background-color: #f1f1f1; /* 마우스 오버 시 배경색 */
+    text-decoration: none; /* 기본 밑줄 제거 */
 }
 
 /* 반응형 스타일 */
 @media (max-width: 768px) {
     .row {
-        flex-direction: column;
+        flex-direction: column; /* 세로 방향으로 변경 */
     }
 
     aside {
-        width: 100%;
-        margin-bottom: 20px;
+        width: 100%; /* 사이드바 너비 100% */
+        margin-bottom: 20px; /* 사이드바와 메인 콘텐츠 간격 */
     }
 
     main {
-        width: 100%;
+        width: 100%; /* 메인 콘텐츠 너비 100% */
+    }
+
+    .review-card {
+        flex-direction: column; /* 카드 내용을 세로로 나열 */
+    }
+
+    .image-container {
+        max-width: 100%; /* 이미지 컨테이너 너비 100% */
     }
 }
 
@@ -135,4 +129,27 @@ main {
     position: relative; /* 테이블 내에서 위치 */
     float: right; /* 오른쪽 정렬 */
     margin-top: 15px; /* 테이블과 버튼 사이의 여백 */
+}
+
+/* 📌 여행 테이블 스타일 */
+.travel-table {
+    width: 80%; /* 테이블 너비 80% */
+    margin: 20px auto; /* 중앙 정렬 및 여백 설정 */
+    border-collapse: collapse; /* 경계선 병합 */
+}
+
+/* Bootstrap 스타일로 변경 */
+.travel-table th {
+    border: 1px solid #ddd; /* 경계선 설정 */
+    padding: 10px; /* 안쪽 여백 설정 */
+    background-color: #f4f4f4; /* 헤더 배경색 설정 */
+}
+
+.travel-table th a {
+    text-decoration: none; /* 기본 밑줄 제거 */
+    color: black; /* 텍스트 색상 검정 */
+}
+
+.travel-table th a:hover {
+    color: #5b30a4; /* 마우스 오버 시 색상 변경 */
 }

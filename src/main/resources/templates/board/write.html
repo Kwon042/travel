@@ -18,46 +18,13 @@
 
 <div class="container mt-4">
   <div class="row">
-    <!-- 왼쪽 사이드바 -->
-    <aside class="col-md-3">
-      <!-- 검색 기능과 여행 종류 선택 -->
-      <div class="search-section mb-4">
-        <input type="text" class="search-bar form-control" placeholder="검색" />
-        <select id="travel-type" class="form-select mt-2" aria-label="여행 종류 선택">
-          <option value="여행사">여행사</option>
-          <option value="자유여행">자유여행</option>
-        </select>
-      </div>
-
-      <!-- 게시판 목록 -->
-      <div class="board-list">
-        <h3>게시판</h3>
-        <div class="divider"></div> <!-- 구분선 -->
-
-        <ul class="list-unstyled">
-          <li><a href="/Boards/notice">공지사항</a></li>
-          <li><a href="/Boards/reviewBoard">리뷰게시판</a></li>
-          <li><a href="/Boards/freeBoard">자유게시판</a></li>
-        </ul>
-      </div>
-    </aside>
-
     <!-- 게시판 내용 -->
-    <main class="col-md-9">
-      <!-- 동적 게시판 제목 -->
-      <h2 id="region-title" th:text="'리뷰 게시판 - ' + ${region}" th:if="${boardType == 'reviewBoard'}"></h2>
-      <h2 id="free-board-title" th:text="'자유게시판'" th:if="${boardType == 'freeBoard'}"></h2>
-      <h2 id="notice-title" th:text="'공지사항'" th:if="${boardType == 'notice'}"></h2>
-
-      <div class="divider"></div>
-      <hr style="border: 1px solid #5b30a4; margin: 20px 0;"> <!-- 구분선 추가 -->
-
+    <main class="col-md-12">
       <h2>글쓰기</h2>
 
-      <form th:action="@{${isEdit} ? '/Boards/edit/' + ${post.id} : '/Boards/save'}"
+      <form th:action="@{${isEdit} ? '/Boards/edit/' + ${post.id} : '/board/save'}"
             method="post" accept-charset="UTF-8" enctype="multipart/form-data">
         <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
-        <!-- 지역 값을 숨겨진 필드로 포함 -->
         <input type="hidden" name="id" th:value="${post != null ? post.id : ''}"/>
         <input type="hidden" name="region" th:if="${region != null}" th:value="${region}"/>
         <input type="hidden" name="boardType" th:value="${boardType}"/>

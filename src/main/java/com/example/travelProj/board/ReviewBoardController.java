@@ -1,6 +1,5 @@
 package com.example.travelProj.board;
 
-import com.example.travelProj.Image;
 import com.example.travelProj.user.SiteUser;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -10,10 +9,8 @@ import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -32,12 +29,12 @@ public class ReviewBoardController {
     public String showReviewBoard(@RequestParam(name = "region", required = false) String region, Model model) {
         List<ReviewBoard> boards;
         if (region == null || region.isEmpty()) {
-            boards = reviewBoardService.getAllBoards(); // 전체 게시글 가져오기
+            boards = reviewBoardService.getAllBoards();
         } else {
-            boards = reviewBoardService.getBoardsByRegion(region); // 특정 지역 게시글 가져오기
+            boards = reviewBoardService.getBoardsByRegion(region);
         }
         model.addAttribute("boards", boards);
-        model.addAttribute("region", region); // 지역 정보 추가
+        model.addAttribute("region", region);
         return "board/reviewBoard"; // 뷰 반환
     }
 
@@ -59,13 +56,50 @@ public class ReviewBoardController {
     }
 
     @PostMapping("/reviewBoard")
-    public String createReviewBoard(@RequestParam String title,
-                                    @RequestParam String content,
-                                    @RequestParam String region,
+    public String createReviewBoard(@ModelAttribute ReviewBoardDTO reviewBoardDTO,
                                     @AuthenticationPrincipal SiteUser currentUser) {
         // 게시글 생성 호출
-        reviewBoardService.createReviewBoard(title, content, region, currentUser);
-        return "redirect:/reviewBoard"; // 생성 후 게시글 목록으로 리다이렉트
+        reviewBoardService.createReviewBoard(reviewBoardDTO, currentUser);
+        return "redirect:/board/reviewBoard";
+    }
+
+    @PostMapping("/save")
+    public String saveReviewBoard(@ModelAttribute ReviewBoardDTO reviewBoardDTO,
+                                  @AuthenticationPrincipal SiteUser currentUser,
+                                  BindingResult bindingResult) {
+        // 사용자가 로그인되어 있는지 확인
+        if (currentUser == null) {
+            return "redirect:/user/login"; // 로그인 페이지로 리다이렉트
+        }
+
+        if (bindingResult.hasErrors()) {
+            // 오류가 있을 경우 기존 입력 폼으로 돌아가기
+            return "redirect:/user/mypage?error"; // 오류가 발생했을 때 처리
+        }
+
+        try {
+            reviewBoardService.createReviewBoard(reviewBoardDTO, currentUser);
+        } catch (Exception e) {
+            e.printStackTrace();
+            // 예외 발생 시 오류 메시지를 적절하게 처리
+            return "redirect:/user/mypage?error=" + e.getMessage();
+        }
+        return "redirect:/board/reviewBoard";
+    }
+
+    @GetMapping("/detail/{id}")
+    public String showBoardDetail(@PathVariable Long id, Model model) {
+        // ID에 따라 게시글 조회
+        ReviewBoard board = reviewBoardService.getBoardById(id);
+
+        // 게시글이 존재하지 않을 경우 예외 처리 (또는 다른 로직)
+        if (board == null) {
+            // 적절한 에러 처리 로직 추가 (예: 404 페이지로 리다이렉트)
+            return "redirect:/error"; // 에러 페이지로 리다이렉트
+        }
+
+        model.addAttribute("board", board); // 상세 게시글을 모델에 추가
+        return "board/detail"; // 상세 뷰로 이동
     }
 
 }

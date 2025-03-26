@@ -1,6 +1,7 @@
 package com.example.travelProj;
 
 import com.example.travelProj.board.ReviewBoard;
+import com.example.travelProj.board.ReviewBoardDTO;
 import com.example.travelProj.board.ReviewBoardRepository;
 import com.example.travelProj.user.SiteUser;
 import com.example.travelProj.user.UserRepository;
@@ -15,6 +16,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,6 +27,7 @@ public class ImageService {
 
     private final UserRepository userRepository;
     private final ImageRepository imageRepository;
+    private final ImageService imageService;
     private final ReviewBoardRepository reviewBoardRepository;
 
     @Value("${upload.dir}")
@@ -60,17 +64,27 @@ public class ImageService {
         return saveFile(userId, "profile", file, user);
     }
 
-    // 리뷰 보드 이미지 업로드 메서드
-    public String uploadReviewBoardImage(Long reviewBoardId, MultipartFile file) throws IOException {
-        // 리뷰 보드 확인
-        ReviewBoard reviewBoard = reviewBoardRepository.findById(reviewBoardId).orElseThrow(() ->
-                new IllegalArgumentException("ReviewBoard Not Found"));
+    public void updateReviewBoard(Long reviewBoardId, ReviewBoardDTO boardDTO, MultipartFile file) throws IOException {
+        // ReviewBoard 객체 가져오기
+        ReviewBoard reviewBoard = reviewBoardRepository.findById(reviewBoardId)
+                .orElseThrow(() -> new IllegalArgumentException("Review Board not found"));
 
-        // 파일 유효성 검사
-        validateFile(file);
+        // 제목과 내용 업데이트
+        reviewBoard.setTitle(boardDTO.getTitle());
+        reviewBoard.setContent(boardDTO.getContent());
 
-        // 파일 경로 설정 및 저장
-        return saveFile(reviewBoardId, "reviewBoard", file, null);
+        // 이미지 처리
+        if (file != null && !file.isEmpty()) {
+            // 이미지가 첨부된 경우
+            String imageUrl = imageService.uploadProfileImage(reviewBoardId, file); // 프로필 이미지 업로드 로직 호출
+            List<String> updatedImageUrls = new ArrayList<>(boardDTO.getImageUrls());
+            updatedImageUrls.add(imageUrl);
+            boardDTO.setImageUrls(updatedImageUrls);
+        }
+
+        // Board 업데이트 및 저장
+        reviewBoard.setImageUrls(boardDTO.getImageUrls()); // 이미지 URL 리스트 설정
+        reviewBoardRepository.save(reviewBoard);
     }
 
     private String saveFile(Long id, String folderType, MultipartFile file, SiteUser user) throws IOException {
