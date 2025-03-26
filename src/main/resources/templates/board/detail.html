@@ -18,7 +18,7 @@
   <div class="row">
     <!-- 게시글 상세 내용 -->
     <main class="col-md-9">
-      <h2 th:text="${boardType == 'freeBoard' ? '자유게시판' : (boardType == 'notice' ? '공지사항' : '기본 상세 게시판')}"></h2>
+      <h2 id="region-title" th:text="${region == '전체' ? '전체 리뷰 게시판' : (region != null ? region + ' 지역 리뷰 게시판' : '기본 상세 게시판')}"></h2>
       <div class="divider"></div>
       <hr style="border: 1px solid #5b30a4; margin: 20px 0;"> <!-- 구분선 추가 -->
 
@@ -55,27 +55,26 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-
       const regionTitleElement = document.getElementById('region-title');
+
       if (regionTitleElement) {
-          let region = '지역 이름'; 
-          regionTitleElement.textContent = `${region} 지역게시판`;
-      }
+          // URL에서 'region' 파라미터를 가져옴
+          const urlParams = new URLSearchParams(window.location.search);
+          const region = urlParams.get('region'); // region 파라미터 값 가져오기
 
-      const freeBoardTitleElement = document.getElementById('free-board-title');
-      if (freeBoardTitleElement) {
-          freeBoardTitleElement.textContent = '자유게시판';
-      }
-
-      const noticeTitleElement = document.getElementById('notice-title');
-      if (noticeTitleElement) {
-          noticeTitleElement.textContent = '공지사항';
+          // region 값에 따른 동적 제목 설정
+          if (region === '전체') {
+              regionTitleElement.textContent = '전체 리뷰 게시판';
+          } else if (region) {
+              regionTitleElement.textContent = `${region} 지역 리뷰 게시판`;
+          }
       }
   });
 
   function deletePost(boardType, postId) {
     console.log("Board Type:", boardType);
     console.log("Post ID:", postId);
+
     if (confirm("정말로 이 게시물을 삭제하시겠습니까?")) {
         fetch(`/Boards/${boardType}/delete/${postId}`, {
             method: 'DELETE',
@@ -86,7 +85,7 @@
         .then(response => {
             if (response.ok) {
                 alert("게시물이 삭제되었습니다.");
-                window.location.reload();
+                window.location.href = `/Boards/${boardType}`; // 삭제 후 목록 페이지로 리다이렉트
             } else {
                 alert("삭제 실패: 권한이 없습니다.");
             }

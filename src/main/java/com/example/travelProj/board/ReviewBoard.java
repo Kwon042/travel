@@ -1,6 +1,7 @@
 package com.example.travelProj.board;
 
 import com.example.travelProj.Image;
+import com.example.travelProj.Region;
 import com.example.travelProj.comment.Comment;
 import com.example.travelProj.user.SiteUser;
 import jakarta.persistence.*;
@@ -35,7 +36,9 @@ public class ReviewBoard {
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    private String region;
+    @ManyToOne
+    @JoinColumn(name = "region_id", nullable = true) // 지역이 없으면 전체 게시판에 포함
+    private Region region; // 특정 지역이 있을 경우 지역별 게시판에만 표시
 
     @Column(name = "created_at",updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();

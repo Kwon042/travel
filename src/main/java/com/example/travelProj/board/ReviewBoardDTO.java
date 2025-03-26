@@ -17,7 +17,7 @@ public class ReviewBoardDTO {
     private String title;
     private String nickname;
     private String content;
-    private String region;
+    private String regionName;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Long hit;

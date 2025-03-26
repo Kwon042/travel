@@ -27,26 +27,26 @@
             <!-- 지역 필터링 테이블 추가 -->
             <table class="travel-table table table-bordered text-center">
                 <tr>
-                    <th><a th:href="@{/Boards/reviewBoard(region='전체')}">전체</a></th>
-                    <th><a th:href="@{/Boards/reviewBoard(region='서울')}">서울</a></th>
-                    <th><a th:href="@{/Boards/reviewBoard(region='대전')}">대전</a></th>
-                    <th><a th:href="@{/Boards/reviewBoard(region='대구')}">대구</a></th>
-                    <th><a th:href="@{/Boards/reviewBoard(region='광주')}">광주</a></th>
-                    <th><a th:href="@{/Boards/reviewBoard(region='부산')}">부산</a></th>
-                    <th><a th:href="@{/Boards/reviewBoard(region='울산')}">울산</a></th>
-                    <th><a th:href="@{/Boards/reviewBoard(region='세종')}">세종</a></th>
-                    <th><a th:href="@{/Boards/reviewBoard(region='경기')}">경기</a></th>
+                    <th><a th:href="@{/board/reviewBoard(region='전체')}">전체</a></th>
+                    <th><a th:href="@{/board/reviewBoard(region='Seoul')}">서울</a></th>
+                    <th><a th:href="@{/board/reviewBoard(region='대전')}">대전</a></th>
+                    <th><a th:href="@{/board/reviewBoard(region='대구')}">대구</a></th>
+                    <th><a th:href="@{/board/reviewBoard(region='광주')}">광주</a></th>
+                    <th><a th:href="@{/board/reviewBoard(region='부산')}">부산</a></th>
+                    <th><a th:href="@{/board/reviewBoard(region='울산')}">울산</a></th>
+                    <th><a th:href="@{/board/reviewBoard(region='세종')}">세종</a></th>
+                    <th><a th:href="@{/board/reviewBoard(region='경기')}">경기</a></th>
                 </tr>
                 <tr>
-                    <th><a th:href="@{/Boards/reviewBoard(region='인천')}">인천</a></th>
-                    <th><a th:href="@{/Boards/reviewBoard(region='강원')}">강원</a></th>
-                    <th><a th:href="@{/Boards/reviewBoard(region='충북')}">충북</a></th>
-                    <th><a th:href="@{/Boards/reviewBoard(region='충남')}">충남</a></th>
-                    <th><a th:href="@{/Boards/reviewBoard(region='경북')}">경북</a></th>
-                    <th><a th:href="@{/Boards/reviewBoard(region='경남')}">경남</a></th>
-                    <th><a th:href="@{/Boards/reviewBoard(region='전북')}">전북</a></th>
-                    <th><a th:href="@{/Boards/reviewBoard(region='전남')}">전남</a></th>
-                    <th><a th:href="@{/Boards/reviewBoard(region='제주')}">제주</a></th>
+                    <th><a th:href="@{/board/reviewBoard(region='인천')}">인천</a></th>
+                    <th><a th:href="@{/board/reviewBoard(region='강원')}">강원</a></th>
+                    <th><a th:href="@{/board/reviewBoard(region='충북')}">충북</a></th>
+                    <th><a th:href="@{/board/reviewBoard(region='충남')}">충남</a></th>
+                    <th><a th:href="@{/board/reviewBoard(region='경북')}">경북</a></th>
+                    <th><a th:href="@{/board/reviewBoard(region='경남')}">경남</a></th>
+                    <th><a th:href="@{/board/reviewBoard(region='전북')}">전북</a></th>
+                    <th><a th:href="@{/board/reviewBoard(region='전남')}">전남</a></th>
+                    <th><a th:href="@{/board/reviewBoard(region='제주')}">제주</a></th>
                 </tr>
             </table>
 
@@ -62,7 +62,7 @@
                         </div>
                         <div class="content-container">
                             <h3 class="title">
-                                <a th:href="@{'/Boards/detail/' + ${boardType} + '/' + ${board.id} + '?region=' + ${board.region}}" th:text="${board.title}"></a>
+                                <a th:href="@{/board/reviewBoard?region=${board.region}}" th:text="${board.title}"></a>
                             </h3>
                             <p class="excerpt" th:text="${board.excerpt}"></p>
                             <div class="meta-info">

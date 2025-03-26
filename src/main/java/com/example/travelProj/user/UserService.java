@@ -37,6 +37,7 @@ public class UserService {
         return user;
     }
 
+    @Transactional
     public SiteUser authenticate(String username, String password) {
         Optional<SiteUser> optionalUser = userRepository.findByUsername(username);
         if (optionalUser.isPresent()) {
@@ -50,6 +51,7 @@ public class UserService {
     }
 
     // 닉네임 수정
+    @Transactional
     public void updateNickname(Long userId, String newNickname) {
         // 중복 체크
         String duplicateMessage = checkFieldDuplicate("nickname", newNickname);
@@ -63,6 +65,7 @@ public class UserService {
     }
 
     // 이메일 수정
+    @Transactional
     public void updateEmail(Long userId, String newEmail) {
         // 중복 체크
         String duplicateMessage = checkFieldDuplicate("email", newEmail);
@@ -76,6 +79,7 @@ public class UserService {
     }
 
     // 중복 체크 공통 메서드
+    @Transactional
     private String checkFieldDuplicate(String field, String value) {
         if ("nickname".equals(field)) {
             boolean nicknameExists = isNicknameAlreadyRegistered(value);
@@ -91,6 +95,7 @@ public class UserService {
         return null;
     }
 
+    @Transactional
     public void updateProfileImage(Long userId, MultipartFile file) throws IOException {
         // 사용자 정보 가져오기
         SiteUser user = userRepository.findById(userId).orElseThrow(() ->
