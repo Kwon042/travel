@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -93,17 +94,19 @@ public class ReviewBoardService {
         return boards;
     }
 
-    // 특정 지역의 게시글 조회 로직
+    // 특정 지역의 게시글 조회
     public List<ReviewBoard> getBoardsByRegion(Region region) {
         return reviewBoardRepository.findByRegion_RegionName(region.getRegionName());
     }
 
-    public List<ReviewBoard> findByRegionName(Region region) {
-        return reviewBoardRepository.findByRegion_RegionName(region.getRegionName());
+    // 주어진 지역 이름으로 지역 정보를 검색하는 메서드 - 각 지역 게시판으로 이동할 때
+    public Optional<Region> findByRegionName(String regionName) {
+        return regionRepository.findByRegionName(regionName);
     }
 
+    // 특정 ID에 해당하는 게시글을 조회
     public ReviewBoard getBoardById(Long id) {
-        return reviewBoardRepository.findById(id).orElse(null); // 게시글 조회
+        return reviewBoardRepository.findById(id).orElse(null);
     }
 
 }

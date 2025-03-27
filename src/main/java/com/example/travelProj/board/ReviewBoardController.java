@@ -30,17 +30,16 @@ public class ReviewBoardController {
     // 리뷰 게시판 목록
     @GetMapping("/reviewBoard")
     public String showReviewBoard(@RequestParam(value  = "region", required = false, defaultValue = "전체") String regionName, Model model) {
-        System.out.println("Received region: " + regionName); // region 값 확인
+        System.out.println("Received region: " + regionName);
 
         List<ReviewBoard> boards;
 
         if (regionName.equals("전체")) {
             boards = reviewBoardService.getAllBoards();
         } else {
-            Region region = reviewBoardService.getBoardsByRegion(region.getRegionName())
+            System.out.println("Received region: " + regionName);
+            Region region = reviewBoardService.findByRegionName(regionName)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지역입니다."));
-//            Region region = regionRepository.findByRegionName(regionName)
-//                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지역입니다."));
             boards = reviewBoardService.getBoardsByRegion(region);
         }
 
@@ -70,10 +69,13 @@ public class ReviewBoardController {
     // 게시글 저장
     @PostMapping("/reviewBoard")
     public String createReviewBoard(@ModelAttribute ReviewBoardDTO reviewBoardDTO,
-                                    @AuthenticationPrincipal SiteUser currentUser) {
+                                    @AuthenticationPrincipal SiteUser currentUser,
+                                    @RequestParam String region) {
         // 게시글 생성 호출
+        reviewBoardDTO.setRegion(selectedRegion);
         reviewBoardService.createReviewBoard(reviewBoardDTO, currentUser);
-        return "redirect:/board/reviewBoard";
+
+        return "redirect:/board/reviewBoard?region=" + region;
     }
 
     @PostMapping("/save")

@@ -18,4 +18,13 @@ public class Region {
 
     @Column(nullable = false, unique = true)
     private String regionName;
+
+    // 기본 생성자
+    public Region() {}
+
+    // 지역 이름을 받는 생성자
+    public Region(String regionName) {
+        this.regionName = regionName;
+    }
+
 }

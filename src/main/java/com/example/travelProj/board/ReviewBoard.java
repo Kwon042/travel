@@ -37,7 +37,7 @@ public class ReviewBoard {
     private String content;
 
     @ManyToOne
-    @JoinColumn(name = "region_id", nullable = true) // 지역이 없으면 전체 게시판에 포함
+    @JoinColumn(name = "region_id", nullable = false) // 지역이 없으면 전체 게시판에 포함
     private Region region; // 특정 지역이 있을 경우 지역별 게시판에만 표시
 
     @Column(name = "created_at",updatable = false)
