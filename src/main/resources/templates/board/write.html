@@ -33,6 +33,7 @@
           <label for="title" class="form-label">제목</label>
           <input type="text" class="form-control" id="title" name="title" required
                  th:value="${board != null ? board.title : ''}" placeholder="제목을 입력하세요.">
+          <div class="text-danger" th:if="${#fields.hasErrors('title')}" th:errors="*"></div>
         </div>
 
         <div class="mb-3">

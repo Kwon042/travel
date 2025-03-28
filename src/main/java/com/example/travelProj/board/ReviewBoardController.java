@@ -58,24 +58,23 @@ public class ReviewBoardController {
     @GetMapping("/write")
     public String write(@RequestParam(value = "region", required = false) String region,
                         //@RequestParam(value = "boardType", required = true) String boardType,
-                        @RequestParam(value = "updateBoardId", required = false) Long updateBoardId,
                         HttpServletRequest request, Model model) {
         CsrfToken csrfToken = csrfTokenRepository.generateToken(request);
         model.addAttribute("_csrf", csrfToken);
         //model.addAttribute("boardType", boardType);
-
-        // 수정일 경우 게시글 정보 불러오기
-        if (updateBoardId != null) {
-            ReviewBoard board = reviewBoardService.getBoardById(updateBoardId);
-            if (board != null) {
-                model.addAttribute("board", board); // 게시글 데이터를 모델에 추가
-            } else {
-                return "redirect:/board/reviewBoard?region=" + region;
-            }
-        }
         model.addAttribute("region", region);
 
         return "board/write";
+    }
+
+    @GetMapping("/reviewBoard/update/{id}")
+    public String update(@PathVariable Long id, Model model, HttpServletRequest request) {
+        ReviewBoard board = reviewBoardService.getBoardById(id);
+        // 게시글을 불러와서 모델에 추가
+        model.addAttribute("board", board);
+        model.addAttribute("_csrf", csrfTokenRepository.generateToken(request)); // CSRF Token 추가
+
+        return "board/write"; // 수정 폼 페이지로 이동
     }
 
     // 새 게시글 저장
@@ -135,8 +134,18 @@ public class ReviewBoardController {
     public String updateReviewBoard(@PathVariable Long id,
                                     @ModelAttribute ReviewBoardDTO reviewBoardDTO,
                                     @RequestParam(value = "file", required = false) MultipartFile file,
-                                    BindingResult bindingResult) throws IOException {
+                                    BindingResult bindingResult, Model model, HttpServletRequest request) throws IOException {
+        System.out.println("Received title: " + reviewBoardDTO.getTitle());
+
         if (bindingResult.hasErrors()) {
+            // 에러가 있는 경우 수정할 게시글 정보 불러오기
+            ReviewBoard board = reviewBoardService.getBoardById(id);
+
+            if (board != null) {
+                model.addAttribute("board", board); // 기존 게시글 데이터 추가
+                model.addAttribute("_csrf", csrfTokenRepository.generateToken(request));
+            }
+            // 수정 폼으로 돌아가기
             return "board/write";
         }
         reviewBoardService.updateReviewBoard(id, reviewBoardDTO, file);
