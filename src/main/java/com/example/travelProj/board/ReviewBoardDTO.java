@@ -15,6 +15,7 @@ import java.util.List;
 public class ReviewBoardDTO {
 
     private Long id;
+    private Long userId; // db에 저장 될 어떤 유저가 리뷰 게시판에 게시글을 올렸는지 확인하고 삭제하는
     private String title;
     private String nickname;
     private String content;

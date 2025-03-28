@@ -18,6 +18,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.beans.PropertyEditorSupport;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -54,23 +57,29 @@ public class ReviewBoardController {
     // 게시글 작성
     @GetMapping("/write")
     public String write(@RequestParam(value = "region", required = false) String region,
-                        @RequestParam(value = "boardType", required = true) String boardType,
+                        //@RequestParam(value = "boardType", required = true) String boardType,
+                        @RequestParam(value = "updateBoardId", required = false) Long updateBoardId,
                         HttpServletRequest request, Model model) {
         CsrfToken csrfToken = csrfTokenRepository.generateToken(request);
         model.addAttribute("_csrf", csrfToken);
-        model.addAttribute("boardType", boardType);
+        //model.addAttribute("boardType", boardType);
 
-        // 전체 게시판인지 확인
-        boolean isAllBoard = "reviewBoard".equals(boardType);
-        model.addAttribute("isAllBoard", isAllBoard);
-
+        // 수정일 경우 게시글 정보 불러오기
+        if (updateBoardId != null) {
+            ReviewBoard board = reviewBoardService.getBoardById(updateBoardId);
+            if (board != null) {
+                model.addAttribute("board", board); // 게시글 데이터를 모델에 추가
+            } else {
+                return "redirect:/board/reviewBoard?region=" + region;
+            }
+        }
         model.addAttribute("region", region);
 
         return "board/write";
     }
 
-    // 게시글 저장
-    @PostMapping("/reviewBoard")
+    // 새 게시글 저장
+    @PostMapping("/reviewBoard/save")
     public String createReviewBoard(@ModelAttribute ReviewBoardDTO reviewBoardDTO,
                                     @AuthenticationPrincipal SiteUser currentUser,
                                     @RequestParam String region, BindingResult bindingResult) {
@@ -87,54 +96,36 @@ public class ReviewBoardController {
         reviewBoardDTO.setRegion(selectedRegion);
         reviewBoardService.createReviewBoard(reviewBoardDTO, currentUser);
 
-        return "redirect:/board/reviewBoard?region=" + region;
-    }
-
-    @PostMapping("/save")
-    public String saveReviewBoard(@ModelAttribute ReviewBoardDTO reviewBoardDTO,
-                                  @AuthenticationPrincipal SiteUser currentUser,
-                                  BindingResult bindingResult) {
-        if (currentUser == null) {
-            return "redirect:/user/login";
-        }
-        if (bindingResult.hasErrors()) {
-            return "redirect:/user/mypage?error";
-        }
-
+        // URL 인코딩 적용
         try {
-            // region 필드에서 지역 이름을 가져와 찾아서 설정
-            String regionName = reviewBoardDTO.getRegion().getRegionName();
-            Region selectedRegion = reviewBoardService.findByRegionName(regionName)
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지역입니다."));
-
-            reviewBoardDTO.setRegion(selectedRegion);
-            reviewBoardService.createReviewBoard(reviewBoardDTO, currentUser);
-        } catch (Exception e) {
+            String encodedRegion = URLEncoder.encode(region, StandardCharsets.UTF_8.toString());
+            return "redirect:/board/reviewBoard?region=" + encodedRegion;
+        } catch (UnsupportedEncodingException e) {
+            // 인코딩 실패 시 예외 처리, 로그 남기기 등
             e.printStackTrace();
-            return "redirect:/user/mypage?error=" + e.getMessage();
+            return "redirect:/board/reviewBoard?region=" + region; // 인코딩 실패시 원래 값으로 리다이렉트
         }
-        return "redirect:/board/reviewBoard";
     }
 
     // 게시글 상세 페이지 조회
     @GetMapping("/detail/{id}")
     public String showBoardDetail(@PathVariable Long id,
                                   @RequestParam(name = "region", required = false, defaultValue = "전체") String regionName,
+                                  @AuthenticationPrincipal SiteUser currentUser,
                                   Model model) {
-        // ID에 따라 게시글 조회
         ReviewBoard board = reviewBoardService.getBoardById(id);
 
-        // 게시글이 존재하지 않을 경우 예외 처리 (목록 페이지로 리다이렉트)
         if (board == null) {
-            return "redirect:/board/reviewBoard";
+            return "redirect:/board/reviewBoard?region=" + regionName;
         }
 
-        // 게시글의 이미지 리스트 가져오기
         List<Image> images = board.getReview_images();
 
-        model.addAttribute("region", regionName);
         model.addAttribute("board", board);
+        model.addAttribute("region", regionName);
         model.addAttribute("images", images);
+        model.addAttribute("currentUser", currentUser);
+
 
         return "board/detail";
     }
@@ -144,10 +135,12 @@ public class ReviewBoardController {
     public String updateReviewBoard(@PathVariable Long id,
                                     @ModelAttribute ReviewBoardDTO reviewBoardDTO,
                                     @RequestParam(value = "file", required = false) MultipartFile file,
-                                    @RequestParam(name = "region", required = false, defaultValue = "전체") String regionName) throws IOException {
+                                    BindingResult bindingResult) throws IOException {
+        if (bindingResult.hasErrors()) {
+            return "board/write";
+        }
         reviewBoardService.updateReviewBoard(id, reviewBoardDTO, file);
-        // 수정 후 해당 게시글 상세 페이지로 리다이렉트하면서 region도 함께 전달
-        return "redirect:/board/detail/" + id + "?region=" + regionName;
+        return "redirect:/board/detail/" + id + "?region=" + reviewBoardDTO.getRegion().getRegionName();
     }
 
     // 문자열을 Region 객체로 변환하는 기능

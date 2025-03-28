@@ -62,7 +62,8 @@
                         </div>
                         <div class="content-container">
                             <h3 class="title">
-                                <a th:href="@{/board/reviewBoard?region=${board.region}}" th:text="${board.title}"></a>
+                                <a th:href="@{/board/detail/{id}(id=${board.id}, region=${board.region != null ? board.region.regionName : '전체'})}"
+                                   th:text="${board.title}"></a>
                             </h3>
                             <p class="excerpt" th:text="${board.excerpt}"></p>
                             <div class="meta-info">

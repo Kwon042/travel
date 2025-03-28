@@ -61,7 +61,6 @@ public class ReviewBoardService {
         ReviewBoard reviewBoard = reviewBoardRepository.findById(reviewBoardId)
                 .orElseThrow(() -> new IllegalArgumentException("Review Board not found"));
 
-        // 게시글 제목, 내용, 업데이트 시간 수정
         reviewBoard.setTitle(reviewBoardDTO.getTitle());
         reviewBoard.setContent(reviewBoardDTO.getContent());
         reviewBoard.setUpdatedAt(LocalDateTime.now());
@@ -69,19 +68,19 @@ public class ReviewBoardService {
 
         // 이미지가 첨부되었으면 처리
         if (file != null && !file.isEmpty()) {
-            String imageUrl = imageService.saveFile(reviewBoardId, "review", file, reviewBoard);  // 이미지 저장
-            reviewBoardDTO.getImageUrls().add(imageUrl); // URL 추가
+            String imageUrl = imageService.saveFile(reviewBoardId, "review", file, reviewBoard);
+            reviewBoardDTO.getImageUrls().add(imageUrl);
         }
 
         // 기존 이미지 URL 갱신
-        reviewBoard.setImageUrls(reviewBoardDTO.getImageUrls()); // 이미지 URL 리스트 갱신
-        reviewBoardRepository.save(reviewBoard); // DB에 저장
+        reviewBoard.setImageUrls(reviewBoardDTO.getImageUrls());
+        reviewBoardRepository.save(reviewBoard);
     }
 
     // 전체 게시글 조회 로직
     public List<ReviewBoard> getAllBoards() {
         List<ReviewBoard> boards = reviewBoardRepository.findAll();
-        System.out.println("전체 게시글 조회: " + boards.size());  // 디버깅 로그
+        System.out.println("전체 게시글 조회: " + boards.size());
         return boards;
     }
 
