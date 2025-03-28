@@ -1,6 +1,6 @@
-package com.example.travelProj.board;
+package com.example.travelProj.domain.board;
 
-import com.example.travelProj.Region;
+import com.example.travelProj.domain.region.Region;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

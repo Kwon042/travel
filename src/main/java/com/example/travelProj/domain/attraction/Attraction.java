@@ -1,6 +1,6 @@
-package com.example.travelProj.attraction;
+package com.example.travelProj.domain.attraction;
 
-import com.example.travelProj.Image;
+import com.example.travelProj.domain.image.Image;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

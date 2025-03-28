@@ -1,7 +1,7 @@
-package com.example.travelProj;
+package com.example.travelProj.domain.image;
 
-import com.example.travelProj.board.ReviewBoard;
-import com.example.travelProj.user.SiteUser;
+import com.example.travelProj.domain.board.ReviewBoard;
+import com.example.travelProj.domain.user.SiteUser;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;

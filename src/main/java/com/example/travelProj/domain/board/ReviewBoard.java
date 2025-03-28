@@ -1,9 +1,9 @@
-package com.example.travelProj.board;
+package com.example.travelProj.domain.board;
 
-import com.example.travelProj.Image;
-import com.example.travelProj.Region;
-import com.example.travelProj.comment.Comment;
-import com.example.travelProj.user.SiteUser;
+import com.example.travelProj.domain.image.Image;
+import com.example.travelProj.domain.region.Region;
+import com.example.travelProj.domain.comment.Comment;
+import com.example.travelProj.domain.user.SiteUser;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

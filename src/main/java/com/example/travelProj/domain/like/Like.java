@@ -1,9 +1,9 @@
-package com.example.travelProj;
+package com.example.travelProj.domain.like;
 
-import com.example.travelProj.attraction.Attraction;
-import com.example.travelProj.board.ReviewBoard;
-import com.example.travelProj.comment.Comment;
-import com.example.travelProj.user.SiteUser;
+import com.example.travelProj.domain.attraction.Attraction;
+import com.example.travelProj.domain.board.ReviewBoard;
+import com.example.travelProj.domain.comment.Comment;
+import com.example.travelProj.domain.user.SiteUser;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

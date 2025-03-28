@@ -1,4 +1,4 @@
-package com.example.travelProj;
+package com.example.travelProj.domain.region;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

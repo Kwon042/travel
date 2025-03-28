@@ -1,6 +1,5 @@
-package com.example.travelProj.board;
+package com.example.travelProj.domain.board;
 
-import com.example.travelProj.Region;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

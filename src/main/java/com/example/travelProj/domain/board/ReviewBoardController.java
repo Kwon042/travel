@@ -1,11 +1,13 @@
-package com.example.travelProj.board;
+package com.example.travelProj.domain.board;
 
-import com.example.travelProj.Image;
-import com.example.travelProj.Region;
-import com.example.travelProj.RegionRepository;
-import com.example.travelProj.user.SiteUser;
+import com.example.travelProj.domain.image.Image;
+import com.example.travelProj.domain.region.Region;
+import com.example.travelProj.domain.region.RegionRepository;
+import com.example.travelProj.domain.user.SiteUser;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
@@ -25,7 +27,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/board")
+@RequestMapping("/domain/board")
 public class ReviewBoardController {
 
     private final CsrfTokenRepository csrfTokenRepository;
@@ -67,16 +69,6 @@ public class ReviewBoardController {
         return "board/write";
     }
 
-    @GetMapping("/reviewBoard/update/{id}")
-    public String update(@PathVariable Long id, Model model, HttpServletRequest request) {
-        ReviewBoard board = reviewBoardService.getBoardById(id);
-        // 게시글을 불러와서 모델에 추가
-        model.addAttribute("board", board);
-        model.addAttribute("_csrf", csrfTokenRepository.generateToken(request)); // CSRF Token 추가
-
-        return "board/write"; // 수정 폼 페이지로 이동
-    }
-
     // 새 게시글 저장
     @PostMapping("/reviewBoard/save")
     public String createReviewBoard(@ModelAttribute ReviewBoardDTO reviewBoardDTO,
@@ -98,11 +90,11 @@ public class ReviewBoardController {
         // URL 인코딩 적용
         try {
             String encodedRegion = URLEncoder.encode(region, StandardCharsets.UTF_8.toString());
-            return "redirect:/board/reviewBoard?region=" + encodedRegion;
+            return "redirect:/domain/board/reviewBoard?region=" + encodedRegion;
         } catch (UnsupportedEncodingException e) {
             // 인코딩 실패 시 예외 처리, 로그 남기기 등
             e.printStackTrace();
-            return "redirect:/board/reviewBoard?region=" + region; // 인코딩 실패시 원래 값으로 리다이렉트
+            return "redirect:/domain/board/reviewBoard?region=" + region; // 인코딩 실패시 원래 값으로 리다이렉트
         }
     }
 
@@ -130,9 +122,26 @@ public class ReviewBoardController {
     }
 
     // 게시글 수정
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/update/{id}")
+    public String update(@PathVariable Long id, Model model, @RequestParam("region") String region) {
+        System.out.println("Received request to update post with id: " + id);
+        ReviewBoard board = reviewBoardService.getBoardById(id);
+
+        if (board != null) {
+            // 조회된 게시글 정보를 모델에 추가
+            model.addAttribute("board", board);
+            return "board/update";
+        } else {
+            return "redirect:/board/reviewBoard";
+        }
+    }
+
+    // 게시글 수정
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/reviewBoard/update/{id}")
     public String updateReviewBoard(@PathVariable Long id,
-                                    @ModelAttribute ReviewBoardDTO reviewBoardDTO,
+                                    @ModelAttribute @Valid ReviewBoardDTO reviewBoardDTO,
                                     @RequestParam(value = "file", required = false) MultipartFile file,
                                     BindingResult bindingResult, Model model, HttpServletRequest request) throws IOException {
         System.out.println("Received title: " + reviewBoardDTO.getTitle());
@@ -145,8 +154,7 @@ public class ReviewBoardController {
                 model.addAttribute("board", board); // 기존 게시글 데이터 추가
                 model.addAttribute("_csrf", csrfTokenRepository.generateToken(request));
             }
-            // 수정 폼으로 돌아가기
-            return "board/write";
+            return "board/update";
         }
         reviewBoardService.updateReviewBoard(id, reviewBoardDTO, file);
         return "redirect:/board/detail/" + id + "?region=" + reviewBoardDTO.getRegion().getRegionName();

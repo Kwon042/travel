@@ -1,4 +1,4 @@
-package com.example.travelProj;
+package com.example.travelProj.domain.region;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;

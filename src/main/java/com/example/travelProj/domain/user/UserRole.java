@@ -1,4 +1,4 @@
-package com.example.travelProj.user;
+package com.example.travelProj.domain.user;
 
 import lombok.Getter;
 

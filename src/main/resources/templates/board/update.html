@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>후기 수정</title>
+    <link rel="stylesheet" href="/header.css">
+    <link rel="stylesheet" href="/footer.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+
+<!-- 네비게이션바 -->
+<header th:replace="~{layout/header}"></header>
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- 게시판 내용 -->
+        <main class="col-md-12">
+            <h2>글 수정</h2>
+
+            <form th:action="@{'/domain/board/reviewBoard/update/' + ${board.id}}" method="POST" accept-charset="UTF-8" enctype="multipart/form-data">
+                <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+                <input type="hidden" name="id" th:value="${board.id}"/>
+                <input type="hidden" name="region" th:value="${board.region.id}"/>
+                <input type="hidden" name="nickname" th:value="${#authentication.name}"/>
+
+                <div class="mb-3">
+                    <label for="title" class="form-label">제목</label>
+                    <input type="text" class="form-control" id="title" name="title" required th:value="${board.title}" placeholder="제목을 입력하세요.">
+                </div>
+
+                <div class="mb-3">
+                    <label for="content" class="form-label">내용</label>
+                    <textarea class="form-control" id="content" name="content" rows="5" required th:text="${board.content}" placeholder="내용을 입력하세요."></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="image" class="form-label">사진 업로드</label>
+                    <input type="file" class="form-control" id="image" name="reviewFileImg" accept="image/*" multiple onchange="previewImages(event)">
+                </div>
+                <div id="imagePreview" class="mb-3 d-flex flex-wrap"></div>
+
+                <button type="submit" class="btn btn-primary">수정</button>
+            </form>
+        </main>
+    </div>
+</div>
+
+<!-- 풋터 추가 -->
+<footer th:replace="~{layout/footer}"></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    function previewImages(event) {
+      let previewContainer = document.getElementById('imagePreview');
+      previewContainer.innerHTML = ''; // 기존 미리보기 초기화
+
+      let files = event.target.files;
+      if (files.length > 0) {
+        Array.from(files).forEach(file => {
+          let reader = new FileReader();
+          reader.onload = function(e) {
+            let imgElement = document.createElement("img");
+            imgElement.src = e.target.result;
+            imgElement.classList.add("img-thumbnail", "m-2");
+            imgElement.style.width = "150px";
+            imgElement.style.height = "150px";
+            previewContainer.appendChild(imgElement);
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+    }
+</script>
+
+</body>
+</html>

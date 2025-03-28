@@ -1,10 +1,10 @@
-package com.example.travelProj.board;
+package com.example.travelProj.domain.board;
 
-import com.example.travelProj.Image;
-import com.example.travelProj.ImageService;
-import com.example.travelProj.Region;
-import com.example.travelProj.RegionRepository;
-import com.example.travelProj.user.SiteUser;
+import com.example.travelProj.domain.image.Image;
+import com.example.travelProj.domain.image.ImageService;
+import com.example.travelProj.domain.region.Region;
+import com.example.travelProj.domain.region.RegionRepository;
+import com.example.travelProj.domain.user.SiteUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
@@ -66,14 +66,18 @@ public class ReviewBoardService {
         reviewBoard.setUpdatedAt(LocalDateTime.now());
         reviewBoard.setRegion(reviewBoardDTO.getRegion());
 
-        // 이미지가 첨부되었으면 처리
+        // 기존 이미지 리스트 가져오기 (null 방지)
+        List<String> existingImageUrls = new ArrayList<>(reviewBoard.getImageUrls());
+
+        // 새로운 이미지가 첨부된 경우 처리
         if (file != null && !file.isEmpty()) {
             String imageUrl = imageService.saveFile(reviewBoardId, "review", file, reviewBoard);
-            reviewBoardDTO.getImageUrls().add(imageUrl);
+            existingImageUrls.add(imageUrl);  // 기존 리스트에 추가
         }
 
-        // 기존 이미지 URL 갱신
-        reviewBoard.setImageUrls(reviewBoardDTO.getImageUrls());
+        // 기존 + 새 이미지 URL 갱신
+        reviewBoard.setImageUrls(existingImageUrls);
+
         reviewBoardRepository.save(reviewBoard);
     }
 

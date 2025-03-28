@@ -1,14 +1,13 @@
-package com.example.travelProj.comment;
+package com.example.travelProj.domain.comment;
 
-import com.example.travelProj.board.ReviewBoard;
-import com.example.travelProj.user.SiteUser;
+import com.example.travelProj.domain.board.ReviewBoard;
+import com.example.travelProj.domain.user.SiteUser;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.function.LongFunction;
 
 @Getter
 @Setter

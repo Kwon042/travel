@@ -1,8 +1,5 @@
-package com.example.travelProj.user;
+package com.example.travelProj.domain.user;
 
-import com.example.travelProj.user.SiteUser;
-import com.example.travelProj.user.UserRepository;
-import com.example.travelProj.user.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

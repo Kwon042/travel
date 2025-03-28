@@ -27,26 +27,26 @@
             <!-- 지역 필터링 테이블 추가 -->
             <table class="travel-table table table-bordered text-center">
                 <tr>
-                    <th><a th:href="@{/board/reviewBoard(region='전체')}">전체</a></th>
-                    <th><a th:href="@{/board/reviewBoard(region='서울')}">서울</a></th>
-                    <th><a th:href="@{/board/reviewBoard(region='대전')}">대전</a></th>
-                    <th><a th:href="@{/board/reviewBoard(region='대구')}">대구</a></th>
-                    <th><a th:href="@{/board/reviewBoard(region='광주')}">광주</a></th>
-                    <th><a th:href="@{/board/reviewBoard(region='부산')}">부산</a></th>
-                    <th><a th:href="@{/board/reviewBoard(region='울산')}">울산</a></th>
-                    <th><a th:href="@{/board/reviewBoard(region='세종')}">세종</a></th>
-                    <th><a th:href="@{/board/reviewBoard(region='경기')}">경기</a></th>
+                    <th><a th:href="@{/domain/board/reviewBoard(region='전체')}">전체</a></th>
+                    <th><a th:href="@{/domain/board/reviewBoard(region='서울')}">서울</a></th>
+                    <th><a th:href="@{/domain/board/reviewBoard(region='대전')}">대전</a></th>
+                    <th><a th:href="@{/domain/board/reviewBoard(region='대구')}">대구</a></th>
+                    <th><a th:href="@{/domain/board/reviewBoard(region='광주')}">광주</a></th>
+                    <th><a th:href="@{/domain/board/reviewBoard(region='부산')}">부산</a></th>
+                    <th><a th:href="@{/domain/board/reviewBoard(region='울산')}">울산</a></th>
+                    <th><a th:href="@{/domain/board/reviewBoard(region='세종')}">세종</a></th>
+                    <th><a th:href="@{/domain/board/reviewBoard(region='경기')}">경기</a></th>
                 </tr>
                 <tr>
-                    <th><a th:href="@{/board/reviewBoard(region='인천')}">인천</a></th>
-                    <th><a th:href="@{/board/reviewBoard(region='강원')}">강원</a></th>
-                    <th><a th:href="@{/board/reviewBoard(region='충북')}">충북</a></th>
-                    <th><a th:href="@{/board/reviewBoard(region='충남')}">충남</a></th>
-                    <th><a th:href="@{/board/reviewBoard(region='경북')}">경북</a></th>
-                    <th><a th:href="@{/board/reviewBoard(region='경남')}">경남</a></th>
-                    <th><a th:href="@{/board/reviewBoard(region='전북')}">전북</a></th>
-                    <th><a th:href="@{/board/reviewBoard(region='전남')}">전남</a></th>
-                    <th><a th:href="@{/board/reviewBoard(region='제주')}">제주</a></th>
+                    <th><a th:href="@{/domain/board/reviewBoard(region='인천')}">인천</a></th>
+                    <th><a th:href="@{/domain/board/reviewBoard(region='강원')}">강원</a></th>
+                    <th><a th:href="@{/domain/board/reviewBoard(region='충북')}">충북</a></th>
+                    <th><a th:href="@{/domain/board/reviewBoard(region='충남')}">충남</a></th>
+                    <th><a th:href="@{/domain/board/reviewBoard(region='경북')}">경북</a></th>
+                    <th><a th:href="@{/domain/board/reviewBoard(region='경남')}">경남</a></th>
+                    <th><a th:href="@{/domain/board/reviewBoard(region='전북')}">전북</a></th>
+                    <th><a th:href="@{/domain/board/reviewBoard(region='전남')}">전남</a></th>
+                    <th><a th:href="@{/domain/board/reviewBoard(region='제주')}">제주</a></th>
                 </tr>
             </table>
 
@@ -62,7 +62,7 @@
                         </div>
                         <div class="content-container">
                             <h3 class="title">
-                                <a th:href="@{/board/detail/{id}(id=${board.id}, region=${board.region != null ? board.region.regionName : '전체'})}"
+                                <a th:href="@{/domain/board/detail/{id}(id=${board.id}, region=${board.region != null ? board.region.regionName : '전체'})}"
                                    th:text="${board.title}"></a>
                             </h3>
                             <p class="excerpt" th:text="${board.excerpt}"></p>
@@ -76,7 +76,7 @@
                 </div>
                 <a id="writeButton"
                    th:if="${region} != '전체'"
-                   th:href="@{/board/write(region=${region}, boardType='reviewBoard')}"
+                   th:href="@{/domain/board/write(region=${region}, boardType='reviewBoard')}"
                    class="btn btn-success write-button">글쓰기</a>
             </div>
         </main>
@@ -99,9 +99,6 @@
         const writeButton = document.getElementById('writeButton');
         if (writeButton) { // writeButton이 null인지 확인
             writeButton.href = `/board/write?region=${region}&boardType=reviewBoard`;
-        } else {
-            console.warn("Write button not found!");
-        }
     });
 </script>
 

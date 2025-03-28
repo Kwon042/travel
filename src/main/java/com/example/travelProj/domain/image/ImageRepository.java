@@ -1,6 +1,6 @@
-package com.example.travelProj;
+package com.example.travelProj.domain.image;
 
-import com.example.travelProj.user.SiteUser;
+import com.example.travelProj.domain.user.SiteUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

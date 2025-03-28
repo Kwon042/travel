@@ -1,7 +1,6 @@
-package com.example.travelProj.user;
+package com.example.travelProj.domain.user;
 
-import com.example.travelProj.Image;
-import com.example.travelProj.ImageService;
+import com.example.travelProj.domain.image.ImageService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -9,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -88,7 +86,7 @@ public class UserController {
     }
 
     @GetMapping("/mypage/edit")
-    public String editUserInfo(@AuthenticationPrincipal SiteUser siteUser, Model model) {
+    public String updateUserInfo(@AuthenticationPrincipal SiteUser siteUser, Model model) {
         model.addAttribute("user", siteUser);
         return "user/mypage";
     }

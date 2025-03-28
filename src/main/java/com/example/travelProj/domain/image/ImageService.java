@@ -1,26 +1,20 @@
-package com.example.travelProj;
+package com.example.travelProj.domain.image;
 
-import com.example.travelProj.board.ReviewBoard;
-import com.example.travelProj.board.ReviewBoardDTO;
-import com.example.travelProj.board.ReviewBoardRepository;
-import com.example.travelProj.board.ReviewBoardService;
-import com.example.travelProj.user.SiteUser;
-import com.example.travelProj.user.UserRepository;
+import com.example.travelProj.domain.board.ReviewBoard;
+import com.example.travelProj.domain.board.ReviewBoardDTO;
+import com.example.travelProj.domain.board.ReviewBoardRepository;
+import com.example.travelProj.domain.user.SiteUser;
+import com.example.travelProj.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor

@@ -21,19 +21,16 @@
     <main class="col-md-12">
       <h2>글쓰기</h2>
 
-      <form th:action="@{${board != null} ? '/board/reviewBoard/update/' + ${board.id} : '/board/reviewBoard/save'}"
-            method="POST" accept-charset="UTF-8" enctype="multipart/form-data">
+      <form th:action="@{/domain/board/reviewBoard/save}" method="POST" accept-charset="UTF-8" enctype="multipart/form-data">
         <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
         <input type="hidden" name="id" th:value="${board != null ? board.id : ''}"/>
         <input type="hidden" name="region" th:value="${region}"/>
         <input type="hidden" name="nickname" th:value="${#authentication.name}"/>
-        <!--        <input type="hidden" name="boardType" th:value="${boardType}"/>-->
 
         <div class="mb-3">
           <label for="title" class="form-label">제목</label>
           <input type="text" class="form-control" id="title" name="title" required
                  th:value="${board != null ? board.title : ''}" placeholder="제목을 입력하세요.">
-          <div class="text-danger" th:if="${#fields.hasErrors('title')}" th:errors="*"></div>
         </div>
 
         <div class="mb-3">
@@ -49,7 +46,7 @@
         </div>
         <div id="imagePreview" class="mb-3 d-flex flex-wrap"></div>
 
-        <button type="submit" class="btn btn-primary" th:text="${board != null ? '수정' : '저장'}"></button>
+        <button type="submit" class="btn btn-primary">저장</button>
       </form>
     </main>
   </div>

@@ -1,4 +1,4 @@
-//package com.example.travelProj;
+//package com.example.travelProj.global.config;
 //
 //import org.springframework.context.annotation.Bean;
 //import org.springframework.context.annotation.Configuration;
