@@ -1,5 +1,6 @@
 package com.example.travelProj.board;
 
+import com.example.travelProj.Region;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,7 +18,7 @@ public class ReviewBoardDTO {
     private String title;
     private String nickname;
     private String content;
-    private String region;
+    private Region region;
     private String regionName;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

@@ -27,21 +27,18 @@ public class ReviewBoardService {
 
     // 게시글 생성
     @Transactional
-    public ReviewBoard createReviewBoard(ReviewBoardDTO reviewBoardDTO, @AuthenticationPrincipal SiteUser currentUser) {
+    public ReviewBoard createReviewBoard(ReviewBoardDTO reviewBoardDTO,
+                                         @AuthenticationPrincipal SiteUser currentUser) {
+
         ReviewBoard reviewBoard = new ReviewBoard();
+
         reviewBoard.setTitle(reviewBoardDTO.getTitle());
         reviewBoard.setContent(reviewBoardDTO.getContent());
         reviewBoard.setUser(currentUser);
         reviewBoard.setNickname(reviewBoardDTO.getNickname());
         reviewBoard.setCreatedAt(LocalDateTime.now());
         reviewBoard.setUpdatedAt(LocalDateTime.now());
-
-        // regionName을 Region 객체로 변환
-        if (reviewBoardDTO.getRegionName() != null) {
-            Region region = regionRepository.findByRegionName(reviewBoardDTO.getRegionName())
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지역입니다."));
-            reviewBoard.setRegion(region);
-        }
+        reviewBoard.setRegion(reviewBoardDTO.getRegion());
 
         // 이미지 URL 리스트 처리
         List<Image> images = new ArrayList<>();
@@ -68,13 +65,7 @@ public class ReviewBoardService {
         reviewBoard.setTitle(reviewBoardDTO.getTitle());
         reviewBoard.setContent(reviewBoardDTO.getContent());
         reviewBoard.setUpdatedAt(LocalDateTime.now());
-
-        // 지역 업데이트
-        if (reviewBoardDTO.getRegionName() != null) {
-            Region region = regionRepository.findByRegionName(reviewBoardDTO.getRegionName())
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지역입니다."));
-            reviewBoard.setRegion(region);
-        }
+        reviewBoard.setRegion(reviewBoardDTO.getRegion());
 
         // 이미지가 첨부되었으면 처리
         if (file != null && !file.isEmpty()) {

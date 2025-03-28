@@ -12,9 +12,11 @@ import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.beans.PropertyEditorSupport;
 import java.io.IOException;
 import java.util.List;
 
@@ -29,17 +31,18 @@ public class ReviewBoardController {
 
     // 리뷰 게시판 목록
     @GetMapping("/reviewBoard")
-    public String showReviewBoard(@RequestParam(value  = "region", required = false, defaultValue = "전체") String regionName, Model model) {
+    public String showReviewBoard(@RequestParam(value  = "region", required = false, defaultValue = "전체") String regionName,
+                                  Model model) {
         System.out.println("Received region: " + regionName);
-
         List<ReviewBoard> boards;
 
+        // 모든 게시글 조회
         if (regionName.equals("전체")) {
             boards = reviewBoardService.getAllBoards();
         } else {
-            System.out.println("Received region: " + regionName);
             Region region = reviewBoardService.findByRegionName(regionName)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지역입니다."));
+            // 특정 지역 게시글 조회
             boards = reviewBoardService.getBoardsByRegion(region);
         }
 
@@ -70,8 +73,17 @@ public class ReviewBoardController {
     @PostMapping("/reviewBoard")
     public String createReviewBoard(@ModelAttribute ReviewBoardDTO reviewBoardDTO,
                                     @AuthenticationPrincipal SiteUser currentUser,
-                                    @RequestParam String region) {
-        // 게시글 생성 호출
+                                    @RequestParam String region, BindingResult bindingResult) {
+        if (currentUser == null) {
+            return "redirect:/user/login";
+        }
+        if (bindingResult.hasErrors()) {
+            return "board/write";
+        }
+        // 지역 정보를 가져오기
+        Region selectedRegion = reviewBoardService.findByRegionName(region)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지역입니다."));
+
         reviewBoardDTO.setRegion(selectedRegion);
         reviewBoardService.createReviewBoard(reviewBoardDTO, currentUser);
 
@@ -82,21 +94,23 @@ public class ReviewBoardController {
     public String saveReviewBoard(@ModelAttribute ReviewBoardDTO reviewBoardDTO,
                                   @AuthenticationPrincipal SiteUser currentUser,
                                   BindingResult bindingResult) {
-        // 사용자가 로그인되어 있는지 확인
         if (currentUser == null) {
-            return "redirect:/user/login"; // 로그인 페이지로 리다이렉트
+            return "redirect:/user/login";
         }
-
         if (bindingResult.hasErrors()) {
-            // 오류가 있을 경우 기존 입력 폼으로 돌아가기
-            return "redirect:/user/mypage?error"; // 오류가 발생했을 때 처리
+            return "redirect:/user/mypage?error";
         }
 
         try {
+            // region 필드에서 지역 이름을 가져와 찾아서 설정
+            String regionName = reviewBoardDTO.getRegion().getRegionName();
+            Region selectedRegion = reviewBoardService.findByRegionName(regionName)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지역입니다."));
+
+            reviewBoardDTO.setRegion(selectedRegion);
             reviewBoardService.createReviewBoard(reviewBoardDTO, currentUser);
         } catch (Exception e) {
             e.printStackTrace();
-            // 예외 발생 시 오류 메시지를 적절하게 처리
             return "redirect:/user/mypage?error=" + e.getMessage();
         }
         return "redirect:/board/reviewBoard";
@@ -134,5 +148,19 @@ public class ReviewBoardController {
         reviewBoardService.updateReviewBoard(id, reviewBoardDTO, file);
         // 수정 후 해당 게시글 상세 페이지로 리다이렉트하면서 region도 함께 전달
         return "redirect:/board/detail/" + id + "?region=" + regionName;
+    }
+
+    // 문자열을 Region 객체로 변환하는 기능
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(Region.class, "region",
+                new PropertyEditorSupport() {
+                    @Override
+                    public void setAsText(String text) {
+                        Region region = regionRepository.findByRegionName(text)
+                                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지역입니다."));
+                        setValue(region); // 변환된 지역 객체 설정
+                    }
+                });
     }
 }
