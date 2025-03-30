@@ -27,7 +27,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/domain/board")
+@RequestMapping("/board")
 public class ReviewBoardController {
 
     private final CsrfTokenRepository csrfTokenRepository;
@@ -59,11 +59,9 @@ public class ReviewBoardController {
     // 게시글 작성
     @GetMapping("/write")
     public String write(@RequestParam(value = "region", required = false) String region,
-                        //@RequestParam(value = "boardType", required = true) String boardType,
                         HttpServletRequest request, Model model) {
         CsrfToken csrfToken = csrfTokenRepository.generateToken(request);
         model.addAttribute("_csrf", csrfToken);
-        //model.addAttribute("boardType", boardType);
         model.addAttribute("region", region);
 
         return "board/write";
@@ -71,7 +69,7 @@ public class ReviewBoardController {
 
     // 새 게시글 저장
     @PostMapping("/reviewBoard/save")
-    public String createReviewBoard(@ModelAttribute ReviewBoardDTO reviewBoardDTO,
+    public String saveReviewBoard(@ModelAttribute ReviewBoardDTO reviewBoardDTO,
                                     @AuthenticationPrincipal SiteUser currentUser,
                                     @RequestParam String region, BindingResult bindingResult) {
         if (currentUser == null) {
@@ -90,17 +88,17 @@ public class ReviewBoardController {
         // URL 인코딩 적용
         try {
             String encodedRegion = URLEncoder.encode(region, StandardCharsets.UTF_8.toString());
-            return "redirect:/domain/board/reviewBoard?region=" + encodedRegion;
+            return "redirect:/board/reviewBoard?region=" + encodedRegion;
         } catch (UnsupportedEncodingException e) {
             // 인코딩 실패 시 예외 처리, 로그 남기기 등
             e.printStackTrace();
-            return "redirect:/domain/board/reviewBoard?region=" + region; // 인코딩 실패시 원래 값으로 리다이렉트
+            return "redirect:/board/reviewBoard?region=" + region; // 인코딩 실패시 원래 값으로 리다이렉트
         }
     }
 
     // 게시글 상세 페이지 조회
     @GetMapping("/detail/{id}")
-    public String showBoardDetail(@PathVariable Long id,
+    public String showBoardDetail(@PathVariable("id") Long id,
                                   @RequestParam(name = "region", required = false, defaultValue = "전체") String regionName,
                                   @AuthenticationPrincipal SiteUser currentUser,
                                   Model model) {

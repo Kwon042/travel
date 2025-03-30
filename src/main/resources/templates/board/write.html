@@ -21,7 +21,7 @@
     <main class="col-md-12">
       <h2>글쓰기</h2>
 
-      <form th:action="@{/domain/board/reviewBoard/save}" method="POST" accept-charset="UTF-8" enctype="multipart/form-data">
+      <form th:action="@{/board/reviewBoard/save}" method="POST" accept-charset="UTF-8" enctype="multipart/form-data">
         <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
         <input type="hidden" name="id" th:value="${board != null ? board.id : ''}"/>
         <input type="hidden" name="region" th:value="${region}"/>

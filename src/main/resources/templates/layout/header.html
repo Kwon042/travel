@@ -19,7 +19,7 @@
     <div class="right-nav">
       <a href="/">홈</a>
       <a href="#">지도</a>
-      <a href="/domain/board/reviewBoard">여행리뷰</a>
+      <a href="/board/reviewBoard">여행리뷰</a>
       <a sec:authorize="isAnonymous()" th:href="@{/user/login}">로그인</a>
       <a id="logoutButton" sec:authorize="isAuthenticated()" th:href="@{/user/logout}">로그아웃</a>
       <a href="/user/mypage" sec:authorize="isAuthenticated()">마이페이지</a>
