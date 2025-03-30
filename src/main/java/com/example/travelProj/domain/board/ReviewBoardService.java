@@ -81,6 +81,16 @@ public class ReviewBoardService {
         reviewBoardRepository.save(reviewBoard);
     }
 
+    @Transactional
+    public boolean deletePost(Long id) {
+        if (reviewBoardRepository.existsById(id)) {
+            reviewBoardRepository.deleteById(id);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     // 전체 게시글 조회 로직
     public List<ReviewBoard> getAllBoards() {
         List<ReviewBoard> boards = reviewBoardRepository.findAll();
@@ -102,5 +112,7 @@ public class ReviewBoardService {
     public ReviewBoard getBoardById(Long id) {
         return reviewBoardRepository.findById(id).orElse(null);
     }
+
+
 
 }

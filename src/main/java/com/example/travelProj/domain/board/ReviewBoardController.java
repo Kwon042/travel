@@ -7,6 +7,8 @@ import com.example.travelProj.domain.user.SiteUser;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.web.csrf.CsrfToken;
@@ -156,6 +158,23 @@ public class ReviewBoardController {
         }
         reviewBoardService.updateReviewBoard(id, reviewBoardDTO, file);
         return "redirect:/board/detail/" + id + "?region=" + reviewBoardDTO.getRegion().getRegionName();
+    }
+
+    @PreAuthorize("isAuthenticated() and (principal.id == #userId or hasRole('ADMIN'))")
+    @DeleteMapping("/reviewBoard/delete/{id}")
+    public ResponseEntity<Void> deletePost(@PathVariable Long id, @AuthenticationPrincipal SiteUser currentUser) {
+        ReviewBoard board = reviewBoardService.getBoardById(id);
+
+        if (board.getUser().getId() != currentUser.getId()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        boolean isDeleted = reviewBoardService.deletePost(id);
+        if (isDeleted) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     // 문자열을 Region 객체로 변환하는 기능
