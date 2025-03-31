@@ -74,6 +74,27 @@
                         </div>
                     </div>
                 </div>
+                <!-- 페이징 네비게이션 추가 -->
+                <div class="d-flex justify-content-center mt-4">
+                    <ul class="pagination">
+                        <li th:if="${currentPage > 0}" class="page-item">
+                            <a th:href="@{/board/reviewBoard(region=${region}, page=${currentPage - 1}, size=${pageSize})}"
+                               class="page-link">이전</a>
+                        </li>
+
+                        <li th:each="i : ${#numbers.sequence(currentPage == 0 ? 0 : (currentPage - 2), currentPage + 2)}"
+                            th:if="${i >= 0 and i < totalPages}" class="page-item"
+                            th:classappend="${i == currentPage ? 'active' : ''}">
+                            <a th:href="@{/board/reviewBoard(region=${region}, page=${i}, size=${pageSize})}"
+                               class="page-link" th:text="${i + 1}"></a>
+                        </li>
+
+                        <li th:if="${currentPage < totalPages - 1}" class="page-item">
+                            <a th:href="@{/board/reviewBoard(region=${region}, page=${currentPage + 1}, size=${pageSize})}"
+                               class="page-link">다음</a>
+                        </li>
+                    </ul>
+                </div>
                 <a id="writeButton"
                    th:if="${region} != '전체'"
                    th:href="@{/board/write(region=${region}, boardType='reviewBoard')}"

@@ -153,3 +153,11 @@ aside {
 .travel-table th a:hover {
     color: #5b30a4; /* 마우스 오버 시 색상 변경 */
 }
+
+.pagination {
+    margin: 0; /* 여백 제거 */
+}
+
+.pagination li {
+    margin: 0 5px; /* 각 페이지 아이템 사이에 여백 추가 (옵션) */
+}

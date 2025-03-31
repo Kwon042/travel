@@ -7,6 +7,7 @@ import com.example.travelProj.domain.user.SiteUser;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,23 +39,18 @@ public class ReviewBoardController {
 
     // 리뷰 게시판 목록
     @GetMapping("/reviewBoard")
-    public String showReviewBoard(@RequestParam(value  = "region", required = false, defaultValue = "전체") String regionName,
+    public String showReviewBoard(@RequestParam(value = "region", required = false, defaultValue = "전체") String regionName,
+                                  @RequestParam(value = "page", defaultValue = "0") int page,
+                                  @RequestParam(value = "size", defaultValue = "5") int size,
                                   Model model) {
-        System.out.println("Received region: " + regionName);
-        List<ReviewBoard> boards;
+        Page<ReviewBoard> boardPage = reviewBoardService.getBoardPage(regionName, page, size);
 
-        // 모든 게시글 조회
-        if (regionName.equals("전체")) {
-            boards = reviewBoardService.getAllBoards();
-        } else {
-            Region region = reviewBoardService.findByRegionName(regionName)
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지역입니다."));
-            // 특정 지역 게시글 조회
-            boards = reviewBoardService.getBoardsByRegion(region);
-        }
+        model.addAttribute("boards", boardPage.getContent()); // 현재 페이지의 게시글 목록
+        model.addAttribute("region", regionName); // 선택된 지역
+        model.addAttribute("currentPage", page); // 현재 페이지 번호
+        model.addAttribute("totalPages", boardPage.getTotalPages()); // 전체 페이지 수
+        model.addAttribute("pageSize", size);
 
-        model.addAttribute("boards", boards);
-        model.addAttribute("region", regionName);
         return "board/reviewBoard";
     }
 

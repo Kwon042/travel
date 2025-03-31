@@ -6,6 +6,10 @@ import com.example.travelProj.domain.region.Region;
 import com.example.travelProj.domain.region.RegionRepository;
 import com.example.travelProj.domain.user.SiteUser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,6 +30,23 @@ public class ReviewBoardService {
     private final ReviewBoardRepository reviewBoardRepository;
     private final RegionRepository regionRepository;
     private final ImageService imageService;
+
+    // 게시글 목록 - 페이징
+    @Transactional
+    public Page<ReviewBoard> getBoardPage(String regionName, int page, int size) {
+        // Pageable 객체 생성 (최신순으로 정렬)
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdAt")));
+
+        // 지역 이름을 기반으로 작성된 게시글 조회
+        if ("전체".equals(regionName)) {
+            return reviewBoardRepository.findAll(pageable); // 모든 게시글을 최신순으로 조회
+        } else {
+            // 주어진 지역 이름으로 지역 객체 조회
+            Region region = findByRegionName(regionName)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지역입니다."));
+            return reviewBoardRepository.findByRegion(region, pageable); // 해당 지역의 게시글을 최신순으로 조회
+        }
+    }
 
     // 게시글 생성
     @Transactional
@@ -122,7 +143,5 @@ public class ReviewBoardService {
 
         return reviewBoardRepository.findById(id).orElse(null);
     }
-
-
 
 }

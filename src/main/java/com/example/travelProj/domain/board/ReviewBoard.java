@@ -41,7 +41,7 @@ public class ReviewBoard {
     private Region region; // 특정 지역이 있을 경우 지역별 게시판에만 표시
 
     @Column(name = "created_at",updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
