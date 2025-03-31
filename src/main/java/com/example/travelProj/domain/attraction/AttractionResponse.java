@@ -1,4 +1,4 @@
-//package com.example.travelProj.attraction;
+//package com.example.travelProj.domain.attraction;
 //
 //import lombok.Getter;
 //import lombok.Setter;

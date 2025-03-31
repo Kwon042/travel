@@ -1,7 +1,6 @@
 package com.example.travelProj.domain.board;
 
 import com.example.travelProj.domain.image.Image;
-import com.example.travelProj.domain.like.LikeService;
 import com.example.travelProj.domain.region.Region;
 import com.example.travelProj.domain.region.RegionRepository;
 import com.example.travelProj.domain.user.SiteUser;
@@ -37,7 +36,6 @@ public class ReviewBoardController {
     private final CsrfTokenRepository csrfTokenRepository;
     private final RegionRepository regionRepository;
     private final ReviewBoardService reviewBoardService;
-    private final LikeService likeService;
 
     // 리뷰 게시판 목록
     @GetMapping("/reviewBoard")

@@ -1,24 +1,30 @@
-//package com.example.travelProj.attraction;
-//
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.beans.factory.annotation.Value;
-//import org.springframework.stereotype.Service;
-//import org.springframework.web.client.RestTemplate;
-//
-//import java.util.ArrayList;
-//import java.util.Collections;
-//import java.util.List;
-//
-//@Service
-//public class AttractionService {
-//
-//    // API_KEY를 application.properties 파일에서 가져옴
-//    @Value("${tour.api.key}")
-//    private String apiKey;
-//
-//    // 관광지 API 엔드포인트
-//    private final String API_URL = "https://api.visitkorea.or.kr/openapi/service/rest/GoTour/getTourList?serviceKey=";
-//
+package com.example.travelProj.domain.attraction;
+
+import com.example.travelProj.domain.attraction.Attraction;
+import com.example.travelProj.domain.attraction.AttractionRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+@RequiredArgsConstructor
+@Service
+public class AttractionService {
+
+    final private AttractionRepository attractionRepository;
+
+    // API_KEY를 application.properties 파일에서 가져옴
+    @Value("${tour.api.key}")
+    private String apiKey;
+
+    // 관광지 API 엔드포인트
+    private final String API_URL = "https://api.visitkorea.or.kr/openapi/service/rest/GoTour/getTourList?serviceKey=";
+
 //    @Autowired
 //    private RestTemplate restTemplate;
 //
@@ -47,4 +53,10 @@
 //        Collections.shuffle(attractions);
 //        return attractions.subList(0, Math.min(attractions.size(), 3));
 //    }
-//}
+
+    public Attraction getAttractionById(Long id) {
+        return attractionRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 관광지가 존재하지 않습니다."));
+    }
+
+}

@@ -28,13 +28,13 @@ public class Comment {
     @JoinColumn(name = "user_id", nullable = false)
     private SiteUser user;
 
-    private String nickname;
+    //private String nickname; > user.getNickname()으로 꺼내면 끝
 
     @Column(columnDefinition = "TEXT")
     private String content;
 
     @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
