@@ -75,20 +75,34 @@ aside {
 }
 
 .title {
-    font-size: 1.5em; /* 제목 크기 */
+    font-size: 1.5em; /* 제목 크기 설정 */
     margin: 0; /* 기본 여백 제거 */
     text-decoration: none; /* 기본 밑줄 제거 */
-
+    font-weight: bold; /* 강조 */
+    color: black; /* 텍스트 색상을 굵은 검정으로 설정 */
 }
 
 .excerpt {
-    margin: 10px 0; /* 내용 간격 */
-    color: #555; /* 내용 색상 */
+    margin: 10px 0; /* 내용 간격 설정 */
+    font-size: 0.9em; /* 내용 글씨 크기를 조정 */
+    color: #555; /* 내용을 회색으로 설정 */
 }
 
 .meta-info {
-    font-size: 0.9em; /* 메타 정보 크기 */
-    color: #777; /* 메타 정보 색상 */
+    font-size: 0.8em; /* 생성일자와 좋아요/댓글 정보의 글씨 크기 조정 */
+    color: #777; /* 회색으로 설정 */
+    display: flex; /* Flexbox 사용하여 정렬 */
+    justify-content: space-between; /* 양 끝 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+}
+
+.likes-comments {
+    display: flex;
+    align-items: center; /* 수직 중앙 정렬 */
+}
+
+.likes, .comments {
+    margin-left: 5px; /* 간격 */
 }
 
 /* 게시판 제목 */

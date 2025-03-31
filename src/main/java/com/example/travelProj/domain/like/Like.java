@@ -39,7 +39,7 @@ public class Like {
     private Comment comment;
 
     @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 
     @PrePersist
     public void prePersist() {

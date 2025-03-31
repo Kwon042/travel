@@ -39,9 +39,6 @@ public class Comment {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "like_count")
-    private Long likeCount = 0L;
-
     @PrePersist
     public void prePersist() {
         if (this.createdAt == null) {

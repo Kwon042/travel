@@ -66,11 +66,19 @@
                                    th:text="${board.title}"></a>
                             </h3>
                             <p class="excerpt" th:text="${board.excerpt}"></p>
-                            <div class="meta-info">
-                                <span class="author" th:text="'작성자: ' + ${board.nickname}"></span>
-                                <span class="date" th:text="'생성일시: ' + ${#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
-                                <span class="views" th:text="'조회수: ' + ${board.hit}"></span>
+
+                            <div class="meta-info d-flex justify-content-between">
+                                <span class="date" th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd')}"></span>
+
+                                <span class="likes-comments">
+                                    <!-- 게시글의 좋아요 수를 여기서 동적으로 가져오기 -->
+                                    <span class="likes" th:text="'♡ ' + ${likeService.countLikesForReviewBoard(board)}"></span>
+                                    <span class="comments" th:text="' 💬 ' + ${board.commentsCount}"></span>
+                                </span>
                             </div>
+
+                            <!-- 좋아요 버튼 추가 -->
+                            <button onclick="addLikeToReviewBoard(${board.id})" class="btn btn-light">♡</button>
                         </div>
                     </div>
                 </div>
@@ -123,6 +131,32 @@
             writeButton.href = `/board/write?region=${region}&boardType=reviewBoard`;
         }
     });
+
+    function addLikeToReviewBoard(reviewBoardId) {
+        // 좋아요 데이터 생성
+        const likeData = {
+            reviewBoard: { id: reviewBoardId }, // ReviewBoard 객체를 생성하여 ID를 전달
+            userId: currentUser.id // 현재 사용자 ID
+        };
+
+        // 서버에 POST 요청을 보내기
+        fetch('/likes', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(likeData) // JSON으로 데이터를 전송
+        })
+        .then(response => {
+            if (response.ok) {
+                alert("좋아요가 추가되었습니다.");
+                // 추가 작업: 좋아요 수 업데이트 등 필요시 구현
+            } else {
+                alert("좋아요 추가에 실패했습니다.");
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
 </script>
 
 </body>

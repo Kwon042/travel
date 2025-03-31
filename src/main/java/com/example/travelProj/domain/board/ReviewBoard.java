@@ -46,11 +46,6 @@ public class ReviewBoard {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    private Long hit = 0L;
-
-    @Column(name = "like_count")
-    private Long likeCount = 0L;
-
     private String excerpt; // 요약 필드
 
     // cascade = CascadeType.ALL : 부모 엔티티(reviewBoard)에서 생성, 업데이트, 삭제되면 image도 동일하게 처리
