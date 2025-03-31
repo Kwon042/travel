@@ -21,10 +21,10 @@
         <main class="col-md-12">
             <h2>글 수정</h2>
 
-            <form th:action="@{'/domain/board/reviewBoard/update/' + ${board.id}}" method="POST" accept-charset="UTF-8" enctype="multipart/form-data">
+            <form th:action="@{/board/reviewBoard/update}" method="POST" accept-charset="UTF-8" enctype="multipart/form-data">
                 <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
                 <input type="hidden" name="id" th:value="${board.id}"/>
-                <input type="hidden" name="region" th:value="${board.region.id}"/>
+                <input type="hidden" name="regionId" th:value="${board.region.id}"/>
                 <input type="hidden" name="nickname" th:value="${#authentication.name}"/>
 
                 <div class="mb-3">

@@ -21,6 +21,7 @@ public class ReviewBoardDTO {
     private String content;
     private Region region;
     private String regionName;
+    private Long regionId; // 지역 ID 추가
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Long hit;

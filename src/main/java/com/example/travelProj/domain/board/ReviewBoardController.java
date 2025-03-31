@@ -123,41 +123,37 @@ public class ReviewBoardController {
 
     // 게시글 수정
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/update/{id}")
-    public String update(@PathVariable Long id, Model model, @RequestParam("region") String region) {
-        System.out.println("Received request to update post with id: " + id);
+    @GetMapping("/detail/{id}/update")
+    public String update(@PathVariable Long id, Model model, HttpServletRequest request) {
         ReviewBoard board = reviewBoardService.getBoardById(id);
 
-        if (board != null) {
-            // 조회된 게시글 정보를 모델에 추가
-            model.addAttribute("board", board);
-            return "board/update";
-        } else {
+        if (board == null) {
             return "redirect:/board/reviewBoard";
         }
+
+        model.addAttribute("board", board);
+        CsrfToken csrfToken = csrfTokenRepository.generateToken(request);
+        model.addAttribute("_csrf", csrfToken);
+        return "board/update";
     }
 
     // 게시글 수정
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/reviewBoard/update/{id}")
-    public String updateReviewBoard(@PathVariable Long id,
-                                    @ModelAttribute @Valid ReviewBoardDTO reviewBoardDTO,
+    @PostMapping("/reviewBoard/update")
+    public String updateReviewBoard(@ModelAttribute @Valid ReviewBoardDTO reviewBoardDTO,
                                     @RequestParam(value = "file", required = false) MultipartFile file,
                                     BindingResult bindingResult, Model model, HttpServletRequest request) throws IOException {
-        System.out.println("Received title: " + reviewBoardDTO.getTitle());
 
         if (bindingResult.hasErrors()) {
-            // 에러가 있는 경우 수정할 게시글 정보 불러오기
-            ReviewBoard board = reviewBoardService.getBoardById(id);
-
-            if (board != null) {
-                model.addAttribute("board", board); // 기존 게시글 데이터 추가
-                model.addAttribute("_csrf", csrfTokenRepository.generateToken(request));
-            }
+            ReviewBoard board = reviewBoardService.getBoardById(reviewBoardDTO.getId());
+            model.addAttribute("board", board);
+            model.addAttribute("_csrf", csrfTokenRepository.generateToken(request));
             return "board/update";
         }
-        reviewBoardService.updateReviewBoard(id, reviewBoardDTO, file);
-        return "redirect:/board/detail/" + id + "?region=" + reviewBoardDTO.getRegion().getRegionName();
+
+        // 서비스에서 모든 작업 처리
+        reviewBoardService.updateReviewBoard(reviewBoardDTO, file);
+        return "redirect:/board/detail/" + reviewBoardDTO.getId();
     }
 
     @PreAuthorize("isAuthenticated() and (principal.id == #userId or hasRole('ADMIN'))")
@@ -169,7 +165,7 @@ public class ReviewBoardController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        boolean isDeleted = reviewBoardService.deletePost(id);
+        boolean isDeleted = reviewBoardService.deleteReviewBoard(id);
         if (isDeleted) {
             return ResponseEntity.ok().build();
         } else {
@@ -180,14 +176,17 @@ public class ReviewBoardController {
     // 문자열을 Region 객체로 변환하는 기능
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(Region.class, "region",
-                new PropertyEditorSupport() {
-                    @Override
-                    public void setAsText(String text) {
-                        Region region = regionRepository.findByRegionName(text)
-                                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지역입니다."));
-                        setValue(region); // 변환된 지역 객체 설정
-                    }
-                });
+        binder.registerCustomEditor(Region.class, "region", new PropertyEditorSupport() {
+            @Override
+            public void setAsText(String text) {
+                if (text != null && !text.isEmpty()) {
+                    Region region = regionRepository.findByRegionName(text)
+                            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지역입니다."));
+                    setValue(region);
+                } else {
+                    setValue(null);
+                }
+            }
+        });
     }
 }

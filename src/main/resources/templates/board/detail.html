@@ -34,10 +34,11 @@
         </div>
       </div>
       <div class="action-buttons my-3">
-        <form th:action="@{/board/reviewBoard/update/{id}(id=${board.id})}" method="post"
-              th:if="${board.user.id != null and board.user.id == currentUser.id}" style="display: inline;">
-          <button type="submit" class="btn btn-secondary">수정</button>
-        </form>
+        <a th:href="@{'/board/detail/' + ${board.id} + '/update'}"
+           th:if="${board.user.id != null and board.user.id == currentUser.id}"
+           class="btn btn-secondary">
+          수정
+        </a>
         <button th:onclick="'deletePost(' + ${board.id} + ', this)'" class="btn btn-danger"
                 sec:authorize="isAuthenticated()"
                 th:if="${board.user.id != null and board.user.id == currentUser.id}">

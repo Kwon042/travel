@@ -56,33 +56,36 @@ public class ReviewBoardService {
 
     // 게시글 수정
     @Transactional
-    public void updateReviewBoard(Long reviewBoardId, ReviewBoardDTO reviewBoardDTO, MultipartFile file) throws IOException {
+    public void updateReviewBoard(ReviewBoardDTO reviewBoardDTO, MultipartFile file) throws IOException {
         // 게시글 조회
-        ReviewBoard reviewBoard = reviewBoardRepository.findById(reviewBoardId)
+        ReviewBoard reviewBoard = reviewBoardRepository.findById(reviewBoardDTO.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Review Board not found"));
+
+        // Region 객체 가져오기
+        Region region = regionRepository.findById(reviewBoardDTO.getRegionId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지역입니다."));
 
         reviewBoard.setTitle(reviewBoardDTO.getTitle());
         reviewBoard.setContent(reviewBoardDTO.getContent());
         reviewBoard.setUpdatedAt(LocalDateTime.now());
-        reviewBoard.setRegion(reviewBoardDTO.getRegion());
+        reviewBoard.setRegion(region);
 
         // 기존 이미지 리스트 가져오기 (null 방지)
         List<String> existingImageUrls = new ArrayList<>(reviewBoard.getImageUrls());
 
         // 새로운 이미지가 첨부된 경우 처리
         if (file != null && !file.isEmpty()) {
-            String imageUrl = imageService.saveFile(reviewBoardId, "review", file, reviewBoard);
-            existingImageUrls.add(imageUrl);  // 기존 리스트에 추가
+            String imageUrl = imageService.saveFile(reviewBoardDTO.getId(), "review", file, reviewBoard);
+            existingImageUrls.add(imageUrl); // 기존 리스트에 추가
         }
 
         // 기존 + 새 이미지 URL 갱신
         reviewBoard.setImageUrls(existingImageUrls);
-
         reviewBoardRepository.save(reviewBoard);
     }
 
     @Transactional
-    public boolean deletePost(Long id) {
+    public boolean deleteReviewBoard(Long id) {
         if (reviewBoardRepository.existsById(id)) {
             reviewBoardRepository.deleteById(id);
             return true;
@@ -110,6 +113,7 @@ public class ReviewBoardService {
 
     // 특정 ID에 해당하는 게시글을 조회
     public ReviewBoard getBoardById(Long id) {
+
         return reviewBoardRepository.findById(id).orElse(null);
     }
 
