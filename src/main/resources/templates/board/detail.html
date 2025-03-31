@@ -39,7 +39,7 @@
            class="btn btn-secondary">
           수정
         </a>
-        <button th:onclick="'deletePost(' + ${board.id} + ', this)'" class="btn btn-danger"
+        <button th:onclick="'deleteReviewBoard(' + ${board.id} + ', this)'" class="btn btn-danger"
                 sec:authorize="isAuthenticated()"
                 th:if="${board.user.id != null and board.user.id == currentUser.id}">
           삭제
@@ -72,7 +72,7 @@
       }
   });
 
-  function deletePost(boardId, element) {
+  function deleteReviewBoard(boardId, element) {
     console.log("Board ID:", boardId);
     console.log(`Deleting post with ID: ${boardId} at URL: /board/reviewBoard/delete/${boardId}`);
 
@@ -88,6 +88,7 @@
             if (response.ok) {
                 alert("게시물이 삭제되었습니다.");
                 element.parentElement.remove();
+                window.location.href = "/board/reviewBoard";
             } else {
                 alert("삭제 실패: 권한이 없습니다.");
             }

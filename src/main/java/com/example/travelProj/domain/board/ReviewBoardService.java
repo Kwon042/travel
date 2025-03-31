@@ -6,7 +6,9 @@ import com.example.travelProj.domain.region.Region;
 import com.example.travelProj.domain.region.RegionRepository;
 import com.example.travelProj.domain.user.SiteUser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -85,13 +87,17 @@ public class ReviewBoardService {
     }
 
     @Transactional
-    public boolean deleteReviewBoard(Long id) {
-        if (reviewBoardRepository.existsById(id)) {
-            reviewBoardRepository.deleteById(id);
-            return true;
-        } else {
+    public boolean deleteReviewBoard(Long id, SiteUser currentUser) {
+        ReviewBoard board = reviewBoardRepository.findById(id)
+                .orElse(null);
+
+        // 게시물 작성자와 현재 사용자 ID 비교
+        if (board == null || !board.getUser().getId().equals(currentUser.getId())) {
             return false;
         }
+
+        reviewBoardRepository.deleteById(id);
+        return true;
     }
 
     // 전체 게시글 조회 로직

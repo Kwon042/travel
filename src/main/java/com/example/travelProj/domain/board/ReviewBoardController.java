@@ -156,20 +156,15 @@ public class ReviewBoardController {
         return "redirect:/board/detail/" + reviewBoardDTO.getId();
     }
 
-    @PreAuthorize("isAuthenticated() and (principal.id == #userId or hasRole('ADMIN'))")
+    @PreAuthorize("isAuthenticated() and (principal.id == #currentUser.id or hasRole('ADMIN'))")
     @DeleteMapping("/reviewBoard/delete/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long id, @AuthenticationPrincipal SiteUser currentUser) {
-        ReviewBoard board = reviewBoardService.getBoardById(id);
+    public ResponseEntity<Void> deleteReviewBoard(@PathVariable Long id, @AuthenticationPrincipal SiteUser currentUser) {
+        boolean isDeleted = reviewBoardService.deleteReviewBoard(id, currentUser);
 
-        if (board.getUser().getId() != currentUser.getId()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-
-        boolean isDeleted = reviewBoardService.deleteReviewBoard(id);
         if (isDeleted) {
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().build(); // 삭제 성공
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 권한 없음
         }
     }
 
