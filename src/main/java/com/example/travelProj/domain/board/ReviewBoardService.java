@@ -43,7 +43,7 @@ public class ReviewBoardService {
         } else {
             // 주어진 지역 이름으로 지역 객체 조회
             Region region = findByRegionName(regionName)
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지역입니다."));
+                    .orElseThrow(() -> new IllegalArgumentException("This region does not exist."));
             return reviewBoardRepository.findByRegion(region, pageable); // 해당 지역의 게시글을 최신순으로 조회
         }
     }
@@ -86,7 +86,7 @@ public class ReviewBoardService {
 
         // Region 객체 가져오기
         Region region = regionRepository.findById(reviewBoardDTO.getRegionId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지역입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("This region does not exist."));
 
         reviewBoard.setTitle(reviewBoardDTO.getTitle());
         reviewBoard.setContent(reviewBoardDTO.getContent());

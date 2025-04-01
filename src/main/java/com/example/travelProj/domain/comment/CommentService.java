@@ -1,6 +1,7 @@
 package com.example.travelProj.domain.comment;
 
 import com.example.travelProj.domain.board.ReviewBoard;
+import com.example.travelProj.domain.like.commentLike.CommentLikeService;
 import com.example.travelProj.domain.user.SiteUser;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +11,9 @@ import com.example.travelProj.domain.board.ReviewBoardService;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -33,9 +36,16 @@ public class CommentService {
         commentRepository.save(comment);
     }
 
-    public List<Comment> getComments(Long reviewBoardId) {
+    // 댓글 목록과 댓글 수를 반환하는 메서드
+    public Map<String, Object> getCommentsWithCount(Long reviewBoardId) {
         ReviewBoard reviewBoard = reviewBoardService.getBoardById(reviewBoardId);
-        return commentRepository.findByReviewBoard(reviewBoard);
+        List<Comment> comments = commentRepository.findByReviewBoard(reviewBoard);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("comments", comments);
+        result.put("commentsCount", comments.size());
+
+        return result;
     }
 
     @Transactional

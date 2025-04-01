@@ -78,7 +78,7 @@ public class ReviewBoardController {
         }
         // 지역 정보를 가져오기
         Region selectedRegion = reviewBoardService.findByRegionName(region)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지역입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("This region does not exist."));
 
         reviewBoardDTO.setRegion(selectedRegion);
         reviewBoardService.createReviewBoard(reviewBoardDTO, currentUser);
@@ -172,7 +172,7 @@ public class ReviewBoardController {
             public void setAsText(String text) {
                 if (text != null && !text.isEmpty()) {
                     Region region = regionRepository.findByRegionName(text)
-                            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지역입니다."));
+                            .orElseThrow(() -> new IllegalArgumentException("This region does not exist."));
                     setValue(region);
                 } else {
                     setValue(null);

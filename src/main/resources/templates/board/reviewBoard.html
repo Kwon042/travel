@@ -71,11 +71,14 @@
                                 <span class="date" th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd')}"></span>
 
                                 <span class="likes-comments">
-                                    <!-- 게시글의 좋아요 수를 여기서 동적으로 가져오기 -->
-                                    <span class="likes" id="likes_{{board.id}}">
-                                        ♡ <span id="likeCount_{{board.id}}">0</span>
-                                    </span>
-<!--                                    <span class="comments" th:text="' 💬 ' + ${board.commentsCount}"></span>-->
+                                    <div>
+                                        <button onclick="showLikeList({{board.id}})" class="btn btn-light">
+                                            ♡ <span id="likeCount_{{board.id}}" th:text="${likeCount != null ? likeCount : 0}">0</span>
+                                        </button>
+                                        <button class="btn btn-light" style="cursor: pointer;">
+                                            💬 <span id="commentCount_{{board.id}}" th:text="${commentsCount != null ? commentsCount : 0}">0</span>
+                                        </button>
+                                    </div>
                                 </span>
                             </div>
                         </div>
@@ -115,51 +118,7 @@
 <footer th:replace="~{layout/footer}"></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const region = urlParams.get('region') || "전체"; // 기본값 설정
-
-        // 'region-title'의 내용을 업데이트
-        document.getElementById('region-title').textContent = `${region} 게시판`;
-
-        // 'writeButton'이 있을 경우 그것의 href 속성 업데이트
-        const writeButton = document.getElementById('writeButton');
-        if (writeButton) {
-            writeButton.href = `/board/write?region=${region}&boardType=reviewBoard`;
-        }
-        // 페이지가 로드될 때 좋아요 수를 가져와서 업데이트
-        document.querySelectorAll('.likes').forEach(function(likeElement) {
-            const boardId = likeElement.id.split('_')[1];  // likes_{boardId}에서 boardId 추출
-            if (boardId) {
-                updateLikeCount(boardId, likeElement);
-            }
-        });
-    });
-
-    // 좋아요 수를 서버에서 가져와서 갱신하는 함수
-    function updateLikeCount(boardId, likeElement) {
-        fetch(`/reviewBoard/likes/${boardId}/count`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to fetch like count');
-            }
-            return response.json();
-        })
-        .then(count => {
-            if (typeof count === 'number') {
-                likeElement.textContent = `♡ ${count}`;  // 좋아요 수 업데이트
-            } else {
-                console.error('Invalid response format:', count);
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching like count:', error);
-            likeElement.textContent = '♡ 0';  // 에러가 발생하면 기본 값으로 설정
-        });
-    }
-</script>
+<script src="/reviewBoard.js"></script>
 
 </body>
 </html>
