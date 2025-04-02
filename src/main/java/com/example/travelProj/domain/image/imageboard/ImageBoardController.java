@@ -19,7 +19,7 @@ public class ImageBoardController {
 
     // 이미지 업로드
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadImages(@RequestParam("files") List<MultipartFile> files,
+    public ResponseEntity<?> uploadImages(@RequestParam("files[]") List<MultipartFile> files,
                                           @RequestParam("reviewBoardId") Long reviewBoardId) {
         try {
             imageBoardService.saveImages(files, reviewBoardId);
@@ -29,7 +29,7 @@ public class ImageBoardController {
         }
     }
 
-    // 이미지 업데이트
+    // 이미지 수정
     @PutMapping("/{imageId}")
     public ResponseEntity<?> updateImage(@PathVariable Long imageId,
                                          @RequestParam("file") MultipartFile file) {

@@ -21,12 +21,20 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // 게시글 ID 가져오기
   const boardElement = document.getElementById('board-details');
-  if (boardElement) {
-      const boardId = boardElement.getAttribute('data-board-id');  // 게시글 ID
-  } else {
-      console.error('board-details 요소를 찾을 수 없습니다.');
-  }
-});
+    if (boardElement) {
+        const boardId = boardElement.getAttribute('data-board-id');  // 게시글 ID
+
+        // 삭제 버튼 이벤트 리스너 추가
+        const deleteButton = document.getElementById("deleteButton");
+        if (deleteButton) {
+            deleteButton.addEventListener("click", function() {
+                deleteReviewBoard(boardId);
+            });
+        }
+    } else {
+        console.error('board-details 요소를 찾을 수 없습니다.');
+    }
+  });
 
 // 좋아요 수를 서버에서 가져와서 갱신하는 함수
 function updateLikeCount(boardId, likeElement) {
@@ -64,4 +72,26 @@ function showLikeList(boardId) {
 // 댓글 입력 창으로 전환하는 함수
 function goToComments(reviewBoardId) {
     window.location.href = `/comments/${reviewBoardId}/view`; // 댓글 섹션으로 이동
+}
+
+function deleteReviewBoard(boardId) {
+    if (!confirm("정말로 이 게시글을 삭제하시겠습니까?")) {
+        return;
+    }
+
+    fetch(`/board/reviewBoard/delete/${boardId}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            alert("게시글이 삭제되었습니다.");
+            window.location.href = "/board/reviewBoard";
+        } else {
+            alert("게시글 삭제에 실패했습니다.");
+        }
+    })
+    .catch(error => console.error("Error deleting review board:", error));
 }

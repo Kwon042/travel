@@ -42,7 +42,7 @@
           <button th:onclick="'showLikeList(' + ${board.id} + ')' " class="btn btn-light">
             ♡ <span id="likeCount_{{board.id}}" th:text="${likeCount != null ? likeCount : 0}">0</span>
           </button>
-          <button th:onclick="'goToComments(' + ${board.id} + ')' " class="btn btn-light">
+          <button th:onclick="|deleteReviewBoard(${board.id})|" class="btn btn-light">
             💬 <span id="commentCount_${board.id}" th:text="${commentsCount != null ? commentsCount : 0}">0</span>
           </button>
         </div>
@@ -53,7 +53,7 @@
              class="btn btn-secondary">
             수정
           </a>
-          <button th:onclick="'deleteReviewBoard(' + ${board.id} + ', this)'" class="btn btn-danger"
+          <button onclick="deleteReviewBoard(' + ${board.id} + ')" class="btn btn-danger"
                   sec:authorize="isAuthenticated()"
                   th:if="${board.user.id != null and board.user.id == currentUser.id}">
             삭제

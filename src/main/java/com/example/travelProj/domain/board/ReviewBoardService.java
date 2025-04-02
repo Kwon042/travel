@@ -99,17 +99,8 @@ public class ReviewBoardService {
     }
 
     @Transactional
-    public boolean deleteReviewBoard(Long id, SiteUser currentUser) {
-        ReviewBoard board = reviewBoardRepository.findById(id)
-                .orElse(null);
-
-        // 게시물 작성자와 현재 사용자 ID 비교
-        if (board == null || !board.getUser().getId().equals(currentUser.getId())) {
-            return false;
-        }
-
+    public void deleteReviewBoard(Long id) {
         reviewBoardRepository.deleteById(id);
-        return true;
     }
 
     // 전체 게시글 조회 로직

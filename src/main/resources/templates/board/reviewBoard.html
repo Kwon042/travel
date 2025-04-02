@@ -75,10 +75,10 @@
                                             th:onclick="'showLikeList(' + ${board.id} + ')' "
                                             class="btn btn-light likes"
                                             style="padding: 0; background: none; border: none; color: inherit; cursor: pointer; font-size: 1.0em; align-items: center;">
-                                            💜 <span id="likeCount_{{board.id}}" th:text="${likeCount != null ? likeCount : 0}">0</span>
+                                            💜 <span id="likeCount_[[${board.id}]]" th:text="${likeCount != null ? likeCount : 0}">0</span>
                                     </button>
                                     <div class="comments">
-                                        💬 <span id="commentCount_{{board.id}}" th:text="${commentsCount != null ? commentsCount : 0}">0</span>
+                                        💬 <span id="commentCount_[[${board.id}]]" th:text="${commentsCount != null ? commentsCount : 0}">0</span>
                                     </div>
                                 </span>
                             </div>

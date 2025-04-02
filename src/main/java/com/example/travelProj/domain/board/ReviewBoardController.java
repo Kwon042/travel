@@ -154,14 +154,9 @@ public class ReviewBoardController {
 
     @PreAuthorize("isAuthenticated() and (principal.id == #currentUser.id or hasRole('ADMIN'))")
     @DeleteMapping("/reviewBoard/delete/{id}")
-    public ResponseEntity<Void> deleteReviewBoard(@PathVariable Long id, @AuthenticationPrincipal SiteUser currentUser) {
-        boolean isDeleted = reviewBoardService.deleteReviewBoard(id, currentUser);
-
-        if (isDeleted) {
-            return ResponseEntity.ok().build(); // 삭제 성공
-        } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 권한 없음
-        }
+    public ResponseEntity<Void> deleteReviewBoard(@PathVariable Long id) {
+        reviewBoardService.deleteReviewBoard(id);
+        return ResponseEntity.ok().build();
     }
 
     // 문자열을 Region 객체로 변환하는 기능
