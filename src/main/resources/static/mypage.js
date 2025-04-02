@@ -54,9 +54,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
          const formData = new FormData();
          formData.append('profileImage', file);
+         formData.append('userId', currentUserId);
 
          // 서버로 파일 전송
-         fetch('/user/uploadProfileImage', {
+         fetch('/api/image/user/uploadProfileImage', {
              method: 'POST',
              body: formData
          })

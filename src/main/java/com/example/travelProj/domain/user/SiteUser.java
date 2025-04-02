@@ -1,8 +1,8 @@
 package com.example.travelProj.domain.user;
 
-import com.example.travelProj.domain.image.Image;
 import com.example.travelProj.domain.board.ReviewBoard;
 import com.example.travelProj.domain.comment.Comment;
+import com.example.travelProj.domain.image.imageuser.ImageUser;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -45,8 +45,8 @@ public class SiteUser implements UserDetails {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @OneToOne(mappedBy = "siteUser", cascade = CascadeType.ALL)
-    private Image profileImage;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private ImageUser profileImage;
 
     // 연관관계 설정: 사용자가 작성한 리뷰와 댓글
     @OneToMany(mappedBy = "user")

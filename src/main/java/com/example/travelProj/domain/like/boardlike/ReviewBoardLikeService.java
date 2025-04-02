@@ -1,4 +1,4 @@
-package com.example.travelProj.domain.like.reviewBoardLike;
+package com.example.travelProj.domain.like.boardlike;
 
 import com.example.travelProj.domain.board.ReviewBoard;
 import com.example.travelProj.domain.board.ReviewBoardService;

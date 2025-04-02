@@ -1,7 +1,5 @@
 package com.example.travelProj.domain.user;
 
-import com.example.travelProj.domain.image.Image;
-import com.example.travelProj.domain.image.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,7 +17,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final ImageService imageService;
 
     private final Path profileImagePath = Paths.get(System.getProperty("user.dir"), "uploads/profile_images");
     private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB (5 * 1024 * 1024 바이트)
@@ -93,23 +90,6 @@ public class UserService {
         }
         return null;
     }
-
-    @Transactional
-    public void updateProfileImage(Long userId, MultipartFile file) throws IOException {
-        // 사용자 정보 가져오기
-        SiteUser user = userRepository.findById(userId).orElseThrow(() ->
-                new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-
-        // 프로필 이미지 업로드 처리
-        String imageUrl = imageService.uploadProfileImage(userId, file);
-
-        // 이미지 URL 업데이트
-        if (user.getProfileImage() == null) {
-            user.setProfileImage(new Image());
-        }
-        user.getProfileImage().setUrl(imageUrl);
-    }
-
 
     public void deleteUser(Long userId) {
         userRepository.deleteById(userId);

@@ -59,9 +59,9 @@ function showLikeList(boardId) {
     .catch(error => console.error('Error fetching likes:', error));
 }
 
-function updateCommentCount(boardId, commentButton) {
+function updateCommentCount(reviewBoardId) {
     // 서버에 댓글 수 요청
-    fetch(`/comments/${boardId}`)  // 댓글 수 가져오기 API 호출
+    fetch(`/comments/${reviewBoardId}`)  // 댓글 수 가져오기 API 호출
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -70,7 +70,7 @@ function updateCommentCount(boardId, commentButton) {
         })
         .then(data => {
             // 댓글 수를 업데이트
-            const commentCountElement = commentButton.querySelector('span');
+            const commentCountElement = document.getElementById(`commentCount_${reviewBoardId}`);
             if (commentCountElement) {
                 commentCountElement.textContent = data.commentsCount || 0; // 댓글 수를 설정 (없으면 0)
             }

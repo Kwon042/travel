@@ -1,7 +1,6 @@
 package com.example.travelProj.domain.comment;
 
 import com.example.travelProj.domain.board.ReviewBoard;
-import com.example.travelProj.domain.like.commentLike.CommentLikeService;
 import com.example.travelProj.domain.user.SiteUser;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.example.travelProj.domain.board.ReviewBoardService;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

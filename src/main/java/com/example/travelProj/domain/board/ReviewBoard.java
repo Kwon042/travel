@@ -1,6 +1,6 @@
 package com.example.travelProj.domain.board;
 
-import com.example.travelProj.domain.image.Image;
+import com.example.travelProj.domain.image.imageboard.ImageBoard;
 import com.example.travelProj.domain.region.Region;
 import com.example.travelProj.domain.comment.Comment;
 import com.example.travelProj.domain.user.SiteUser;
@@ -31,14 +31,12 @@ public class ReviewBoard {
     @Column(nullable = false)
     private String title;
 
-    private String nickname;
-
     @Column(columnDefinition = "TEXT")
     private String content;
 
     @ManyToOne
-    @JoinColumn(name = "region_id", nullable = false) // 지역이 없으면 전체 게시판에 포함
-    private Region region; // 특정 지역이 있을 경우 지역별 게시판에만 표시
+    @JoinColumn(name = "region_id", nullable = false)
+    private Region region;
 
     @Column(name = "created_at",updatable = false)
     private LocalDateTime createdAt;
@@ -46,12 +44,10 @@ public class ReviewBoard {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    private String excerpt; // 요약 필드
-
     // cascade = CascadeType.ALL : 부모 엔티티(reviewBoard)에서 생성, 업데이트, 삭제되면 image도 동일하게 처리
     // orphanRemoval = true : 부모 엔티티(reviewBoard)에서 image를 참조 제거하면 image엔티티에서도 DB에서 삭제
     @OneToMany(mappedBy = "reviewBoard", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Image> review_images = new ArrayList<>();
+    private List<ImageBoard> review_images = new ArrayList<>();
 
     @ElementCollection
     private List<String> imageUrls = new ArrayList<>(); // 이미지 URL 리스트

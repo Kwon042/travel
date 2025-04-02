@@ -1,4 +1,4 @@
-package com.example.travelProj.domain.like.attractionLike;
+package com.example.travelProj.domain.like.attractionlike;
 
 import com.example.travelProj.domain.user.SiteUser;
 import lombok.RequiredArgsConstructor;

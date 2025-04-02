@@ -1,6 +1,6 @@
 package com.example.travelProj.domain.user;
 
-import com.example.travelProj.domain.image.ImageService;
+import com.example.travelProj.domain.image.imageuser.ImageUserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -28,7 +28,7 @@ public class UserController {
 
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
-    private final ImageService imageService;
+    private final ImageUserService imageUserService;
 
     @GetMapping("/signup")
     public String signup(@ModelAttribute UserCreateForm userCreateForm) {
@@ -100,8 +100,7 @@ public class UserController {
 
         // 프로필 이미지 업로드
         if (file != null && !file.isEmpty()) {
-            // UserService의 updateProfileImage 메서드 호출
-            userService.updateProfileImage(user.getId(), file);
+            String imageUrl = imageUserService.uploadProfileImage(user.getId(), file);
         }
 
         // 사용자 정보 저장
@@ -137,37 +136,6 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("success", false, "message", "An error occurred during file upload."));
-        }
-    }
-
-    @PostMapping("/uploadProfileImage")
-    public ResponseEntity<?> uploadProfileImage(
-            @AuthenticationPrincipal SiteUser user,
-            @RequestParam("profileImage") MultipartFile file) {
-
-        try {
-            if (user == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(Map.of("success", false, "message", "Login is required."));
-            }
-
-            // UserService의 updatedProfileImage를 호출
-            userService.updateProfileImage(user.getId(), file);
-
-            return ResponseEntity.ok(Map.of(
-                    "success", true,
-                    "message", "The profile image has been successfully uploaded."
-            ));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(Map.of("success", false, "message", e.getMessage()));
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("success", false, "message", "An error occurred during file upload."));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("success", false, "message", "An unexpected error occurred."));
         }
     }
 

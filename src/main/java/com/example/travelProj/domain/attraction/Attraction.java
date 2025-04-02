@@ -1,6 +1,6 @@
 package com.example.travelProj.domain.attraction;
 
-import com.example.travelProj.domain.image.Image;
+import com.example.travelProj.domain.image.imageboard.ImageBoard;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,9 +18,9 @@ public class Attraction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "attraction_id")
-    private List<Image> attraction_images = new ArrayList<>(); // 관광지와 연결된 이미지 리스트
+//    @OneToMany(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "attraction_id")
+//    private List<ImageBoard> attraction_images = new ArrayList<>(); // 관광지와 연결된 이미지 리스트
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

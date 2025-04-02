@@ -1,4 +1,4 @@
-package com.example.travelProj.domain.like.commentLike;
+package com.example.travelProj.domain.like.commentlike;
 
 import com.example.travelProj.domain.comment.Comment;
 import com.example.travelProj.domain.comment.CommentService;

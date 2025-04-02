@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="ko"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org" xmlns="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시판</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/header.css">
     <link rel="stylesheet" href="/reviewBoard.css">
     <link rel="stylesheet" href="/footer.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
 <!-- 네비게이션바 -->
@@ -65,19 +65,20 @@
                                 <a th:href="@{/board/detail/{id}(id=${board.id}, region=${board.region != null ? board.region.regionName : '전체'})}"
                                    th:text="${board.title}"></a>
                             </h3>
-                            <p class="excerpt" th:text="${board.excerpt}"></p>
+                            <p class="content" th:text="${board.content}"></p>
 
-                            <div class="meta-info d-flex justify-content-between">
+                            <div class="meta-info">
                                 <span class="date" th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd')}"></span>
 
                                 <span class="likes-comments">
-                                    <div>
-                                        <button onclick="showLikeList({{board.id}})" class="btn btn-light">
-                                            ♡ <span id="likeCount_{{board.id}}" th:text="${likeCount != null ? likeCount : 0}">0</span>
-                                        </button>
-                                        <button class="btn btn-light" style="cursor: pointer;">
-                                            💬 <span id="commentCount_{{board.id}}" th:text="${commentsCount != null ? commentsCount : 0}">0</span>
-                                        </button>
+                                    <button
+                                            th:onclick="'showLikeList(' + ${board.id} + ')' "
+                                            class="btn btn-light likes"
+                                            style="padding: 0; background: none; border: none; color: inherit; cursor: pointer; font-size: 1.0em; align-items: center;">
+                                            💜 <span id="likeCount_{{board.id}}" th:text="${likeCount != null ? likeCount : 0}">0</span>
+                                    </button>
+                                    <div class="comments">
+                                        💬 <span id="commentCount_{{board.id}}" th:text="${commentsCount != null ? commentsCount : 0}">0</span>
                                     </div>
                                 </span>
                             </div>

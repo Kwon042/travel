@@ -1,6 +1,6 @@
 package com.example.travelProj.domain.board;
 
-import com.example.travelProj.domain.image.Image;
+import com.example.travelProj.domain.image.imageboard.ImageBoard;
 import com.example.travelProj.domain.region.Region;
 import com.example.travelProj.domain.region.RegionRepository;
 import com.example.travelProj.domain.user.SiteUser;
@@ -106,7 +106,7 @@ public class ReviewBoardController {
             return "redirect:/board/reviewBoard?region=" + regionName;
         }
 
-        List<Image> images = board.getReview_images();
+        List<ImageBoard> images = board.getReview_images();
 
         model.addAttribute("board", board);
         model.addAttribute("region", regionName);
