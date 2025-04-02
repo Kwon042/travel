@@ -24,7 +24,7 @@
 
       <div id="board-details" data-board-id="${board.id}">
         <div class="post-detail">
-          <p class="post-meta"><strong>작성자:</strong> <span th:text="${board.nickname}"></span></p>
+          <p class="post-meta"><strong>작성자:</strong> <span th:text="${board.user.nickname}"></span></p>
           <p class="post-content" th:text="${board.content}"></p>
 
           <div class="post-image">

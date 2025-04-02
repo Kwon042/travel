@@ -30,10 +30,11 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/board/**"
                         ).permitAll()  // ✅ 게시판 접근 및 글 작성 허용
+                        .requestMatchers(new AntPathRequestMatcher("/api/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/**")).permitAll()
                 )
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers(new AntPathRequestMatcher("/mysql/**"))
+                        .ignoringRequestMatchers(new AntPathRequestMatcher("/api/**"))
                         .disable() // ✅ CSRF 비활성화 (정적 리소스 요청 시 필요할 수 있음)
                 )
                 .headers((headers) -> headers

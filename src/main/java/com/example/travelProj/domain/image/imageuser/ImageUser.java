@@ -17,6 +17,8 @@ public class ImageUser {
 
     private String filename;
     private String filepath;
+
+    @Column(nullable = false)
     private String url;
 
     @OneToOne
