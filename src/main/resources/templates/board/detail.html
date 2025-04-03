@@ -53,7 +53,7 @@
              class="btn btn-secondary">
             수정
           </a>
-          <button onclick="deleteReviewBoard(' + ${board.id} + ')" class="btn btn-danger"
+          <button th:onclick="'deleteReviewBoard(' + ${board.id} + ')'" class="btn btn-danger"
                   sec:authorize="isAuthenticated()"
                   th:if="${board.user.id != null and board.user.id == currentUser.id}">
             삭제
