@@ -3,6 +3,7 @@ package com.example.travelProj.domain.board;
 import com.example.travelProj.domain.region.Region;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -11,7 +12,7 @@ import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class ReviewBoardDTO {
 
     private Long id;

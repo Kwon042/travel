@@ -34,6 +34,12 @@ document.addEventListener("DOMContentLoaded", function() {
     } else {
         console.error('board-details 요소를 찾을 수 없습니다.');
     }
+    // CSRF 토큰 가져오기
+    let csrfTokenInput = document.querySelector("input[name='_csrf']");
+    const csrfToken = csrfTokenInput ? csrfTokenInput.value : null; // CSRF 토큰 값 설정
+
+    // CSRF 토큰을 deleteReviewBoard에 전달합니다.
+    window.csrfToken = csrfToken; // 전역에서 사용할 수 있도록 설정
   });
 
 // 좋아요 수를 서버에서 가져와서 갱신하는 함수
@@ -82,7 +88,8 @@ function deleteReviewBoard(boardId) {
     fetch(`/board/reviewBoard/delete/${boardId}`, {
         method: "DELETE",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            'X-CSRF-TOKEN': window.csrfToken
         }
     })
     .then(response => {

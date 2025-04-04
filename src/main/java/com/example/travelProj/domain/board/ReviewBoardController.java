@@ -1,12 +1,15 @@
 package com.example.travelProj.domain.board;
 
 import com.example.travelProj.domain.image.imageboard.ImageBoard;
+import com.example.travelProj.domain.image.imageboard.ImageBoardService;
 import com.example.travelProj.domain.region.Region;
 import com.example.travelProj.domain.region.RegionRepository;
 import com.example.travelProj.domain.user.SiteUser;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +30,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Controller
@@ -36,12 +40,16 @@ public class ReviewBoardController {
     private final CsrfTokenRepository csrfTokenRepository;
     private final RegionRepository regionRepository;
     private final ReviewBoardService reviewBoardService;
+    private final ImageBoardService imageBoardService;
+    private static final Logger logger = LoggerFactory.getLogger(ReviewBoardController.class);
+
 
     // 리뷰 게시판 목록
     @GetMapping("/reviewBoard")
     public String showReviewBoard(@RequestParam(value = "region", required = false, defaultValue = "전체") String regionName,
                                   @RequestParam(value = "page", defaultValue = "0") int page,
                                   @RequestParam(value = "size", defaultValue = "5") int size,
+                                  HttpServletRequest request,
                                   Model model) {
         Page<ReviewBoard> boardPage = reviewBoardService.getBoardPage(regionName, page, size);
 
@@ -50,6 +58,9 @@ public class ReviewBoardController {
         model.addAttribute("currentPage", page); // 현재 페이지 번호
         model.addAttribute("totalPages", boardPage.getTotalPages()); // 전체 페이지 수
         model.addAttribute("pageSize", size);
+
+        CsrfToken csrfToken = csrfTokenRepository.generateToken(request);
+        model.addAttribute("_csrf", csrfToken);
 
         return "board/reviewBoard";
     }
@@ -65,32 +76,54 @@ public class ReviewBoardController {
         return "board/write";
     }
 
-    // 새 게시글 저장
     @PostMapping("/reviewBoard/save")
-    public String saveReviewBoard(@ModelAttribute ReviewBoardDTO reviewBoardDTO,
-                                    @AuthenticationPrincipal SiteUser currentUser,
-                                    @RequestParam String region, BindingResult bindingResult) {
+    public ResponseEntity<?> saveReviewBoard(@ModelAttribute ReviewBoardDTO reviewBoardDTO,
+                                             @AuthenticationPrincipal SiteUser currentUser,
+                                             @RequestParam String region,
+                                             @RequestParam(value = "files[]", required = false) List<MultipartFile> files,
+                                             BindingResult bindingResult) {
         if (currentUser == null) {
-            return "redirect:/user/login";
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
-        if (bindingResult.hasErrors()) {
-            return "board/write";
-        }
-        // 지역 정보를 가져오기
-        Region selectedRegion = reviewBoardService.findByRegionName(region)
-                .orElseThrow(() -> new IllegalArgumentException("This region does not exist."));
 
-        reviewBoardDTO.setRegion(selectedRegion);
-        reviewBoardService.createReviewBoard(reviewBoardDTO, currentUser);
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body(bindingResult.getFieldErrors());
+        }
+        // 지역 정보 처리 및 URL 인코딩
+        String encodedRegion = processRegionAndEncode(region, reviewBoardDTO);
+        // 게시글 생성
+        ReviewBoard savedBoard = reviewBoardService.createReviewBoard(reviewBoardDTO, currentUser);
+        // 이미지 저장
+        if (files != null && !files.isEmpty()) {
+            saveImagesIfPresent(files, savedBoard.getId());
+        }
+        return ResponseEntity.ok(Map.of("success", true, "boardId", savedBoard.getId(), "region", encodedRegion));
+    }
+
+    // 지역 정보와 URL 인코딩을 처리하는 메서드
+    private String processRegionAndEncode(String region, ReviewBoardDTO reviewBoardDTO) {
+        Region selectedRegion = regionRepository.findByRegionName(region)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지역입니다."));
+
+        reviewBoardDTO.setRegion(selectedRegion); // DTO에 지역 설정
 
         // URL 인코딩 적용
         try {
-            String encodedRegion = URLEncoder.encode(region, StandardCharsets.UTF_8.toString());
-            return "redirect:/board/reviewBoard?region=" + encodedRegion;
+            return URLEncoder.encode(region, StandardCharsets.UTF_8.toString());
         } catch (UnsupportedEncodingException e) {
-            // 인코딩 실패 시 예외 처리, 로그 남기기 등
             e.printStackTrace();
-            return "redirect:/board/reviewBoard?region=" + region; // 인코딩 실패시 원래 값으로 리다이렉트
+            return region; // 인코딩 오류 발생 시 원래 값 사용
+        }
+    }
+
+    // 이미지 저장 메서드
+    private void saveImagesIfPresent(List<MultipartFile> files, Long reviewBoardId) {
+        if (files != null && !files.isEmpty()) {
+            try {
+                imageBoardService.saveNewImages(files, reviewBoardId);
+            } catch (IOException e) {
+                throw new RuntimeException("이미지 저장 실패: " + e.getMessage());
+            }
         }
     }
 
@@ -126,10 +159,10 @@ public class ReviewBoardController {
         if (board == null) {
             return "redirect:/board/reviewBoard";
         }
-
-        model.addAttribute("board", board);
         CsrfToken csrfToken = csrfTokenRepository.generateToken(request);
         model.addAttribute("_csrf", csrfToken);
+        model.addAttribute("board", board);
+
         return "board/update";
     }
 
@@ -137,7 +170,8 @@ public class ReviewBoardController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/reviewBoard/update")
     public String updateReviewBoard(@ModelAttribute @Valid ReviewBoardDTO reviewBoardDTO,
-                                    @RequestParam(value = "file", required = false) MultipartFile file,
+                                    @RequestParam(value = "files[]", required = false) List<MultipartFile> files,
+                                    @RequestParam(value = "imageIdsToDelete", required = false) List<Long> imageIdsToDelete,
                                     BindingResult bindingResult, Model model, HttpServletRequest request) throws IOException {
 
         if (bindingResult.hasErrors()) {
@@ -146,15 +180,17 @@ public class ReviewBoardController {
             model.addAttribute("_csrf", csrfTokenRepository.generateToken(request));
             return "board/update";
         }
+        reviewBoardService.updateReviewBoard(reviewBoardDTO, files, imageIdsToDelete);
 
-        // 서비스에서 모든 작업 처리
-        reviewBoardService.updateReviewBoard(reviewBoardDTO, file);
         return "redirect:/board/detail/" + reviewBoardDTO.getId();
     }
 
     @PreAuthorize("isAuthenticated() and (principal.id == #currentUser.id or hasRole('ADMIN'))")
     @DeleteMapping("/reviewBoard/delete/{id}")
-    public ResponseEntity<Void> deleteReviewBoard(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteReviewBoard(@PathVariable Long id,
+                                                  @AuthenticationPrincipal SiteUser currentUser) {
+        logger.info("Current user id: {}", currentUser != null ? currentUser.getId() : "null");
+        logger.info("Attempting to delete post with id: {}", id);
         reviewBoardService.deleteReviewBoard(id);
         return ResponseEntity.ok().build();
     }

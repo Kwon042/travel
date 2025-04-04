@@ -26,28 +26,57 @@ public class ImageUserService {
 
     @Transactional
     public String uploadProfileImage(Long userId, MultipartFile file) throws IOException {
-        SiteUser user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found."));
+        SiteUser user = getUserById(userId);
 
+        validateFile(file); // 파일 유효성 검사
+
+        // 기존 이미지 삭제 처리
+        deleteExistingProfileImageIfPresent(user);
+
+        // 파일 저장
+        String newFileName = saveNewProfileImage(file, userId);
+
+        // 이미지 URL 설정
+        String imageUrl = createImageUrl(userId, newFileName);
+
+        // 이미지 정보 저장 또는 업데이트
+        saveOrUpdateImageRecord(user, newFileName, imageUrl);
+
+        return imageUrl;
+    }
+
+    private SiteUser getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found."));
+    }
+
+    private void validateFile(MultipartFile file) {
         if (file.isEmpty()) {
             throw new IllegalArgumentException("There are no uploaded files.");
         }
+    }
 
-        // 기존 이미지 삭제 처리
+    private void deleteExistingProfileImageIfPresent(SiteUser user) {
         Optional<ImageUser> existingImageOpt = imageUserRepository.findByUser(user);
         existingImageOpt.ifPresent(existingImage -> {
             // 파일 삭제
-            Path oldImagePath = Paths.get(uploadDir, "profile", String.valueOf(userId), existingImage.getFilename());
-            try {
-                Files.deleteIfExists(oldImagePath);
-            } catch (IOException e) {
-                System.err.println("Failed to delete old profile image: " + e.getMessage());
-            }
-            // 기존 이미지 삭제 (DB에서 삭제 후 flush 실행)
+            deleteFile(existingImage.getFilename(), user.getId());
+            // 기존 이미지 삭제
             imageUserRepository.delete(existingImage);
             imageUserRepository.flush(); // 삭제가 즉시 반영되도록 flush() 호출
         });
+    }
 
+    private void deleteFile(String filename, Long userId) {
+        Path oldImagePath = Paths.get(uploadDir, "profile", String.valueOf(userId), filename);
+        try {
+            Files.deleteIfExists(oldImagePath);
+        } catch (IOException e) {
+            System.err.println("Failed to delete old profile image: " + e.getMessage());
+        }
+    }
+
+    private String saveNewProfileImage(MultipartFile file, Long userId) throws IOException {
         // 저장 디렉토리 설정 (상대 경로)
         Path uploadPath = Paths.get(uploadDir, "profile", String.valueOf(userId));
         if (!Files.exists(uploadPath)) {
@@ -61,33 +90,36 @@ public class ImageUserService {
 
         // UUID + 원본 파일명으로 새로운 파일명 생성
         String newFileName = UUID.randomUUID() + "_" + baseFilename + fileExtension;
-        
+
         // 파일 저장
         Path filePath = uploadPath.resolve(newFileName);
         file.transferTo(filePath.toFile());
 
-        // 상대 경로
-        String imageUrl = "/uploads/profile/" + userId + "/" + newFileName;
-        System.out.println("Saved image URL: " + imageUrl);
+        return newFileName;
+    }
 
+    private String createImageUrl(Long userId, String newFileName) {
+        return "/uploads/profile/" + userId + "/" + newFileName;
+    }
+
+    private void saveOrUpdateImageRecord(SiteUser user, String newFileName, String imageUrl) {
+        Optional<ImageUser> existingImageOpt = imageUserRepository.findByUser(user);
         if (existingImageOpt.isPresent()) {
             // 기존 데이터가 있으면 업데이트
             ImageUser existingImage = existingImageOpt.get();
             existingImage.setFilename(newFileName);
             existingImage.setUrl(imageUrl);
-            existingImage.setFilepath(filePath.toString());
+            existingImage.setFilepath(Paths.get(uploadDir, "profile", String.valueOf(user.getId()), newFileName).toString());
             imageUserRepository.save(existingImage);
         } else {
             // 없으면 새로 저장
             ImageUser imageUser = new ImageUser();
             imageUser.setFilename(newFileName);
             imageUser.setUrl(imageUrl);
-            imageUser.setFilepath(filePath.toString());
+            imageUser.setFilepath(Paths.get(uploadDir, "profile", String.valueOf(user.getId()), newFileName).toString());
             imageUser.setUser(user);
             imageUserRepository.save(imageUser);
         }
-
-        return imageUrl;
     }
 
     private String getFileExtension(String filename) {

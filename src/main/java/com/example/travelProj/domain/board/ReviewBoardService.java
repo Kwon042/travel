@@ -1,6 +1,7 @@
 package com.example.travelProj.domain.board;
 
 import com.example.travelProj.domain.image.imageboard.ImageBoard;
+import com.example.travelProj.domain.image.imageboard.ImageBoardRepository;
 import com.example.travelProj.domain.image.imageboard.ImageBoardService;
 import com.example.travelProj.domain.region.Region;
 import com.example.travelProj.domain.region.RegionRepository;
@@ -30,6 +31,7 @@ public class ReviewBoardService {
     private final ReviewBoardRepository reviewBoardRepository;
     private final RegionRepository regionRepository;
     private final ImageBoardService imageBoardService;
+    private final ImageBoardRepository imageBoardRepository;
 
     // 게시글 목록 - 페이징
     @Transactional
@@ -58,44 +60,63 @@ public class ReviewBoardService {
         reviewBoard.setTitle(reviewBoardDTO.getTitle());
         reviewBoard.setContent(reviewBoardDTO.getContent());
         reviewBoard.setUser(currentUser);
+        String nickname = currentUser.getNickname();
         reviewBoard.setCreatedAt(LocalDateTime.now());
         reviewBoard.setUpdatedAt(LocalDateTime.now());
         reviewBoard.setRegion(reviewBoardDTO.getRegion());
 
-        // 이미지 URL 리스트 처리
-        List<ImageBoard> images = new ArrayList<>();
-        for (String imageUrl : reviewBoardDTO.getImageUrls()) {
-            ImageBoard imageBoard = new ImageBoard();
-            imageBoard.setUrl(imageUrl);
-            imageBoard.setReviewBoard(reviewBoard);
-            images.add(imageBoard);
-        }
+        // 이미지 저장
+        List<ImageBoard> images = saveImagesIfPresent(reviewBoardDTO.getImageUrls(), reviewBoard);
         reviewBoard.setReview_images(images); // 리뷰 보드에 이미지 설정
         reviewBoard.setMainImageUrlFromImages(); // 메인 이미지 설정
 
         return reviewBoardRepository.save(reviewBoard);
     }
 
+    // 이미지 저장 및 처리
+    private List<ImageBoard> saveImagesIfPresent(List<String> imageUrls, ReviewBoard reviewBoard) {
+        List<ImageBoard> images = new ArrayList<>();
+
+        // URL 리스트를 기반으로 이미지 객체 생성
+        for (String imageUrl : imageUrls) {
+            ImageBoard imageBoard = new ImageBoard();
+            imageBoard.setUrl(imageUrl);
+            imageBoard.setReviewBoard(reviewBoard);
+            images.add(imageBoard);
+        }
+        return images;
+    }
+
     // 게시글 수정
     @Transactional
-    public void updateReviewBoard(ReviewBoardDTO reviewBoardDTO, MultipartFile file) throws IOException {
+    public void updateReviewBoard(ReviewBoardDTO reviewBoardDTO,
+                                  List<MultipartFile> files,
+                                  List<Long> imageIdsToDelete) throws IOException {
         // 게시글 조회
         ReviewBoard reviewBoard = reviewBoardRepository.findById(reviewBoardDTO.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Review Board not found"));
+                .orElseThrow(() -> new IllegalArgumentException("ReviewBoard not found"));
+        Region region = regionRepository.findById(reviewBoardDTO.getRegionId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지역입니다."));
 
         // 내용 업데이트
         reviewBoard.setTitle(reviewBoardDTO.getTitle());
         reviewBoard.setContent(reviewBoardDTO.getContent());
-        reviewBoard.setRegion(reviewBoardDTO.getRegion());
+        reviewBoard.setRegion(region);
         reviewBoard.setUpdatedAt(LocalDateTime.now());
 
-        // 이미지 업로드 처리
-        if (file != null && !file.isEmpty()) {
-            imageBoardService.saveImages(List.of(file), reviewBoard.getId()); // 단일 이미지 처리
+        // 이미지 삭제 처리
+        if (imageIdsToDelete != null && !imageIdsToDelete.isEmpty()) {
+            for (Long imageId : imageIdsToDelete) {
+                imageBoardService.deleteImage(imageId); // 이미지 삭제
+            }
         }
 
-        // 리뷰 보드 저장
-        reviewBoardRepository.save(reviewBoard); // 리뷰 보드 업데이트
+        // 새 이미지 저장 (기존 이미지를 유지)
+        if (files != null && !files.isEmpty()) {
+            List<ImageBoard> newImages = imageBoardService.saveImages(files, reviewBoard.getId(), reviewBoard.getReview_images());
+            reviewBoard.setReview_images(newImages); // 업데이트된 이미지 리스트 설정
+        }
+        reviewBoardRepository.save(reviewBoard); // 최종 업데이트
     }
 
     @Transactional

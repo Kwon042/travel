@@ -23,7 +23,7 @@
 
       <form th:action="@{/board/reviewBoard/save}" method="POST" accept-charset="UTF-8" enctype="multipart/form-data">
         <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
-        <input type="hidden" name="id" th:value="${board != null ? board.id : ''}"/>
+        <input type="hidden" name="boardId" th:value="${board != null ? board.id : ''}"/>
         <input type="hidden" name="region" th:value="${region}"/>
         <input type="hidden" name="nickname" th:value="${#authentication.name}"/>
 
@@ -41,11 +41,11 @@
 
         <div class="mb-3">
           <label for="image" class="form-label">사진 업로드</label>
-          <input type="file" class="form-control" id="image" name="reviewFileImg"
+          <input type="file" class="form-control" id="image" name="files[]"
                  accept="image/*" multiple>
         </div>
-
         <div id="imagePreview" class="mb-3 d-flex flex-wrap"></div>
+
         <input type="hidden" name="imageUrls" id="imageUrls">
 
         <button type="submit" class="btn btn-primary">저장</button>
