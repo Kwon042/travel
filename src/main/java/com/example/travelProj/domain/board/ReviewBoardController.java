@@ -113,21 +113,12 @@ public class ReviewBoardController {
         }
     }
 
-    // 이미지 저장 메서드
-    private void saveImagesIfPresent(List<MultipartFile> files, Long reviewBoardId) {
-        if (files == null || files.isEmpty()) return;
-
-        List<MultipartFile> nonEmptyFiles = files.stream()
-                .filter(file -> file != null && !file.isEmpty())
-                .toList();
-
-        if (!nonEmptyFiles.isEmpty()) {
-            try {
-                imageBoardService.saveNewImages(nonEmptyFiles, reviewBoardId);
-            } catch (IOException e) {
-                throw new RuntimeException("이미지 저장 실패: " + e.getMessage());
-            }
+    private String getMainImageUrl(List<String> uploadedImages, int mainImageIndex) {
+        if (uploadedImages == null || uploadedImages.isEmpty()) {
+            return "/images/default-thumbnail.png";
         }
+        int index = Math.min(mainImageIndex, uploadedImages.size() - 1);
+        return uploadedImages.get(index);
     }
 
     // 게시글 상세 페이지 조회

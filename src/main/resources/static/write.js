@@ -1,8 +1,10 @@
-document.querySelector("form").addEventListener("submit", function(event) {
-    event.preventDefault(); // 기본 폼 제출 방지
+let selectedFiles = [];
+let selectedMainIndex = null;
 
+document.querySelector("form").addEventListener("submit", function(event) {
+    event.preventDefault();
     let submitButton = document.querySelector("button[type='submit']");
-    submitButton.disabled = true; // 중복 제출 방지
+    submitButton.disabled = true;
 
     let form = event.target;
     let formData = new FormData(form);
@@ -10,7 +12,6 @@ document.querySelector("form").addEventListener("submit", function(event) {
 
     formData.append("mainImageIndex", selectedMainIndex ?? 0);
 
-    // 게시글 저장
     fetch(form.action, {
         method: "POST",
         body: formData,
@@ -31,17 +32,16 @@ document.querySelector("form").addEventListener("submit", function(event) {
     })
     .then(data => {
         if (data.success) {
-            const reviewBoardId = data.boardId
-            const region = data.region; // 인코딩된 지역명 (서버에서 처리함)
+            const reviewBoardId = data.boardId;
+            const region = data.region;
             const redirectUrl = `/board/reviewBoard?region=${region}`;
-            const files = document.getElementById("image").files;
 
-            if (files.length > 0) { // 이미지 파일이 선택된 경우
+            if (selectedFiles.length > 0) {
                 let imageFormData = new FormData();
-                Array.from(files).forEach(file => {
+                selectedFiles.forEach(file => {
                     imageFormData.append("files[]", file);
                 });
-                imageFormData.append("reviewBoardId", reviewBoardId); // 게시글 ID 추가
+                imageFormData.append("reviewBoardId", reviewBoardId);
 
                 return fetch("/api/image/board/upload", {
                     method: "POST",
@@ -66,22 +66,24 @@ document.querySelector("form").addEventListener("submit", function(event) {
     })
     .catch(error => {
         console.error(error);
-        submitButton.disabled = false; // 에러 발생 시 버튼 다시 활성화
+        submitButton.disabled = false;
     });
 });
 
-let selectedMainIndex = null;
-
-// 이미지 미리보기를 위한 함수
+// 이미지 미리보기 및 삭제 처리
 function previewImages(event) {
     let previewContainer = document.getElementById('imagePreview');
-    previewContainer.innerHTML = ''; // 기존 미리보기 초기화
+    previewContainer.innerHTML = '';
+    selectedFiles = Array.from(event.target.files); // 최신 파일 리스트로 갱신
 
-    let files = event.target.files;
-    if (files.length > 0) {
-        Array.from(files).forEach(file => {
+    if (selectedFiles.length > 0) {
+        selectedFiles.forEach((file, index) => {
             let reader = new FileReader();
             reader.onload = function(e) {
+                let wrapper = document.createElement("div");
+                wrapper.style.position = "relative";
+                wrapper.style.display = "inline-block";
+
                 let imgElement = document.createElement("img");
                 imgElement.src = e.target.result;
                 imgElement.classList.add("img-thumbnail", "m-2");
@@ -89,30 +91,48 @@ function previewImages(event) {
                 imgElement.style.height = "150px";
                 imgElement.dataset.index = index;
 
-                // 클릭 시 메인 이미지 선택
+                // ❌ 삭제 버튼
+                let deleteBtn = document.createElement("span");
+                deleteBtn.innerHTML = "&times;";
+                deleteBtn.style.position = "absolute";
+                deleteBtn.style.top = "5px";
+                deleteBtn.style.right = "10px";
+                deleteBtn.style.cursor = "pointer";
+                deleteBtn.style.color = "red";
+                deleteBtn.style.fontSize = "20px";
+                deleteBtn.style.fontWeight = "bold";
+
+                deleteBtn.addEventListener("click", function() {
+                    selectedFiles.splice(index, 1); // 해당 파일 제거
+                    document.getElementById("image").value = ""; // 파일 인풋 초기화
+                    updatePreview(); // 미리보기 갱신
+                });
+
+                // 메인 이미지 선택
                 imgElement.addEventListener("click", function () {
                     document.querySelectorAll('#imagePreview img').forEach(img => {
                         img.classList.remove('main-selected');
                         img.style.border = '';
                     });
-
                     this.classList.add('main-selected');
                     this.style.border = '3px solid #007bff';
-                    selectedMainIndex = this.dataset.index;
+                    selectedMainIndex = index;
                 });
 
-                previewContainer.appendChild(imgElement);
+                wrapper.appendChild(imgElement);
+                wrapper.appendChild(deleteBtn);
+                previewContainer.appendChild(wrapper);
             };
-            reader.readAsDataURL(file); // 파일을 DataURL로 읽기
+            reader.readAsDataURL(file);
         });
-    } else {
-        // ✅ 이미지가 없는 경우 기본 이미지 삽입
-        let defaultImg = document.createElement("img");
-        defaultImg.src = "/images/default-thumbnail.png";
-        defaultImg.alt = "기본 이미지";
-        defaultImg.classList.add("img-thumbnail", "m-2");
-        defaultImg.style.width = "150px";
-        defaultImg.style.height = "150px";
-        previewContainer.appendChild(defaultImg);
     }
+}
+
+function updatePreview() {
+    const event = {
+        target: {
+            files: selectedFiles
+        }
+    };
+    previewImages(event);
 }
