@@ -27,11 +27,10 @@
           <p class="post-meta"><strong>작성자:</strong> <span th:text="${board.user.nickname}"></span></p>
           <p class="post-content" th:text="${board.content}"></p>
 
-          <div class="post-image">
-            <img th:if="${images != null and #lists.size(images) > 0}"
-                 th:src="@{/images/${images[0].url}}"
-                 alt="게시글 이미지" />
-            <span th:if="${images == null or #lists.size(images) == 0}">이미지가 없습니다.</span>
+          <div class="post-image" th:if="${images != null and #lists.size(images) > 0}">
+            <div th:each="img : ${images}">
+              <img th:src="@{'/' + ${img.url}}" class="img-thumbnail" style="max-width: 200px;" />
+            </div>
           </div>
         </div>
       </div>

@@ -79,7 +79,7 @@ public class ReviewBoardController {
     @PostMapping("/reviewBoard/save")
     public ResponseEntity<?> saveReviewBoard(@ModelAttribute ReviewBoardDTO reviewBoardDTO,
                                              @AuthenticationPrincipal SiteUser currentUser,
-                                             @RequestParam String region,
+                                             @RequestParam("region") String region,
                                              @RequestParam(value = "files[]", required = false) List<MultipartFile> files,
                                              BindingResult bindingResult) {
         if (currentUser == null) {
@@ -93,10 +93,7 @@ public class ReviewBoardController {
         String encodedRegion = processRegionAndEncode(region, reviewBoardDTO);
         // 게시글 생성
         ReviewBoard savedBoard = reviewBoardService.createReviewBoard(reviewBoardDTO, currentUser);
-        // 이미지 저장
-        if (files != null && !files.isEmpty()) {
-            saveImagesIfPresent(files, savedBoard.getId());
-        }
+
         return ResponseEntity.ok(Map.of("success", true, "boardId", savedBoard.getId(), "region", encodedRegion));
     }
 
@@ -118,9 +115,15 @@ public class ReviewBoardController {
 
     // 이미지 저장 메서드
     private void saveImagesIfPresent(List<MultipartFile> files, Long reviewBoardId) {
-        if (files != null && !files.isEmpty()) {
+        if (files == null || files.isEmpty()) return;
+
+        List<MultipartFile> nonEmptyFiles = files.stream()
+                .filter(file -> file != null && !file.isEmpty())
+                .toList();
+
+        if (!nonEmptyFiles.isEmpty()) {
             try {
-                imageBoardService.saveNewImages(files, reviewBoardId);
+                imageBoardService.saveNewImages(nonEmptyFiles, reviewBoardId);
             } catch (IOException e) {
                 throw new RuntimeException("이미지 저장 실패: " + e.getMessage());
             }

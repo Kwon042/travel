@@ -58,7 +58,7 @@
                 <div th:each="board : ${boards}">
                     <div class="review-card">
                         <div class="image-container">
-                            <img th:src="@{${board.mainImageUrl}}" alt="메인 이미지" />
+                            <img th:src="@{'/uploads/' + ${board.mainImageUrl}}" alt="메인 이미지" />
                         </div>
                         <div class="content-container">
                             <h3 class="title">

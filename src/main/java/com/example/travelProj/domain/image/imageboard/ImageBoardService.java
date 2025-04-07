@@ -25,7 +25,7 @@ public class ImageBoardService {
     // 단일 이미지 저장
     public ImageBoard saveImage(MultipartFile file, Long reviewBoardId) throws IOException {
         if (file == null || file.isEmpty()) {
-            throw new IllegalArgumentException("The file is empty.");
+            return null; // 이미지 없이도 저장 허용
         }
 
         // 프로필과 동일하게 `uploadDir`을 사용하여 경로 설정
@@ -49,7 +49,10 @@ public class ImageBoardService {
 
         ImageBoard imageBoard = new ImageBoard();
         imageBoard.setFilename(newFileName);
-        imageBoard.setUrl(filePath.toString());
+
+        // 상대 경로만 저장
+        String relativePath = "board/" + reviewBoardId + "/" + newFileName;
+        imageBoard.setUrl(relativePath);
 
         ReviewBoard reviewBoard = new ReviewBoard();
         reviewBoard.setId(reviewBoardId);
@@ -109,7 +112,8 @@ public class ImageBoardService {
             file.transferTo(newFilePath.toFile());
 
             imageBoard.setFilename(newFileName);
-            imageBoard.setUrl(newFilePath.toString());
+            String relativePath = "board/" + reviewBoardId + "/" + newFileName;
+            imageBoard.setUrl(relativePath);
         }
         imageBoardRepository.save(imageBoard);
     }
@@ -121,7 +125,7 @@ public class ImageBoardService {
                 .orElseThrow(() -> new IllegalArgumentException("Image not found"));
 
         // 파일 삭제 로직
-        Path existingFilePath = Paths.get(imageBoard.getUrl());
+        Path existingFilePath = Paths.get(uploadDir + "/" + imageBoard.getUrl());
         if (Files.exists(existingFilePath)) {
             try {
                 Files.delete(existingFilePath);

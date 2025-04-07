@@ -8,6 +8,8 @@ document.querySelector("form").addEventListener("submit", function(event) {
     let formData = new FormData(form);
     let csrfToken = document.querySelector("input[name='_csrf']").value;
 
+    formData.append("mainImageIndex", selectedMainIndex ?? 0);
+
     // 게시글 저장
     fetch(form.action, {
         method: "POST",
@@ -29,11 +31,11 @@ document.querySelector("form").addEventListener("submit", function(event) {
     })
     .then(data => {
         if (data.success) {
-            // 게시글 저장 성공 시 reviewBoardId 가져오기
-            let reviewBoardId = data.boardId; // 서버 응답에서 ID를 받아야 합니다.
+            const reviewBoardId = data.boardId
+            const region = data.region; // 인코딩된 지역명 (서버에서 처리함)
+            const redirectUrl = `/board/reviewBoard?region=${region}`;
+            const files = document.getElementById("image").files;
 
-            // 이미지 업로드 로직 조건 처리 (선택한 파일이 있는지 확인)
-            let files = document.getElementById("image").files;
             if (files.length > 0) { // 이미지 파일이 선택된 경우
                 let imageFormData = new FormData();
                 Array.from(files).forEach(file => {
@@ -44,31 +46,31 @@ document.querySelector("form").addEventListener("submit", function(event) {
                 return fetch("/api/image/board/upload", {
                     method: "POST",
                     body: imageFormData
-                }).then(imageResponse => {
+                })
+                .then(imageResponse => {
                     if (!imageResponse.ok) {
                         throw new Error("이미지 업로드 실패");
                     }
                     return imageResponse.json();
-                }).then(imageData => {
+                })
+                .then(imageData => {
                     console.log("이미지 업로드 성공:", imageData.message);
+                    window.location.href = redirectUrl;
                 });
             } else {
-                // 이미지가 없으면 바로 다음 단계
-                alert("게시글이 저장되었습니다.");
+                window.location.href = redirectUrl;
             }
         } else {
             alert("게시글 저장 실패");
         }
-    })
-    .then(() => {
-        // 최종적으로 게시판 목록으로 리다이렉트
-        window.location.href = "/board/reviewBoard";
     })
     .catch(error => {
         console.error(error);
         submitButton.disabled = false; // 에러 발생 시 버튼 다시 활성화
     });
 });
+
+let selectedMainIndex = null;
 
 // 이미지 미리보기를 위한 함수
 function previewImages(event) {
@@ -85,9 +87,32 @@ function previewImages(event) {
                 imgElement.classList.add("img-thumbnail", "m-2");
                 imgElement.style.width = "150px";
                 imgElement.style.height = "150px";
+                imgElement.dataset.index = index;
+
+                // 클릭 시 메인 이미지 선택
+                imgElement.addEventListener("click", function () {
+                    document.querySelectorAll('#imagePreview img').forEach(img => {
+                        img.classList.remove('main-selected');
+                        img.style.border = '';
+                    });
+
+                    this.classList.add('main-selected');
+                    this.style.border = '3px solid #007bff';
+                    selectedMainIndex = this.dataset.index;
+                });
+
                 previewContainer.appendChild(imgElement);
             };
             reader.readAsDataURL(file); // 파일을 DataURL로 읽기
         });
+    } else {
+        // ✅ 이미지가 없는 경우 기본 이미지 삽입
+        let defaultImg = document.createElement("img");
+        defaultImg.src = "/images/default-thumbnail.png";
+        defaultImg.alt = "기본 이미지";
+        defaultImg.classList.add("img-thumbnail", "m-2");
+        defaultImg.style.width = "150px";
+        defaultImg.style.height = "150px";
+        previewContainer.appendChild(defaultImg);
     }
 }
