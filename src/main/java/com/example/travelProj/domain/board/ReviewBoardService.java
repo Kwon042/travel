@@ -48,7 +48,7 @@ public class ReviewBoardService {
                     .orElseThrow(() -> new IllegalArgumentException("This region does not exist."));
             boardPage = reviewBoardRepository.findByRegion(region, pageable); // 해당 지역의 게시글을 최신순으로 조회
         }
-        // 👉 각 게시글에 대해 대표 이미지 설정
+        // 각 게시글에 대해 대표 이미지 설정
         boardPage.forEach(ReviewBoard::setMainImageUrlFromImages);
 
         return boardPage;
