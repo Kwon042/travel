@@ -116,8 +116,14 @@ function updateCommentCount(boardId) {
             return response.json();
         })
         .then(data => {
-            const count = data.commentsCount;
-            document.getElementById(`commentCount_${boardId}`).textContent = count;
+            console.log("댓글 수 응답:", data);
+            const count = data.comments.length;
+            const countElement = document.getElementById("commentCount_" + boardId);
+            if (countElement) {
+              countElement.textContent = count;
+            } else {
+              console.warn(`commentCount_${boardId} 요소가 없습니다.`);
+            }
         })
         .catch(error => {
             console.error("댓글 수 갱신 오류:", error);
