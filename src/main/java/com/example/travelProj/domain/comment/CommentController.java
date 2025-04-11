@@ -1,6 +1,7 @@
 package com.example.travelProj.domain.comment;
 
 import com.example.travelProj.domain.user.SiteUser;
+import com.example.travelProj.domain.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -16,15 +18,17 @@ import java.util.Map;
 @RequestMapping("/comments")
 public class CommentController {
     private final CommentService commentService;
+    private final UserService userService;
 
     @GetMapping("/{reviewBoardId}/show")
     public String showComment(@PathVariable Long reviewBoardId, Model model) {
         model.addAttribute("reviewBoardId", reviewBoardId);
 
-        Map<String, Object> commentsWithCount = commentService.getCommentsWithCount(reviewBoardId);
+        List<CommentResponseDTO> comments = commentService.getCommentsWithReplies(reviewBoardId);
+        int commentsCount = commentService.countByReviewBoardId(reviewBoardId);
 
-        model.addAttribute("comments", commentsWithCount.get("comments"));
-        model.addAttribute("commentsCount", commentsWithCount.get("commentsCount"));
+        model.addAttribute("comments", comments);
+        model.addAttribute("commentsCount", commentsCount);
         //model.addAttribute("likeCount", commentsWithCount.get("likeCount"));
 
         return "board/comment";
@@ -39,17 +43,37 @@ public class CommentController {
         return ResponseEntity.ok("Comment added successfully.");
     }
 
-    // 댓글 조회 (목록과 수 반환)
+    // 댓글 조회 (목록  + 대댓글 트리 구조)
     @GetMapping("/{reviewBoardId}")
-    public ResponseEntity<Map<String, Object>> getComments(@PathVariable Long reviewBoardId) {
-        Map<String, Object> commentsWithCount = commentService.getCommentsWithCount(reviewBoardId);
-        return ResponseEntity.ok(commentsWithCount);
+    public ResponseEntity<List<CommentResponseDTO>> getComments(@PathVariable Long reviewBoardId) {
+        List<CommentResponseDTO> comments = commentService.getCommentsWithReplies(reviewBoardId);
+        return ResponseEntity.ok(comments);
+    }
+
+    // 댓글 수만 반환
+    @GetMapping("/{reviewBoardId}/count")
+    public ResponseEntity<Integer> getCommentCount(@PathVariable Long reviewBoardId) {
+        int count = commentService.countByReviewBoardId(reviewBoardId);
+        return ResponseEntity.ok(count);
     }
 
     // 댓글 삭제
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<?> deleteComment(@PathVariable Long commentId) {
-        commentService.deleteComment(commentId);
-        return ResponseEntity.ok("Comment removed successfully.");
+    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId, Principal principal) {
+        SiteUser currentUser = userService.getByUsername(principal.getName());
+        commentService.deleteComment(commentId, currentUser);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{commentId}")
+    public ResponseEntity<Void> updateComment(
+            @PathVariable Long commentId,
+            @RequestBody Map<String, String> requestBody,
+            Principal principal
+    ) {
+        String newContent = requestBody.get("content");
+        SiteUser currentUser = userService.getByUsername(principal.getName());
+        commentService.updateComment(commentId, newContent, currentUser);
+        return ResponseEntity.ok().build();
     }
 }

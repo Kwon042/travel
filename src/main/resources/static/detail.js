@@ -108,25 +108,18 @@ function deleteReviewBoard(boardId) {
 
 // 댓글 수를 서버에서 가져와서 갱신하는 함수
 function updateCommentCount(boardId) {
-    fetch(`/comments/${boardId}`)  // 기존 댓글 목록 + 개수 반환 API 사용
+    fetch(`/comments/${boardId}/count`)
         .then(response => {
-            if (!response.ok) {
-                throw new Error("댓글 수를 불러오는데 실패했습니다.");
-            }
+            if (!response.ok) throw new Error("댓글 수를 불러오는데 실패했습니다.");
             return response.json();
         })
-        .then(data => {
-            console.log("댓글 수 응답:", data);
-            const count = data.comments.length;
+        .then(count => {
             const countElement = document.getElementById("commentCount_" + boardId);
             if (countElement) {
-              countElement.textContent = count;
-            } else {
-              console.warn(`commentCount_${boardId} 요소가 없습니다.`);
+                countElement.textContent = count;
             }
         })
         .catch(error => {
             console.error("댓글 수 갱신 오류:", error);
-            document.getElementById(`commentCount_${boardId}`).textContent = '0';
         });
 }

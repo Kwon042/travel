@@ -16,9 +16,9 @@
     <div class="comment">
         <div class="comment-header">
             <div class="profile-pic"
-                 th:style="'background-image: url(' + ${comment.user != null && comment.user.profileImage != null ? comment.user.profileImage.url : '/default-profile.png'} + ');'">
+                 th:style="'background-image: url(' + ${comment.profileImageUrl} + ');'">
             </div>
-            <span class="nickname" th:text="${comment.user.nickname}">UserNickname</span>
+            <span class="nickname" th:text="${comment.nickname}">UserNickname</span>
         </div>
         <div class="comment-body">
             <p th:text="${comment.content}">댓글</p>
@@ -27,7 +27,11 @@
             <span class="comment-time"
                   th:with="formattedDate=${#dates.format(T(com.example.travelProj.global.util.DateUtil).convertToDate(comment.createdAt), 'yyyy-MM-dd HH:mm')}"
                   th:text="${formattedDate}"></span>
-            <span class="likes">♥️ <span th:text="${comment.getLikesCount()}">0</span></span>
+            <span class="likes">♥️ <span th:text="${comment.likesCount}">0</span></span>
+            <span th:if="${#authentication.name == comment.username}">
+                <button class="edit-button" th:attr="data-id=${comment.id}">수정</button>
+                <button class="delete-button" th:attr="data-id=${comment.id}">삭제</button>
+            </span>
         </div>
         <button class="reply-button">답글</button>
     </div>

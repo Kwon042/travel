@@ -1,6 +1,7 @@
 package com.example.travelProj.domain.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -91,16 +92,13 @@ public class UserService {
         return null;
     }
 
+    public SiteUser getByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + username));
+    }
+
     public void deleteUser(Long userId) {
         userRepository.deleteById(userId);
-    }
-
-    public SiteUser getUserById(Long userId) {
-        return userRepository.findById(userId).orElse(null);
-    }
-
-    public String encodePassword(String rawPassword) {
-        return passwordEncoder.encode(rawPassword);
     }
 
     public void updateUser(SiteUser user) {
@@ -114,5 +112,6 @@ public class UserService {
     public boolean isNicknameAlreadyRegistered(String nickname) {
         return userRepository.existsByNickname(nickname);
     }
+
 
 }

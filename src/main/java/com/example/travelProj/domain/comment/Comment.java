@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -29,6 +30,13 @@ public class Comment {
     @ManyToOne // 댓글 작성자와의 관계 설정
     @JoinColumn(name = "user_id", nullable = false)
     private SiteUser user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private Comment parent; // 대댓글을 위한 자기 참조
+
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    private List<Comment> children = new ArrayList<>();
 
     //private String nickname; > user.getNickname()으로 꺼내면 끝
 
