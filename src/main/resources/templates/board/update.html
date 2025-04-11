@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/header.css">
     <link rel="stylesheet" href="/footer.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css">
 </head>
 <body>
 
@@ -33,8 +34,9 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="content" class="form-label">내용</label>
-                    <textarea class="form-control" id="content" name="content" rows="5" required th:text="${board.content}" placeholder="내용을 입력하세요."></textarea>
+                    <label class="form-label">내용</label>
+                    <div id="editor" style="height: 400px;"></div> <!-- Toast UI Editor 추가 -->
+                    <input type="hidden" name="content" id="content"> <!-- 에디터의 내용을 전송하기 위한 숨겨진 필드 추가 -->
                 </div>
 
                 <div class="mb-3">
@@ -53,8 +55,23 @@
 <footer th:replace="~{layout/footer}"></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 
 <script>
+    const editor = new toastui.Editor({
+        el: document.querySelector('#editor'),
+        height: '400px',
+        initialEditType: 'markdown',
+        previewStyle: 'vertical',
+        initialValue: /*[[${board.content}]]*/ '' // 기존 내용을 에디터에 로드 (Thymeleaf 구문 사용)
+    });
+
+    // 폼 제출 시 에디터 내용 저장
+    document.querySelector("form").addEventListener("submit", function() {
+        const content = editor.getMarkdown(); // 에디터에서 내용 가져오기
+        document.querySelector('input[name="content"]').value = content; // 숨겨진 필드에 저장
+    });
+
     function previewImages(event) {
       let previewContainer = document.getElementById('imagePreview');
       previewContainer.innerHTML = ''; // 기존 미리보기 초기화
