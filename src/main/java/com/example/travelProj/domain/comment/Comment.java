@@ -1,6 +1,7 @@
 package com.example.travelProj.domain.comment;
 
 import com.example.travelProj.domain.board.ReviewBoard;
+import com.example.travelProj.domain.like.commentlike.CommentLike;
 import com.example.travelProj.domain.user.SiteUser;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -39,6 +41,7 @@ public class Comment {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    // 자동으로 설정됨 > service 에 적어놓지 않아도 됨
     @PrePersist
     public void prePersist() {
         if (this.createdAt == null) {
@@ -53,4 +56,12 @@ public class Comment {
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
+    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY)
+    private List<CommentLike> likes;
+
+    public int getLikesCount() {
+        return likes != null ? likes.size() : 0; // likes의 수를 가져오는 메서드
+    }
+
 }

@@ -4,26 +4,28 @@ import com.example.travelProj.domain.user.SiteUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 @RequestMapping("/comments")
 public class CommentController {
     private final CommentService commentService;
 
-    @GetMapping("/{reviewBoardId}/view")
+    @GetMapping("/{reviewBoardId}/show")
     public String showComment(@PathVariable Long reviewBoardId, Model model) {
+        model.addAttribute("reviewBoardId", reviewBoardId);
+
         Map<String, Object> commentsWithCount = commentService.getCommentsWithCount(reviewBoardId);
 
         model.addAttribute("comments", commentsWithCount.get("comments"));
         model.addAttribute("commentsCount", commentsWithCount.get("commentsCount"));
         //model.addAttribute("likeCount", commentsWithCount.get("likeCount"));
-        model.addAttribute("reviewBoardId", reviewBoardId);
 
         return "board/comment";
     }

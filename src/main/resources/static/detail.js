@@ -77,7 +77,7 @@ function showLikeList(boardId) {
 
 // 댓글 입력 창으로 전환하는 함수
 function goToComments(reviewBoardId) {
-    window.location.href = `/comments/${reviewBoardId}/view`; // 댓글 섹션으로 이동
+    window.location.href = `/comments/${reviewBoardId}/show`; // 댓글 섹션으로 이동
 }
 
 function deleteReviewBoard(boardId) {

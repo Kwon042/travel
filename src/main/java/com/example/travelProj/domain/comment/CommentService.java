@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 
 import com.example.travelProj.domain.board.ReviewBoardService;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,8 +30,6 @@ public class CommentService {
         comment.setReviewBoard(reviewBoard);
         comment.setUser(user);
         comment.setContent(content);
-        comment.setCreatedAt(LocalDateTime.now());
-        comment.setUpdatedAt(LocalDateTime.now());
 
         commentRepository.save(comment);
     }

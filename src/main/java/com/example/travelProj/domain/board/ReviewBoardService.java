@@ -31,7 +31,6 @@ public class ReviewBoardService {
     private final ReviewBoardRepository reviewBoardRepository;
     private final RegionRepository regionRepository;
     private final ImageBoardService imageBoardService;
-    private final ImageBoardRepository imageBoardRepository;
 
     // 게시글 목록 - 페이징
     @Transactional

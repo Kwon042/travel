@@ -39,9 +39,9 @@
       <div class="action-buttons my-3 d-flex justify-content-between align-items-center">
         <div>
           <button th:onclick="'showLikeList(' + ${board.id} + ')' " class="btn btn-light">
-            ♡ <span id="likeCount_{{board.id}}" th:text="${likeCount != null ? likeCount : 0}">0</span>
+            💜 <span id="likeCount_{{board.id}}" th:text="${likeCount != null ? likeCount : 0}">0</span>
           </button>
-          <button th:onclick="|deleteReviewBoard(${board.id})|" class="btn btn-light">
+          <button th:onclick="|goToComments(${board.id})|" class="btn btn-light">
             💬 <span id="commentCount_${board.id}" th:text="${commentsCount != null ? commentsCount : 0}">0</span>
           </button>
         </div>

@@ -22,6 +22,7 @@ public class ImageUserService {
     private final ImageUserRepository imageUserRepository;
     private final UserRepository userRepository;
 
+    // 상대 경로
     private final String uploadDir = System.getProperty("user.dir") + "/uploads";
 
     @Transactional

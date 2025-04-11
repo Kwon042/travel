@@ -34,7 +34,7 @@ document.querySelector("form").addEventListener("submit", function(event) {
         if (data.success) {
             const reviewBoardId = data.boardId;
             const region = data.region;
-            const redirectUrl = `/board/reviewBoard?region=${region}`;
+            const redirectUrl = `/board/detail/${reviewBoardId}`;
 
             if (selectedFiles.length > 0) {
                 let imageFormData = new FormData();
