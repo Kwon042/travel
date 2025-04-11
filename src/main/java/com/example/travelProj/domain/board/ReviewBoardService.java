@@ -37,16 +37,21 @@ public class ReviewBoardService {
     public Page<ReviewBoard> getBoardPage(String regionName, int page, int size) {
         // Pageable 객체 생성 (최신순으로 정렬)
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdAt")));
+        Page<ReviewBoard> boardPage;
 
         // 지역 이름을 기반으로 작성된 게시글 조회
         if ("전체".equals(regionName)) {
-            return reviewBoardRepository.findAll(pageable); // 모든 게시글을 최신순으로 조회
+            boardPage = reviewBoardRepository.findAll(pageable); // 모든 게시글을 최신순으로 조회
         } else {
             // 주어진 지역 이름으로 지역 객체 조회
             Region region = findByRegionName(regionName)
                     .orElseThrow(() -> new IllegalArgumentException("This region does not exist."));
-            return reviewBoardRepository.findByRegion(region, pageable); // 해당 지역의 게시글을 최신순으로 조회
+            boardPage = reviewBoardRepository.findByRegion(region, pageable); // 해당 지역의 게시글을 최신순으로 조회
         }
+        // 👉 각 게시글에 대해 대표 이미지 설정
+        boardPage.forEach(ReviewBoard::setMainImageUrlFromImages);
+
+        return boardPage;
     }
 
     // 게시글 생성

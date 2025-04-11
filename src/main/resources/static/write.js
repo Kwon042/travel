@@ -4,12 +4,12 @@ let selectedMainIndex = null;
 document.querySelector("form").addEventListener("submit", function(event) {
     event.preventDefault();
 
-    let submitButton = document.querySelector("button[type='submit']");
+    const submitButton = document.querySelector("button[type='submit']");
     submitButton.disabled = true;
 
-    let form = event.target;
-    let formData = new FormData(form);
-    let csrfToken = document.querySelector("input[name='_csrf']").value;
+    const form = event.target;
+    const formData = new FormData(form);
+    const csrfToken = document.querySelector("input[name='_csrf']").value;
 
     // Toast UI Editor의 내용을 가져와서 폼 데이터에 추가
     const content = editor.getMarkdown(); // 에디터의 마크다운 내용 가져오기

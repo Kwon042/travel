@@ -22,7 +22,7 @@
       <div class="divider"></div>
       <hr style="border: 1px solid #5b30a4; margin: 20px 0;"> <!-- 구분선 추가 -->
 
-      <div id="board-details" data-board-id="${board.id}">
+      <div id="board-details" th:attr="data-board-id=${board.id}">
         <div class="post-detail">
           <p class="post-meta"><strong>작성자:</strong> <span th:text="${board.user.nickname}"></span></p>
           <p class="post-content" th:text="${board.content}"></p>
@@ -63,9 +63,17 @@
 <footer th:replace="~{layout/footer}"></footer>
 
 <script src="/detail.js"></script>
-<script>
+<script th:inline="javascript">
   document.addEventListener("DOMContentLoaded", function() {
       const boardId = document.getElementById('board-details').getAttribute('data-board-id'); // board.id 값 가져오기
+  // 마크다운 렌더링
+    const viewer = new toastui.Editor.factory({
+      el: document.querySelector('#viewer'),
+      viewer: true,
+      initialValue: `[[${board.content}]]` // 서버에서 받아온 마크다운 문자열
+    });
+    // 댓글 수 갱신
+    updateCommentCount(boardId);
   });
 </script>
 

@@ -22,7 +22,10 @@ document.addEventListener("DOMContentLoaded", function() {
   // 게시글 ID 가져오기
   const boardElement = document.getElementById('board-details');
     if (boardElement) {
-        const boardId = boardElement.getAttribute('data-board-id');  // 게시글 ID
+        const boardId = boardElement.dataset.boardId;  // 게시글 ID
+
+        // 댓글 수 갱신 추가
+        updateCommentCount(boardId);
 
         // 삭제 버튼 이벤트 리스너 추가
         const deleteButton = document.getElementById("deleteButton");
@@ -101,4 +104,23 @@ function deleteReviewBoard(boardId) {
         }
     })
     .catch(error => console.error("Error deleting review board:", error));
+}
+
+// 댓글 수를 서버에서 가져와서 갱신하는 함수
+function updateCommentCount(boardId) {
+    fetch(`/comments/${boardId}`)  // 기존 댓글 목록 + 개수 반환 API 사용
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("댓글 수를 불러오는데 실패했습니다.");
+            }
+            return response.json();
+        })
+        .then(data => {
+            const count = data.commentsCount;
+            document.getElementById(`commentCount_${boardId}`).textContent = count;
+        })
+        .catch(error => {
+            console.error("댓글 수 갱신 오류:", error);
+            document.getElementById(`commentCount_${boardId}`).textContent = '0';
+        });
 }
