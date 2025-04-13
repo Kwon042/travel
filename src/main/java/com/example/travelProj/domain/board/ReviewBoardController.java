@@ -43,7 +43,6 @@ public class ReviewBoardController {
     private final ImageBoardService imageBoardService;
     private static final Logger logger = LoggerFactory.getLogger(ReviewBoardController.class);
 
-
     // 리뷰 게시판 목록
     @GetMapping("/reviewBoard")
     public String showReviewBoard(@RequestParam(value = "region", required = false, defaultValue = "전체") String regionName,

@@ -38,8 +38,9 @@ public class CommentController {
     @PostMapping("/{reviewBoardId}")
     public ResponseEntity<?> addComment(@PathVariable Long reviewBoardId,
                                         @AuthenticationPrincipal SiteUser user,
-                                        @RequestParam String content) {
-        commentService.addComment(reviewBoardId, user, content);
+                                        @RequestParam String content,
+                                        @RequestParam(required = false) Long parentId) {
+        commentService.addComment(reviewBoardId, user, content, parentId);
         return ResponseEntity.ok("Comment added successfully.");
     }
 
@@ -59,21 +60,18 @@ public class CommentController {
 
     // 댓글 삭제
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId, Principal principal) {
-        SiteUser currentUser = userService.getByUsername(principal.getName());
-        commentService.deleteComment(commentId, currentUser);
+    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId,
+                                              @AuthenticationPrincipal SiteUser user) {
+        commentService.deleteComment(commentId, user);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{commentId}")
-    public ResponseEntity<Void> updateComment(
-            @PathVariable Long commentId,
-            @RequestBody Map<String, String> requestBody,
-            Principal principal
-    ) {
+    public ResponseEntity<Void> updateComment(@PathVariable Long commentId,
+                                              @RequestBody Map<String, String> requestBody,
+                                              @AuthenticationPrincipal SiteUser user) {
         String newContent = requestBody.get("content");
-        SiteUser currentUser = userService.getByUsername(principal.getName());
-        commentService.updateComment(commentId, newContent, currentUser);
+        commentService.updateComment(commentId, newContent, user);
         return ResponseEntity.ok().build();
     }
 }

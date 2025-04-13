@@ -25,13 +25,18 @@ public class CommentService {
     private final ReviewBoardService reviewBoardService;
 
     @Transactional
-    public void addComment(Long reviewBoardId, SiteUser user, String content) {
+    public void addComment(Long reviewBoardId, SiteUser user, String content, Long parentId) {
         ReviewBoard reviewBoard = reviewBoardService.getBoardById(reviewBoardId);
 
         Comment comment = new Comment();
         comment.setReviewBoard(reviewBoard);
         comment.setUser(user);
         comment.setContent(content);
+
+        if (parentId != null) {
+            Comment parentComment = getCommentById(parentId);
+            comment.setParent(parentComment);
+        }
 
         commentRepository.save(comment);
     }
@@ -52,7 +57,6 @@ public class CommentService {
             throw new AccessDeniedException("댓글 수정 권한이 없습니다.");
         }
         comment.setContent(newContent);
-        // 수정 시간 갱신 원하면 추가
         comment.setUpdatedAt(LocalDateTime.now());
         commentRepository.save(comment);
     }

@@ -13,6 +13,7 @@ public class CommentResponseDTO {
     private String nickname;
     private String content;
     private LocalDateTime createdAt;
+    private LocalDateTime updateAt;
     private String profileImageUrl;
     private int likesCount;
     private List<CommentResponseDTO> children = new ArrayList<>();

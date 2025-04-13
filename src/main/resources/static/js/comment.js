@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function() {
     submitButton.addEventListener("click", function() {
         submitComment(reviewBoardId);
     });
-    // 수정/삭제 버튼 이벤트 위임
+    // 수정/삭제/답글 버튼 이벤트 위임
     const commentSection = document.querySelector(".comments-section");
 
     if (commentSection) {
@@ -20,7 +20,28 @@ document.addEventListener("DOMContentLoaded", function() {
 
             if (target.classList.contains("edit-button")) {
                 const commentId = target.getAttribute("data-id");
-                editComment(commentId);
+                const isReply = target.closest('.reply-form') !== null;
+                editComment(commentId, isReply);
+            }
+
+            // 답글 버튼 클릭
+            if (target.classList.contains("reply-button")) {
+                const commentId = target.getAttribute("data-comment-id");
+                const replyForm = document.getElementById(`replyForm_${commentId}`);
+                replyForm.style.display = "block"; // 답글 작성 영역 보이기
+            }
+
+            // 답글 작성 버튼 클릭
+            if (target.classList.contains("submit-reply-button")) {
+                const parentId = target.getAttribute("data-parent-id");
+                submitReply(reviewBoardId, parentId);
+            }
+
+            // 답글 취소 버튼 클릭
+            if (target.classList.contains("cancel-reply-button")) {
+                const commentId = target.getAttribute("data-comment-id");
+                const replyForm = document.getElementById(`replyForm_${commentId}`);
+                replyForm.style.display = "none"; // 답글 작성 영역 숨기기
             }
         });
     }
@@ -65,7 +86,17 @@ function deleteComment(commentId) {
 
 function editComment(commentId) {
     const commentEl = document.querySelector(`.edit-button[data-id="${commentId}"]`).closest('.comment');
-    const contentEl = commentEl.querySelector('.comment-body');
+    let contentEl;
+
+    // 댓글인지 대댓글인지 확인
+    if (commentEl.classList.contains('reply')) {
+        // 대댓글인 경우
+        contentEl = commentEl.querySelector('.reply-body p');
+    } else {
+        // 댓글인 경우
+        contentEl = commentEl.querySelector('.comment-body p');
+    }
+
     const originalText = contentEl.innerText.trim();
 
     // 이미 수정 중이면 return
@@ -125,9 +156,37 @@ function editComment(commentId) {
     formDiv.appendChild(saveBtn);
     formDiv.appendChild(cancelBtn);
 
-    commentEl.querySelector('.comment-body').after(formDiv);
+    if (commentEl.classList.contains('reply')) {
+        // 대댓글인 경우
+        commentEl.querySelector('.reply-body').after(formDiv);
+    } else {
+        // 댓글인 경우
+        commentEl.querySelector('.comment-body').after(formDiv);
+    }
 }
 
+// 답글 제출
+function submitReply(reviewBoardId, parentId) {
+    const content = document.querySelector(`#replyForm_${parentId} .reply-content`).value;
+
+    fetch(`/comments/${reviewBoardId}?content=${encodeURIComponent(content)}&parentId=${parentId}`, {
+        method: 'POST',
+    })
+    .then(response => {
+        if (response.ok) {
+            location.reload(); // 페이지를 새로 고침
+        } else {
+            console.error('답글 추가 실패');
+        }
+    })
+    .catch(error => {
+        console.error('에러:', error);
+    });
+}
+
+
+
+//수정폼이 위에서 뿅
 //function editComment(commentId) {
 //    const commentEl = document.querySelector(`.edit-button[data-id="${commentId}"]`).closest('.comment');
 //    const contentEl = commentEl.querySelector('.comment-body p');
