@@ -1,14 +1,7 @@
-1. 게시글 이미지
-2. 게시판 목록 댓글, 좋아요
-3. 게시글 댓글
-
-db의
-id 1:
-url>> /uploads/profile/1/images-2.jpeg 이렇게 저장됨.
-웹에서도 URL: http://localhost:8081/uploads/profile/1/images-2.jpeg 이렇게 요청됨.
-id 2:
-url>> /uploads/profile/1/a3b4f79c-2d07-4863-8c0e-4182ae1a8852_images-2.jpeg 이렇게 저장됨. >> 디렉토리에도 /uploads/profile/1 에서도 이 파일명으로 저장됨.
-그러니까 404 오류가 나지.
+1. 게시글 수정 시 이미지 띄우기
+2. 게시판 목록 좋아요
+3. 게시글 대댓글
+4. 
 
 
 1. ImageService

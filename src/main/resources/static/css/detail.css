@@ -129,18 +129,12 @@ main {
   margin-top: 30px;
 }
 
-.post-image h3 {
-  font-size: 1.5em;
-  color: Black;
-  margin-bottom: 20px;
-  font-weight: 600;
-}
-
 .post-image img {
   max-width: 100%;
   height: auto;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 200px;
 }
 
 /* 목록으로 돌아가기 버튼 */

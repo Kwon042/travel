@@ -27,7 +27,7 @@
                 <input type="hidden" name="id" th:value="${board.id}"/>
                 <input type="hidden" name="regionId" th:value="${board.region.id}"/>
                 <input type="hidden" name="nickname" th:value="${#authentication.name}"/>
-                <input type="hidden" name="content" th:value="${board.content}"/>
+                <input type="hidden" name="content" id="content" th:value="${board.content}">
 
                 <div class="mb-3">
                     <label for="title" class="form-label">제목</label>
@@ -37,7 +37,6 @@
                 <div class="mb-3">
                     <label class="form-label">내용</label>
                     <div id="editor" style="height: 400px;"></div> <!-- Toast UI Editor 추가 -->
-                    <input type="hidden" name="content" id="content" th:value="${board.content}">
                 </div>
 
                 <div class="mb-3">
@@ -60,13 +59,20 @@
 <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 
 <script>
-    const content = `[[${board.content}]]`; // 서버에서 가져온 내용을 문자열로 저장합니다. 따옴표!!!!!!!
-    const editor = new toastui.Editor({
-        el: document.querySelector('#editor'),
-        height: '400px',
-        initialEditType: 'markdown',
-        previewStyle: 'vertical',
-        initialValue: content
+    const content = `[[${board.content}]]`; // 서버에서 가져온 내용을 문자열로 저장 따옴표!!!!!!!
+<!--    const existingImages = [[${board.review_images}]]; // 기존 이미지 URL 배열-->
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const editor = new toastui.Editor({
+            el: document.querySelector('#editor'),
+            height: '400px',
+            initialEditType: 'markdown',
+            previewStyle: 'vertical',
+            initialValue: content
+        });
+
+<!--        // 페이지 로드 시 기존 이미지 미리보기-->
+<!--        loadExistingImages(existingImages);-->
     });
 </script>
 

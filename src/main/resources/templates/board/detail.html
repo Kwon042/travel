@@ -31,7 +31,7 @@
 
           <div class="post-image" th:if="${images != null and #lists.size(images) > 0}">
             <div th:each="img : ${images}">
-              <img th:src="@{'/' + ${img.url}}" class="img-thumbnail" style="max-width: 200px;" />
+              <img th:src="@{'/' + ${img.url}}"/>
             </div>
           </div>
         </div>
