@@ -12,8 +12,8 @@ header, footer {
 
 .comments-section {
     max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
+    margin: 25px auto;
+    padding: 0; /* Padding 제거 */
 }
 
 .comments-title {
@@ -22,18 +22,13 @@ header, footer {
     margin-bottom: 10px;
 }
 
-.separator {
-    border: 1px solid #ccc;
-    margin-bottom: 20px;
-}
-
 .comment {
-    border: 1px solid #ccc;
-    border-radius: 8px;
+    border: none; /*_border 제거*/
     padding: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 0; /*_MARGIN 없애서 붙어 보이게*/
     display: flex;
     flex-direction: column;
+    border-bottom: 1px solid #ccc; /* 각 댓글 사이에만 경계선 추가 */
 }
 
 .comment-header {
@@ -45,8 +40,10 @@ header, footer {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: #ccc; /* Placeholder for profile image */
+    background-color: #ccc; /* 옅은 회색 */
     margin-right: 10px;
+    background-size: cover; /* 배경 이미지 비율에 맞게 조정 */
+    background-position: center; /* 이미지 중심으로 배치 */
 }
 
 .nickname {

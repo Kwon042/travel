@@ -6,8 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>후기 수정</title>
-    <link rel="stylesheet" href="/header.css">
-    <link rel="stylesheet" href="/footer.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css">
 </head>
@@ -27,6 +27,7 @@
                 <input type="hidden" name="id" th:value="${board.id}"/>
                 <input type="hidden" name="regionId" th:value="${board.region.id}"/>
                 <input type="hidden" name="nickname" th:value="${#authentication.name}"/>
+                <input type="hidden" name="content" th:value="${board.content}"/>
 
                 <div class="mb-3">
                     <label for="title" class="form-label">제목</label>
@@ -36,7 +37,7 @@
                 <div class="mb-3">
                     <label class="form-label">내용</label>
                     <div id="editor" style="height: 400px;"></div> <!-- Toast UI Editor 추가 -->
-                    <input type="hidden" name="content" id="content"> <!-- 에디터의 내용을 전송하기 위한 숨겨진 필드 추가 -->
+                    <input type="hidden" name="content" id="content" th:value="${board.content}">
                 </div>
 
                 <div class="mb-3">
@@ -54,44 +55,19 @@
 <!-- 풋터 추가 -->
 <footer th:replace="~{layout/footer}"></footer>
 
+<script src="/js/update.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 
 <script>
+    const content = `[[${board.content}]]`; // 서버에서 가져온 내용을 문자열로 저장합니다. 따옴표!!!!!!!
     const editor = new toastui.Editor({
         el: document.querySelector('#editor'),
         height: '400px',
         initialEditType: 'markdown',
         previewStyle: 'vertical',
-        initialValue: /*[[${board.content}]]*/ '' // 기존 내용을 에디터에 로드 (Thymeleaf 구문 사용)
+        initialValue: content
     });
-
-    // 폼 제출 시 에디터 내용 저장
-    document.querySelector("form").addEventListener("submit", function() {
-        const content = editor.getMarkdown(); // 에디터에서 내용 가져오기
-        document.querySelector('input[name="content"]').value = content; // 숨겨진 필드에 저장
-    });
-
-    function previewImages(event) {
-      let previewContainer = document.getElementById('imagePreview');
-      previewContainer.innerHTML = ''; // 기존 미리보기 초기화
-
-      let files = event.target.files;
-      if (files.length > 0) {
-        Array.from(files).forEach(file => {
-          let reader = new FileReader();
-          reader.onload = function(e) {
-            let imgElement = document.createElement("img");
-            imgElement.src = e.target.result;
-            imgElement.classList.add("img-thumbnail", "m-2");
-            imgElement.style.width = "150px";
-            imgElement.style.height = "150px";
-            previewContainer.appendChild(imgElement);
-          };
-          reader.readAsDataURL(file);
-        });
-      }
-    }
 </script>
 
 </body>
