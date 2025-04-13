@@ -59,23 +59,20 @@ function showLikeList(boardId) {
     .catch(error => console.error('Error fetching likes:', error));
 }
 
-function updateCommentCount(reviewBoardId) {
-    // 서버에 댓글 수 요청
-    fetch(`/comments/${reviewBoardId}`)  // 댓글 수 가져오기 API 호출
+// 댓글 수를 서버에서 가져와서 갱신하는 함수
+function updateCommentCount(boardId) {
+    fetch(`/comments/${boardId}/count`)
         .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
+            if (!response.ok) throw new Error("댓글 수를 불러오는데 실패했습니다.");
             return response.json();
         })
-        .then(data => {
-            // 댓글 수를 업데이트
-            const commentCountElement = document.getElementById(`commentCount_${reviewBoardId}`);
-            if (commentCountElement) {
-                commentCountElement.textContent = data.commentsCount || 0; // 댓글 수를 설정 (없으면 0)
+        .then(count => {
+            const countElement = document.getElementById("commentCount_" + boardId);
+            if (countElement) {
+                countElement.textContent = count;
             }
         })
         .catch(error => {
-            console.error('There was a problem with the fetch operation:', error);
+            console.error("댓글 수 갱신 오류:", error);
         });
 }

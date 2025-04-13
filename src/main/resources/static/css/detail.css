@@ -133,19 +133,58 @@ main {
   max-width: 200px;
 }
 
+.action-buttons {
+    margin-top: 1rem; /* 위쪽 여백 */
+    margin-bottom: 1rem; /* 아래쪽 여백 */
+    display: flex; /* Flexbox 사용 */
+    justify-content: space-between; /* 양 끝에 배치 */
+    align-items: center; /* 수직 정렬 */
+}
+
+.like-comment-buttons {
+    display: flex; /* 버튼들을 가로로 나열 */
+    gap: 5px; /* 버튼 사이의 간격 */
+    background-color: transparent !important;
+}
+
+.like-comment-buttons .btn {
+    background-color: transparent; /* 버튼 배경색 없음 */
+    border: none; /* 테두리 없음 */
+}
+
+/* 버튼에 호버 효과 제거 */
+.like-comment-buttons .btn:hover {
+    background-color: transparent; /* 호버 시 배경색 없음 */
+    color: inherit; /* 색상 유지 */
+}
+
+.btn-light {
+    color: #495057;
+}
+
+.btn-secondary {
+    color: black !important;
+    background-color: transparent !important;
+    border: 1px solid #d3d3d3 !important;
+}
+
+.btn-danger {
+    color: red !important;
+    background-color: transparent !important;
+    border: 1px solid #d3d3d3 !important;
+}
+
 /* 목록으로 돌아가기 버튼 */
 .back-button {
     display: inline-block;
     padding: 10px 15px;
-    background-color: #007bff;
-    color: white;
+    color: black !important;
+    background-color: transparent !important;
+    border: 1px solid #d3d3d3 !important;
     text-decoration: none;
     border-radius: 5px;
     transition: background 0.3s;
-}
-
-.back-button:hover {
-    background-color: #0056b3;
+    float: right; /* 오른쪽 정렬 */
 }
 
 /* 📌 여행 테이블 스타일 */

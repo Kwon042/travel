@@ -57,7 +57,7 @@
             <!-- 게시판 카드 내용 -->
             <div id="board-content" class="mt-4">
                 <!-- Thymeleaf를 사용하여 서버에서 넘긴 게시판 내용 출력 -->
-                <div th:each="board : ${boards}">
+                <div th:each="board : ${boards}" id="boards" th:attr="data-board-id=${board.id}">
                     <div class="review-card">
                         <div class="image-container">
                             <img th:src="@{'/uploads/' + ${board.mainImageUrl}}" alt="메인 이미지" />
@@ -75,14 +75,18 @@
                                 <span class="date" th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
 
                                 <span class="likes-comments">
-                                    <button
-                                            th:onclick="'showLikeList(' + ${board.id} + ')' "
-                                            class="btn btn-light likes"
-                                            style="padding: 0; background: none; border: none; color: inherit; cursor: pointer; font-size: 1.0em; align-items: center;">
-                                            💜 <span id="likeCount_[[${board.id}]]" th:text="${likeCount != null ? likeCount : 0}">0</span>
-                                    </button>
+<!--                                    <button-->
+<!--                                            th:onclick="'showLikeList(' + ${board.id} + ')' "-->
+<!--                                            class="btn btn-light likes"-->
+<!--                                            style="padding: 0; background: none; border: none; color: inherit; cursor: pointer; font-size: 1.0em; align-items: center;">-->
+<!--                                            💜 <span id="likeCount_[[${board.id}]]" th:text="${likeCount != null ? likeCount : 0}">0</span>-->
+<!--                                    </button>-->
+                                    <span class="like-text" th:onclick="'showLikeList(' + ${board.id} + ')'"
+                                          style="padding: 0; background: none; border: none; color: inherit; font-size: 1.0em; align-items: center;">
+                                        💜 <span id="likeCount_[[${board.id}]]" th:text="${likeCount != null ? likeCount : 0}">0</span>
+                                    </span>
                                     <div class="comments">
-                                        💬 <span id="commentCount_[[${board.id}]]" th:text="${commentsCount != null ? commentsCount : 0}">0</span>
+                                        💬 <span th:id="'commentCount_' + ${board.id}" th:text="${commentsCount != null ? commentsCount : 0}">0</span>
                                     </div>
                                 </span>
                             </div>
@@ -138,6 +142,12 @@
                 viewer: true,
                 initialValue: markdownContent
             });
+        });
+        // 모든 review-card 요소에 대해 댓글 수를 갱신
+        const reviewCards = document.querySelectorAll('.review-card');
+        reviewCards.forEach(card => {
+            const boardId = card.closest('[data-board-id]').getAttribute('data-board-id');
+            updateCommentCount(boardId);
         });
     });
 </script>
