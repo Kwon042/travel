@@ -29,7 +29,8 @@
             <div class="comment-meta" style="display: flex; justify-content: space-between; align-items: center;">
                 <span class="comment-time"
                       th:with="formattedDate=${#dates.format(T(com.example.travelProj.global.util.DateUtil).convertToDate(comment.createdAt), 'yyyy-MM-dd HH:mm')}"
-                      th:text="${formattedDate}"></span>
+                      th:text="${formattedDate}">
+                </span>
                 <span th:if="${#authentication.name == comment.username}" style="margin-left: auto;">
                     <button class="edit-button" th:attr="data-id=${comment.id}">수정</button>
                     <button class="delete-button" th:attr="data-id=${comment.id}">삭제</button>

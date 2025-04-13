@@ -50,6 +50,9 @@ dependencies {
 
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// markdownconverter
+	implementation 'com.vladsch.flexmark:flexmark-all:0.64.8'
 }
 
 tasks.named('test') {

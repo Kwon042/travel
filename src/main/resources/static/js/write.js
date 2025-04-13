@@ -92,7 +92,7 @@ function previewImages(event) {
                 let imgElement = document.createElement("img");
                 imgElement.src = e.target.result;
                 imgElement.classList.add("img-thumbnail", "m-2");
-                imgElement.style.width = "150px";
+                imgElement.style.width = "150px"; /* 기본 크기 설정 */
                 imgElement.style.height = "150px";
                 imgElement.dataset.index = index;
 
@@ -113,15 +113,16 @@ function previewImages(event) {
                     updatePreview(); // 미리보기 갱신
                 });
 
-                // 메인 이미지 선택
+                // 이미지 클릭 시 에디터에 삽입
                 imgElement.addEventListener("click", function () {
-                    document.querySelectorAll('#imagePreview img').forEach(img => {
-                        img.classList.remove('main-selected');
-                        img.style.border = '';
-                    });
-                    this.classList.add('main-selected');
-                    this.style.border = '3px solid #007bff';
-                    selectedMainIndex = index;
+                    const size = prompt("이미지 크기를 입력하세요 (px):", "150");
+                    if (size) {
+                        imgElement.style.width = size + "px"; // 이미지 사이즈 조정
+                        imgElement.style.height = size + "px"; // 이미지 높이도 조정
+                    }
+
+                    // 에디터에 이미지 삽입
+                    editor.insertImage(imgElement.src);
                 });
 
                 wrapper.appendChild(imgElement);
