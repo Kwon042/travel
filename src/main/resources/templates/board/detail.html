@@ -93,12 +93,12 @@
         </div>
 
         <div th:if="${board != null and board.user != null and board.user.id != null and currentUser != null and board.user.id == currentUser.id}">
-          <a th:href="@{'/board/detail/' + ${board.id} + '/update'}" class="btn btn-secondary edit-button">수정</a>
-          <button th:onclick="'deleteReviewBoard(' + ${board.id} + ')'" class="btn btn-danger delete-button">삭제</button>
+          <a th:href="@{'/board/detail/' + ${board.id} + '/update'}" class="edit-button">수정</a>
+          <button th:onclick="'deleteReviewBoard(' + ${board.id} + ')'" class="delete-button">삭제</button>
         </div>
       </div>
 
-      <a th:href="@{/board/reviewBoard(region=${region})}" class="btn btn-primary back-button">
+      <a th:href="@{/board/reviewBoard(region=${region})}" class="back-button">
         목록으로 돌아가기
       </a>
 

@@ -163,16 +163,21 @@ main {
     color: #495057;
 }
 
-.btn-secondary {
-    color: black !important;
-    background-color: transparent !important;
-    border: 1px solid #d3d3d3 !important;
+.edit-button {
+    color: black;
+    background-color: transparent;
+    border: 1px solid #d3d3d3;
+    border-radius: 2px;
+    padding: 2px 5px;
+    text-decoration: none; /* 기본 밑줄 제거 */
 }
 
-.btn-danger {
-    color: #800020 !important;
-    background-color: transparent !important;
-    border: 1px solid #d3d3d3 !important;
+.delete-button {
+    color: #800020;
+    background-color: transparent;
+    border: 1px solid #d3d3d3;
+    border-radius: 2px;
+    padding: 2px 5px;
 }
 
 /* 목록으로 돌아가기 버튼 */
