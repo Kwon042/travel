@@ -82,7 +82,7 @@ public class CommentService {
 
     // 댓글 수 반환 (대댓글 포함)
     public int countByReviewBoardId(Long reviewBoardId) {
-        List<Comment> comments = commentRepository.findByReviewBoard_Id(reviewBoardId);
+        List<Comment> comments = commentRepository.findByReviewBoard_IdAndParentIsNull(reviewBoardId);
         return countTotalComments(comments);
     }
 
