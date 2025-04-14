@@ -121,9 +121,6 @@ function editComment(commentId) {
         return;
     }
 
-    // 기존 내용 숨기기
-    contentEl.style.display = "none";
-
     // 수정 폼 생성
     const formDiv = document.createElement('div');
     formDiv.className = "edit-form";
@@ -133,11 +130,11 @@ function editComment(commentId) {
     textarea.value = originalText;
 
     const saveBtn = document.createElement('button');
-    saveBtn.className = "btn btn-sm btn-primary me-2";
+    saveBtn.className = "edit-save-button";
     saveBtn.innerText = "저장";
 
     const cancelBtn = document.createElement('button');
-    cancelBtn.className = "btn btn-sm btn-secondary";
+    cancelBtn.className = "edit-cancel-button";
     cancelBtn.innerText = "취소";
 
     // 저장
@@ -164,18 +161,17 @@ function editComment(commentId) {
         })
         .catch(error => console.error("에러:", error));
     });
-    saveBtn.addEventListener('click', saveBtn.eventListener); // 이벤트 리스너 등록
 
     // 취소
     cancelBtn.addEventListener('click', () => {
         formDiv.remove();
-        contentEl.style.display = "";
     });
-    cancelBtn.addEventListener('click', cancelBtn.eventListener); // 이벤트 리스너 등록
 
     formDiv.appendChild(textarea);
     formDiv.appendChild(saveBtn);
     formDiv.appendChild(cancelBtn);
+
+    formDiv.classList.add('active');
 
     if (commentEl.classList.contains('reply')) {
         // 대댓글인 경우

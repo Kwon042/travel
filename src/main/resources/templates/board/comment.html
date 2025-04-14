@@ -53,11 +53,11 @@
             </div>
         </div>
 
-        <!-- 답글 수정 폼 (추가) -->
+        <!-- 답글 수정 폼 -->
         <div class="edit-form" th:id="'editForm_' + ${comment.id}">
             <textarea class="form-control edit-content" rows="3" th:text="${comment.content}"></textarea>
-            <button class="btn btn-sm btn-primary save-edit-button" th:data-comment-id="${comment.id}">저장</button>
-            <button class="btn btn-sm btn-secondary cancel-edit-button" th:data-comment-id="${comment.id}">취소</button>
+            <button class="edit-save-button" th:data-comment-id="${comment.id}">저장</button>
+            <button class="edit-cancel-button" th:data-comment-id="${comment.id}">취소</button>
         </div>
 
         <!-- 답글 구조 -->

@@ -79,12 +79,13 @@ header, footer {
     background-color: transparent; /* 배경색 없음 */
     color: black;                  /* 글자 색상: 검정색 */
     border: 1px solid #ccc;        /* 옅은 회색 테두리 */
-    padding: 3px 10px;            /* 패딩 */
+    padding: 2px 6px;            /* 패딩 */
     border-radius: 2px;           /* 모서리 둥글게 */
     cursor: pointer;               /* 커서 모양 변경 */
     align-self: flex-start;        /* 버튼을 가장 왼쪽에 위치시키기 */
     margin-top: 10px;
     margin-bottom: 4px;
+    font-size: 0.9em;
 }
 
 .comment-input {
@@ -120,6 +121,7 @@ header, footer {
     border: 1px solid #d3d3d3;
     padding: 2px 5px;
     border-radius: 2px;
+    font-size: 0.9em;
 }
 
 .delete-button {
@@ -128,6 +130,7 @@ header, footer {
     border: 1px solid #d3d3d3;
     padding: 2px 5px;
     border-radius: 2px;
+    font-size: 0.9em;
 }
 
 .reply::before {
@@ -194,6 +197,7 @@ header, footer {
     border: 1px solid #d3d3d3;
     padding: 2px 5px;
     border-radius: 2px;
+    font-size: 0.8em;
 }
 
 .cancel-reply-button {
@@ -202,6 +206,7 @@ header, footer {
     border: 1px solid #d3d3d3;
     padding: 2px 5px;
     border-radius: 2px;
+    font-size: 0.8em;
 }
 
 .edit-form {
@@ -210,4 +215,23 @@ header, footer {
 
 .edit-form.active {
     display: block; /* active 클래스가 있을 때 보이도록 설정 */
+}
+
+.edit-save-button {
+    color: black;
+    background-color: transparent;
+    border: 1px solid #d3d3d3;
+    padding: 2px 5px;
+    border-radius: 2px;
+    margin-right: 5px;
+    font-size: 0.8em;
+}
+
+.edit-cancel-button {
+    color: #800020;
+    background-color: transparent;
+    border: 1px solid #d3d3d3;
+    padding: 2px 5px;
+    border-radius: 2px;
+    font-size: 0.8em;
 }
