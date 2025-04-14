@@ -2,10 +2,7 @@ package com.example.travelProj.global.config;
 
 import com.example.travelProj.global.converter.StringToRegionConverter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -14,11 +11,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
     private final StringToRegionConverter stringToRegionConverter;
-
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate(); // 외부 API 호출을 위한 RestTemplate
-    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {

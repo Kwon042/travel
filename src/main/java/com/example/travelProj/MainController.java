@@ -16,11 +16,6 @@ public class MainController {
     private final AttractionService attractionService;
 
     @GetMapping("/")
-    public String main() {
-        return "main";
-    }
-
-    @GetMapping("/")
     public String showMainPage(Model model) {
         // 랜덤 여행지 3개를 가져와서 모델에 추가
         List<Attraction> randomAttractions = attractionService.getRandomAttractions();

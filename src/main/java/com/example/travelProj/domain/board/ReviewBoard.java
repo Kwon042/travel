@@ -75,9 +75,6 @@ public class ReviewBoard {
         if (this.createdAt == null) {
             this.createdAt = LocalDateTime.now();
         }
-        if (this.updatedAt == null) {
-            this.updatedAt = LocalDateTime.now();
-        }
     }
 
     // 객체가 수정될 때마다 updatedAt을 현재 시간으로 갱신

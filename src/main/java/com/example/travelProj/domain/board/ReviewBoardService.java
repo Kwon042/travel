@@ -66,7 +66,6 @@ public class ReviewBoardService {
         reviewBoard.setUser(currentUser);
         String nickname = currentUser.getNickname();
         reviewBoard.setCreatedAt(LocalDateTime.now());
-        reviewBoard.setUpdatedAt(LocalDateTime.now());
         reviewBoard.setRegion(reviewBoardDTO.getRegion());
 
         // 이미지 저장

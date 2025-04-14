@@ -72,15 +72,15 @@
 <!--                            <p class="content viewer" th:utext="${board.content}"></p>-->
 
                             <div class="meta-info">
-                                <span class="date" th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
+                                <span class="date"
+                                      th:with="isEdited=${board.updatedAt != null and not board.updatedAt.equals(board.createdAt)},
+                                          displayDate=${isEdited} ?
+                                              ${#dates.format(T(com.example.travelProj.global.util.DateUtil).convertToDate(board.updatedAt), 'yyyy-MM-dd HH:mm')} :
+                                              ${#dates.format(T(com.example.travelProj.global.util.DateUtil).convertToDate(board.createdAt), 'yyyy-MM-dd HH:mm')}"
+                                      th:text="${isEdited} ? ${displayDate + ' (수정됨)'} : ${displayDate}">
+                                </span>
 
                                 <span class="likes-comments">
-<!--                                    <button-->
-<!--                                            th:onclick="'showLikeList(' + ${board.id} + ')' "-->
-<!--                                            class="btn btn-light likes"-->
-<!--                                            style="padding: 0; background: none; border: none; color: inherit; cursor: pointer; font-size: 1.0em; align-items: center;">-->
-<!--                                            💜 <span id="likeCount_[[${board.id}]]" th:text="${likeCount != null ? likeCount : 0}">0</span>-->
-<!--                                    </button>-->
                                     <span class="like-text" th:onclick="'showLikeList(' + ${board.id} + ')'"
                                           style="padding: 0; background: none; border: none; color: inherit; font-size: 1.0em; align-items: center;">
                                         💜 <span id="likeCount_[[${board.id}]]" th:text="${likeCount != null ? likeCount : 0}">0</span>

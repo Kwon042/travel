@@ -18,6 +18,9 @@ public class Attraction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private String name;
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
