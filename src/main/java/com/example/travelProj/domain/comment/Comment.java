@@ -49,17 +49,14 @@ public class Comment {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // 자동으로 설정됨 > service 에 적어놓지 않아도 됨
+    // 자동으로 설정됨 > service 에 적어놓지 않아도 됨 (초기)
     @PrePersist
     public void prePersist() {
         if (this.createdAt == null) {
             this.createdAt = LocalDateTime.now();
         }
-        if (this.updatedAt == null) {
-            this.updatedAt = LocalDateTime.now();
-        }
     }
-
+    // 수정할 때
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();

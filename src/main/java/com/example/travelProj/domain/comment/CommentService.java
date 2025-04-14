@@ -51,14 +51,14 @@ public class CommentService {
     }
 
     @Transactional
-    public void updateComment(Long commentId, String newContent, SiteUser currentUser) {
+    public Comment updateComment(Long commentId, String newContent, SiteUser currentUser) {
         Comment comment = getCommentById(commentId);
         if (!comment.getUser().getId().equals(currentUser.getId())) {
             throw new AccessDeniedException("댓글 수정 권한이 없습니다.");
         }
         comment.setContent(newContent);
         comment.setUpdatedAt(LocalDateTime.now());
-        commentRepository.save(comment);
+        return comment;
     }
 
     public Comment getCommentById(Long id) {
@@ -100,13 +100,14 @@ public class CommentService {
     }
 
     // Entity → DTO 변환 (트리 구조)
-    private CommentResponseDTO convertToDTO(Comment comment) {
+    CommentResponseDTO convertToDTO(Comment comment) {
         CommentResponseDTO dto = new CommentResponseDTO();
         dto.setId(comment.getId());
         dto.setUsername(comment.getUser().getUsername());
         dto.setNickname(comment.getUser().getNickname());
         dto.setContent(comment.getContent());
         dto.setCreatedAt(comment.getCreatedAt());
+        dto.setUpdatedAt(comment.getUpdatedAt());
         dto.setLikesCount(comment.getLikes().size());
 
 

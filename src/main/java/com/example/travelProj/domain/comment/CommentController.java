@@ -72,6 +72,8 @@ public class CommentController {
                                               @AuthenticationPrincipal SiteUser user) {
         String newContent = requestBody.get("content");
         commentService.updateComment(commentId, newContent, user);
+        Comment updatedComment = commentService.getCommentById(commentId);
+        CommentResponseDTO dto = commentService.convertToDTO(updatedComment);
         return ResponseEntity.ok().build();
     }
 }
