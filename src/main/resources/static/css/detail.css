@@ -124,6 +124,7 @@ main {
 /* 이미지 섹션 */
 .board-image {
   margin-top: 30px;
+  margin-left: 20px;
 }
 
 .board-image img {
@@ -181,7 +182,7 @@ main {
 /* 목록으로 돌아가기 버튼 */
 .back-button {
     display: inline-block;
-    padding: 10px 15px;
+    padding: 8px 12px;
     color: black !important;
     background-color: transparent !important;
     border: 1px solid #d3d3d3 !important;
