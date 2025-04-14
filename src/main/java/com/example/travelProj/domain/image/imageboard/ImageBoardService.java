@@ -49,6 +49,7 @@ public class ImageBoardService {
 
         ImageBoard imageBoard = new ImageBoard();
         imageBoard.setFilename(newFileName);
+        imageBoard.setFilepath(filePath.toString());
 
         // 상대 경로만 저장
         String relativePath = "board/" + reviewBoardId + "/" + newFileName;

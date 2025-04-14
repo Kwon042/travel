@@ -28,7 +28,7 @@
     height: 100px;
     object-fit: cover; /* 비율 유지하며 정사각형에 맞게 잘림 */
     border-radius: 10px; /* 이미지 모서리 둥글게 만들기 */
-    margin-top: 20px; /* 위쪽 여백 추가하여 더 아래로 위치 */
+    margin-top: 20px;
 }
 
 .content-container {
