@@ -63,8 +63,11 @@
           <div>
             <p class="nickname mb-0" th:text="${board.user.nickname}"></p>
             <span class="board-time"
-                  th:with="formattedDate=${#dates.format(T(com.example.travelProj.global.util.DateUtil).convertToDate(board.createdAt), 'yyyy-MM-dd HH:mm')}"
-                  th:text="${formattedDate}">
+                  th:with="isEdited=${board.updatedAt != null and not board.updatedAt.equals(board.createdAt)},
+                      displayDate=${isEdited} ?
+                          ${#dates.format(T(com.example.travelProj.global.util.DateUtil).convertToDate(board.updatedAt), 'yyyy-MM-dd HH:mm')} :
+                          ${#dates.format(T(com.example.travelProj.global.util.DateUtil).convertToDate(board.createdAt), 'yyyy-MM-dd HH:mm')}"
+                  th:text="${isEdited} ? ${displayDate + ' (수정됨)'} : ${displayDate}">
             </span>
           </div>
         </div>

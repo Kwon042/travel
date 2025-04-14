@@ -55,7 +55,7 @@
             <hr style="border: 1px solid #5b30a4; margin-top: 20px;"> <!-- 구분선 추가 -->
 
             <!-- 게시판 카드 내용 -->
-            <div id="board-content" class="mt-4">
+            <div id="board-content">
                 <!-- Thymeleaf를 사용하여 서버에서 넘긴 게시판 내용 출력 -->
                 <div th:each="board : ${boards}" id="boards" th:attr="data-board-id=${board.id}">
                     <div class="review-card">
@@ -94,23 +94,22 @@
                     </div>
                 </div>
                 <!-- 페이징 네비게이션 추가 -->
-                <div class="d-flex justify-content-center mt-4">
-                    <ul class="pagination">
-                        <li th:if="${currentPage > 0}" class="page-item">
-                            <a th:href="@{/board/reviewBoard(region=${region}, page=${currentPage - 1}, size=${pageSize})}"
-                               class="page-link">이전</a>
+                <div class="pagination">
+                    <ul class="pagination-detail">
+                        <li th:if="${currentPage > 0}">
+                            <a th:href="@{/board/reviewBoard(region=${region}, page=${currentPage - 1}, size=${pageSize})}">
+                                이전</a>
                         </li>
 
                         <li th:each="i : ${#numbers.sequence(currentPage == 0 ? 0 : (currentPage - 2), currentPage + 2)}"
-                            th:if="${i >= 0 and i < totalPages}" class="page-item"
+                            th:if="${i >= 0 and i < totalPages}"
                             th:classappend="${i == currentPage ? 'active' : ''}">
-                            <a th:href="@{/board/reviewBoard(region=${region}, page=${i}, size=${pageSize})}"
-                               class="page-link" th:text="${i + 1}"></a>
+                            <a th:href="@{/board/reviewBoard(region=${region}, page=${i}, size=${pageSize})}" th:text="${i + 1}"></a>
                         </li>
 
-                        <li th:if="${currentPage < totalPages - 1}" class="page-item">
-                            <a th:href="@{/board/reviewBoard(region=${region}, page=${currentPage + 1}, size=${pageSize})}"
-                               class="page-link">다음</a>
+                        <li th:if="${currentPage < totalPages - 1}">
+                            <a th:href="@{/board/reviewBoard(region=${region}, page=${currentPage + 1}, size=${pageSize})}">
+                                다음</a>
                         </li>
                     </ul>
                 </div>

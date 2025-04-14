@@ -126,11 +126,10 @@ main {
   margin-top: 30px;
 }
 
-.post-image img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.board-image img {
+  max-width: 100%;  /* 부모 요소 너비를 넘지 않음 */
+  height: auto;     /* 원본 비율 유지 */
+  border-radius: 3px;
 }
 
 .action-buttons {
