@@ -47,14 +47,16 @@
         </div>
 
         <!-- 답글 작성 폼 -->
-        <div class="reply-form-input" th:id="'replyForm_' + ${comment.id}" style="display: none;">
+        <div class="reply-form-input" th:id="'replyForm_' + ${comment.id}">
             <textarea class="form-control reply-content" rows="3"></textarea>
-            <button class="submit-reply-button" th:data-parent-id="${comment.id}">답글 작성</button>
-            <button class="cancel-reply-button" th:data-comment-id="${comment.id}">취소</button>
+            <div class="reply-buttons">
+                <button class="submit-reply-button" th:data-parent-id="${comment.id}">답글 작성</button>
+                <button class="cancel-reply-button" th:data-comment-id="${comment.id}">취소</button>
+            </div>
         </div>
 
         <!-- 답글 수정 폼 (추가) -->
-        <div class="edit-form" th:id="'editForm_' + ${comment.id}" style="display: none;">
+        <div class="edit-form" th:id="'editForm_' + ${comment.id}">
             <textarea class="form-control edit-content" rows="3" th:text="${comment.content}"></textarea>
             <button class="btn btn-sm btn-primary save-edit-button" th:data-comment-id="${comment.id}">저장</button>
             <button class="btn btn-sm btn-secondary cancel-edit-button" th:data-comment-id="${comment.id}">취소</button>

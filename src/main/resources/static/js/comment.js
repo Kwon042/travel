@@ -24,11 +24,17 @@ document.addEventListener("DOMContentLoaded", function() {
                 editComment(commentId, isReply);
             }
 
-            // 답글 버튼 클릭
+            // 답글 버튼 클릭 (토글 기능 구현)
             if (target.classList.contains("reply-button")) {
                 const commentId = target.getAttribute("data-comment-id");
                 const replyForm = document.getElementById(`replyForm_${commentId}`);
-                replyForm.style.display = "block"; // 답글 작성 영역 보이기
+
+                // 이미 active 클래스가 있다면 제거하고, 없다면 추가
+                if (replyForm.classList.contains("active")) {
+                    replyForm.classList.remove("active"); // 폼 닫기
+                } else {
+                    replyForm.classList.add("active"); // 폼 열기
+                }
             }
 
             // 답글 작성 버튼 클릭
@@ -41,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if (target.classList.contains("cancel-reply-button")) {
                 const commentId = target.getAttribute("data-comment-id");
                 const replyForm = document.getElementById(`replyForm_${commentId}`);
-                replyForm.style.display = "none"; // 답글 작성 영역 숨기기
+                replyForm.classList.remove("active"); // 폼 닫기
             }
         });
     }
@@ -100,7 +106,20 @@ function editComment(commentId) {
     const originalText = contentEl.innerText.trim();
 
     // 이미 수정 중이면 return
-    if (commentEl.querySelector('textarea')) return;
+    if (commentEl.querySelector('.edit-form')) {
+        // 이미 수정 폼이 열려있으면 닫기
+        const existingForm = commentEl.querySelector('.edit-form');
+        const saveBtn = existingForm.querySelector('.btn-primary');
+        const cancelBtn = existingForm.querySelector('.btn-secondary');
+
+        // 이벤트 리스너 제거
+        saveBtn.removeEventListener('click', saveBtn.eventListener);
+        cancelBtn.removeEventListener('click', cancelBtn.eventListener);
+
+        existingForm.remove();
+        contentEl.style.display = "";
+        return;
+    }
 
     // 기존 내용 숨기기
     contentEl.style.display = "none";
@@ -145,12 +164,14 @@ function editComment(commentId) {
         })
         .catch(error => console.error("에러:", error));
     });
+    saveBtn.addEventListener('click', saveBtn.eventListener); // 이벤트 리스너 등록
 
     // 취소
     cancelBtn.addEventListener('click', () => {
         formDiv.remove();
         contentEl.style.display = "";
     });
+    cancelBtn.addEventListener('click', cancelBtn.eventListener); // 이벤트 리스너 등록
 
     formDiv.appendChild(textarea);
     formDiv.appendChild(saveBtn);
