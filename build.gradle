@@ -53,6 +53,10 @@ dependencies {
 
 	// markdownconverter
 	implementation 'com.vladsch.flexmark:flexmark-all:0.64.8'
+
+	// WebClient
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
 }
 
 tasks.named('test') {
