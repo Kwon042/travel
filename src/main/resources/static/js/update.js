@@ -9,16 +9,14 @@ function loadExistingImages(images) {
     let previewContainer = document.getElementById('imagePreview');
     previewContainer.innerHTML = ''; // 기존 미리보기 초기화
 
-    if (Array.isArray(images) && images.length > 0) { // images가 배열이고 비어있지 않으면
-        images.forEach(image => {
-            let imgElement = document.createElement("img");
-            imgElement.src = image.url; // 기존 이미지 URL, ImageBoard 객체에서 URL
-            imgElement.classList.add("img-thumbnail", "m-2");
-            imgElement.style.width = "150px"; // 미리보기 크기 설정
-            imgElement.style.height = "150px"; // 미리보기 크기 설정
-            previewContainer.appendChild(imgElement); // 미리보기 요소에 추가
-        });
-    }
+    images.forEach(url => {
+        let imgElement = document.createElement("img");
+        imgElement.src = url;
+        imgElement.classList.add("img-thumbnail", "m-2");
+        imgElement.style.width = "150px";
+        imgElement.style.height = "150px";
+        previewContainer.appendChild(imgElement);
+    });
 }
 
 function previewImages(event) {

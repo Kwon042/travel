@@ -152,9 +152,12 @@ public class ReviewBoardController {
         if (board == null) {
             return "redirect:/board/reviewBoard";
         }
+        List<String> imageUrls = reviewBoardService.getImageUrlsByBoardId(id);
+
         CsrfToken csrfToken = csrfTokenRepository.generateToken(request);
         model.addAttribute("_csrf", csrfToken);
         model.addAttribute("board", board);
+        model.addAttribute("imageUrls", imageUrls);
 
         return "board/update";
     }

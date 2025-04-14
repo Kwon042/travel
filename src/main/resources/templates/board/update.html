@@ -60,7 +60,6 @@
 
 <script>
     const content = `[[${board.content}]]`; // 서버에서 가져온 내용을 문자열로 저장 따옴표!!!!!!!
-<!--    const existingImages = [[${board.review_images}]]; // 기존 이미지 URL 배열-->
 
     document.addEventListener("DOMContentLoaded", function() {
         const editor = new toastui.Editor({
@@ -70,10 +69,11 @@
             previewStyle: 'vertical',
             initialValue: content
         });
-
-<!--        // 페이지 로드 시 기존 이미지 미리보기-->
-<!--        loadExistingImages(existingImages);-->
     });
+</script>
+<script th:inline="javascript">
+    let existingImages = [[${imageUrls}]];
+    loadExistingImages(existingImages);
 </script>
 
 </body>

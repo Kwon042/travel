@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -120,6 +121,16 @@ public class ReviewBoardService {
             reviewBoard.setReview_images(newImages); // 업데이트된 이미지 리스트 설정
         }
         reviewBoardRepository.save(reviewBoard); // 최종 업데이트
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> getImageUrlsByBoardId(Long boardId) {
+        ReviewBoard board = reviewBoardRepository.findById(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+
+        return board.getReview_images().stream()
+                .map(ImageBoard::getImageUrl)
+                .collect(Collectors.toList());
     }
 
     @Transactional
