@@ -57,7 +57,9 @@
         <h2 class="board-title" th:text="${board.title}"></h2>
 
         <div class="board-user mt-4 d-flex align-items-center">
-          <img th:style="'background-image: url(' + ${board.user.profileImageUrl} + ');'">
+          <div class="profile-image"
+               th:style="'background-image: url(' + ${board.user.profileImageUrl} + ');'">
+          </div>
           <div>
             <p class="nickname mb-0" th:text="${board.user.nickname}"></p>
             <span class="board-time"

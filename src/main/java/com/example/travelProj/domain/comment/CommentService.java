@@ -80,9 +80,23 @@ public class CommentService {
                 .collect(Collectors.toList());
     }
 
-    // 댓글 수 반환
+    // 댓글 수 반환 (대댓글 포함)
     public int countByReviewBoardId(Long reviewBoardId) {
-        return commentRepository.countByReviewBoard_Id(reviewBoardId);
+        List<Comment> comments = commentRepository.findByReviewBoard_Id(reviewBoardId);
+        return countTotalComments(comments);
+    }
+
+    // 전체 댓글 수 계산
+    private int countTotalComments(List<Comment> comments) {
+        if (comments == null || comments.isEmpty()) {
+            return 0;
+        }
+        int count = 0;
+        for (Comment comment : comments) {
+            count++; // 자기 자신
+            count += countTotalComments(comment.getChildren()); // 대댓글 포함 재귀 카운트
+        }
+        return count;
     }
 
     // Entity → DTO 변환 (트리 구조)

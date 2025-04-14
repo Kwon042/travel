@@ -14,11 +14,9 @@
 <!-- 댓글 목록을 렌더링하는 부분 -->
 <div class="comments-section">
     <h2 class="comments-title">
-        댓글
-        <span th:with="totalComments=${#lists.size(comments) + comments.?[children != null].![children].size()}">
-            <span th:text="${totalComments}">0</span>
-        </span>
-    </h2>    <hr style="border: 1px solid #5b30a4; margin: 20px 0;"> <!-- 구분선 추가 -->
+        댓글 <span th:text="${commentsCount}">0</span>
+    </h2>
+    <hr style="border: 1px solid #5b30a4; margin: 20px 0;"> <!-- 구분선 추가 -->
     <div th:each="comment : ${comments}">
         <div class="comment">
             <div class="comment-header">
@@ -62,7 +60,7 @@
             <button class="btn btn-sm btn-secondary cancel-edit-button" th:data-comment-id="${comment.id}">취소</button>
         </div>
 
-        <!-- 대댓글 -->
+        <!-- 답글 구조 -->
         <div th:each="reply : ${comment.children}" class="comment reply" style="background-color: #f5f5f5;">
             <div class="reply-header">
                 <div class="profile-pic"
