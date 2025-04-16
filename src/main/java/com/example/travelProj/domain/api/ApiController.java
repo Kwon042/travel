@@ -17,8 +17,13 @@ public class ApiController {
 
     @GetMapping("/search")
     public String searchAttraction(@RequestParam String keyword) {
+        System.out.println("ApiController > searchAttraction. keyword: " + keyword);
+
+
         return apiService.searchAttraction(keyword);
     }
+
+
 
 
 }

@@ -16,7 +16,7 @@
     <div class="col-md-6">
       <div class="card">
         <div class="card-header text-center" style="background-color: #6a0dad; color: white;">
-          <h3>회원가입</h3>
+          <h3>Sign Up Form</h3>
         </div>
         <div class="card-body">
           <form action="/user/signup" th:object="${userCreateForm}" method="POST" >
@@ -55,11 +55,11 @@
             </div>
 
             <!-- 제출 버튼 -->
-            <button type="submit" class="btn btn-primary w-100" style="background-color: #6a0dad;">회원가입</button>
+            <button type="submit" class="btn btn-primary w-100" style="background-color: #6a0dad;">Sign Up</button>
           </form>
         </div>
         <div class="card-footer text-center">
-          <p>이미 계정이 있으신가요? <a href="/user/login" style="color: #6a0dad;">로그인</a></p>
+          <p>Already have an account? <a href="/user/login" style="color: #6a0dad;">Log in</a></p>
         </div>
       </div>
     </div>

@@ -57,6 +57,9 @@ dependencies {
 	// WebClient
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
+	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.13.1'  // 사용하고 있는 Jackson 버전에 맞는 버전
+
+
 }
 
 tasks.named('test') {

@@ -18,7 +18,7 @@
     </div>
     <div class="right-nav">
       <a href="/">Home</a>
-      <a href="#" id="mapBtn">Map</a>
+      <a href="/map" id="mapBtn">Map</a>
       <a href="/board/reviewBoard">Review</a>
       <a sec:authorize="isAnonymous()" th:href="@{/user/login}">Login</a>
       <a id="logoutButton" sec:authorize="isAuthenticated()" th:href="@{/user/logout}">Logout</a>
