@@ -11,7 +11,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class ApiService {
 
     private final WebClient webClient;
-    private final AttractionRepository attractionRepository;
 
     @Value("${api.url}")
     private String apiUrl;

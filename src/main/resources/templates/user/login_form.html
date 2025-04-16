@@ -16,7 +16,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header text-center" style="background-color: #6a0dad; color: white;">
-                    <h3>로그인</h3>
+                    <h3>Login</h3>
                 </div>
                 <div class="card-body">
                     <form th:action="@{/user/login}" method="post">
@@ -28,22 +28,22 @@
 
                         <!-- 사용자ID 입력 -->
                         <div class="mb-3">
-                            <label for="username" class="form-label">사용자ID</label>
+                            <label for="username" class="form-label">Username</label>
                             <input type="text" name="username" id="username" class="form-control">
                         </div>
 
                         <!-- 비밀번호 입력 -->
                         <div class="mb-3">
-                            <label for="password" class="form-label">비밀번호</label>
+                            <label for="password" class="form-label">Password</label>
                             <input type="password" class="form-control" id="password" name="password" required>
                         </div>
 
                         <!-- 제출 버튼 -->
-                        <button type="submit" class="btn btn-primary w-100" style="background-color: #6a0dad;">로그인</button>
+                        <button type="submit" class="btn btn-primary w-100" style="background-color: #6a0dad;">Login</button>
                     </form>
                 </div>
                 <div class="card-footer text-center">
-                    <p>아직 계정이 없으신가요? <a href="/user/signup" style="color: #6a0dad;">회원가입</a></p>
+                    <p>New here? Sign up!  <a href="/user/signup" style="color: #6a0dad;">Sign Up</a></p>
                 </div>
             </div>
         </div>

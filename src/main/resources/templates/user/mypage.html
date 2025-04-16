@@ -11,10 +11,10 @@
 <body>
 <header th:replace="~{layout/header}"></header>
 <div class="container">
-    <h2>기본 정보</h2>
+    <h2>My profile</h2>
     <table class="info-table">
         <tr>
-            <td><strong>프로필 사진</strong></td>
+            <td><strong>Profile Picture</strong></td>
             <td></td>
             <td class="text-end">
                 <img id="profileImage"
@@ -25,22 +25,22 @@
             </td>
         </tr>
         <tr>
-            <td><strong>사용자 이름</strong></td>
+            <td><strong>Username</strong></td>
             <td><span th:text="${user.username}"></span></td>
             <td></td>
         </tr>
         <tr>
-            <td><strong>닉네임</strong></td>
+            <td><strong>Nickname</strong></td>
             <td><span id="currentNickname" th:text="${user.nickname}"></span></td>
             <td class="text-end"><span class="action-button" onclick="openEditModal('nickname')">></span></td>
         </tr>
         <tr>
-            <td><strong>이메일</strong></td>
+            <td><strong>Email</strong></td>
             <td><span id="currentEmail" th:text="${user.email}"></span></td>
             <td class="text-end"><span class="action-button" onclick="openEditModal('email')">></span></td>
         </tr>
         <tr>
-            <td><strong>비밀번호</strong></td>
+            <td><strong>Password</strong></td>
             <td>**********</td>
             <td class="text-end">
                 <span class="action-button" onclick="openChangePasswordModal()">></span>
@@ -48,13 +48,11 @@
         </tr>
     </table>
 
-    <h3>찜한 여행지 목록</h3>
-    <ul id="favouritePlaces">
-        <li>여행지 1</li>
-        <li>여행지 2</li>
-        <li>여행지 3</li>
+    <h3>My favorites</h3>
+    <ul class="my-favorites" id="favouritePlaces">
+
     </ul>
-    <button id="deleteAccountButton" class="btn btn-danger">회원 탈퇴</button>
+    <button id="deleteAccountButton" class="delete-account-button">회원 탈퇴</button>
 
     <!-- 프로필 이미지 업로드 모달 -->
     <div id="profileImageModal" class="modal hidden">

@@ -21,7 +21,7 @@
         <div class="card-body">
           <form action="/user/signup" th:object="${userCreateForm}" method="POST" >
             <div class="mb-3">
-              <label for="username" class="form-label">이름</label>
+              <label for="username" class="form-label">Username</label>
               <input type="text" class="form-control" id="username" name="username" required>
               <div th:if="${#fields.hasErrors('username')}" class="text-danger">
                 <p th:each="error : ${#fields.errors('username')}" th:text="${error}"></p>
@@ -30,24 +30,24 @@
 
             <!-- 이메일 입력 -->
             <div class="mb-3">
-              <label for="email" class="form-label">이메일</label>
+              <label for="email" class="form-label">Email</label>
               <input type="email" class="form-control" id="email" name="email" required>
             </div>
 
             <!-- 닉네임 입력 -->
             <div class="mb-3">
-              <label for="nickname" class="form-label">닉네임</label>
+              <label for="nickname" class="form-label">Nickname</label>
               <input type="text" class="form-control" id="nickname" name="nickname" required>
             </div>
             <!-- 비밀번호 입력 -->
             <div class="mb-3">
-              <label for="password1" class="form-label">비밀번호</label>
+              <label for="password1" class="form-label">Password</label>
               <input type="password" class="form-control" id="password1" name="password1" required>
             </div>
 
             <!-- 비밀번호 확인 -->
             <div class="mb-3">
-              <label for="password2" class="form-label">비밀번호 확인</label>
+              <label for="password2" class="form-label">Confirm Password</label>
               <input type="password" class="form-control" id="password2" name="password2" required>
               <div th:if="${#fields.hasErrors('password2')}" class="text-danger">
                 <p th:each="error : ${#fields.errors('password2')}" th:text="${error}"></p>

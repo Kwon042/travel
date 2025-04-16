@@ -12,9 +12,6 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* 사용자 정보 제목 */
@@ -96,10 +93,15 @@ h2 {
 
 /* 찜한 여행지 목록 */
 h3 {
-    font-size: 24px;
+    font-size: 18px;
     margin-top: 40px;
     margin-bottom: 20px;
     color: #333;
+}
+
+.my-favorites {
+    margin-left: 10px;
+    font-size: 0.6em;
 }
 
 /* 찜한 여행지 목록 스타일 */
@@ -119,23 +121,13 @@ h3 {
 }
 
 /* 버튼 스타일 */
-.btn {
-    padding: 10px 15px;
-    font-size: 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-.btn-danger {
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    margin-top: 20px;
-}
-
-.btn-danger:hover {
-    background-color: #c82333;
+.delete-account-button {
+    color: #800020;
+    background-color: transparent;
+    border: 1px solid #d3d3d3;
+    padding: 3px 6px;
+    border-radius: 2px;
+    float: right;  /* 버튼을 우측에 정렬 */
 }
 
 .text-end {

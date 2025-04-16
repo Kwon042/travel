@@ -17,12 +17,12 @@
       </a>
     </div>
     <div class="right-nav">
-      <a href="/">홈</a>
-      <a href="#">지도</a>
-      <a href="/board/reviewBoard">여행리뷰</a>
-      <a sec:authorize="isAnonymous()" th:href="@{/user/login}">로그인</a>
-      <a id="logoutButton" sec:authorize="isAuthenticated()" th:href="@{/user/logout}">로그아웃</a>
-      <a href="/user/mypage" sec:authorize="isAuthenticated()">마이페이지</a>
+      <a href="/">Home</a>
+      <a href="#" id="mapBtn">Map</a>
+      <a href="/board/reviewBoard">Review</a>
+      <a sec:authorize="isAnonymous()" th:href="@{/user/login}">Login</a>
+      <a id="logoutButton" sec:authorize="isAuthenticated()" th:href="@{/user/logout}">Logout</a>
+      <a href="/user/mypage" sec:authorize="isAuthenticated()">Mypage</a>
     </div>
   </div>
 </header>
