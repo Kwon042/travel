@@ -57,7 +57,8 @@ dependencies {
 	// WebClient
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
-	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.13.1'  // 사용하고 있는 Jackson 버전에 맞는 버전
+	// MacOS용 최적화된 DNS 처리 네이티브 라이브러리
+	runtimeOnly "io.netty:netty-resolver-dns-native-macos:4.1.109.Final:osx-aarch_64"
 
 
 }

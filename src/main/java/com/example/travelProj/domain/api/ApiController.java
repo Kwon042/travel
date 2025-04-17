@@ -1,6 +1,5 @@
 package com.example.travelProj.domain.api;
 
-import com.example.travelProj.domain.attraction.AttractionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,12 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class ApiController {
 
     private final ApiService apiService;
-    private final AttractionService attractionService;
 
     @GetMapping("/search")
     public String searchAttraction(@RequestParam String keyword) {
-        System.out.println("ApiController > searchAttraction. keyword: " + keyword);
-
 
         return apiService.searchAttraction(keyword);
     }

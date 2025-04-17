@@ -17,21 +17,11 @@
 <h2>관광지 검색 지도</h2>
 <div class="search-area">
     <input type="text" id="searchKeyword" placeholder="관광지 이름을 입력하세요" />
-    <button onclick="searchAttractions()">검색</button>
+    <button onclick="searchAttraction()">검색</button>
 </div>
 <div id="map"></div>
 
 <footer th:replace="~{layout/footer}"></footer>
-<!--<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a166f024ff1aa12ece8b74b52adde20d&libraries=services"></script>-->
-<!--<script>-->
-<!--    var container = document.getElementById('map');-->
-<!--    var options = {-->
-<!--        center: new kakao.maps.LatLng(33.450701, 126.570667),-->
-<!--        level: 3-->
-<!--    };-->
-
-<!--    var map = new kakao.maps.Map(container, options);-->
-<!--</script>-->
 
 <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=a166f024ff1aa12ece8b74b52adde20d&libraries=services"></script>
 
@@ -53,44 +43,46 @@
         });
     };
 
-    // 관광지 검색 함수
-    function searchAttractions() {
-        const keyword = document.getElementById('searchKeyword').value.trim();
-        if (!keyword) {
-            alert("검색어를 입력하세요!");
+    // 검색된 관광지 리스트를 카카오 지도에 마커로 표시
+    function displayMarkersOnMap(data) {
+        // 데이터가 제대로 반환되었는지 확인
+        if (!data || !data.items || !data.items.item) {
+            console.error('유효한 데이터가 아닙니다.');
             return;
         }
 
-        fetch(`/api/attraction/search?keyword=${encodeURIComponent(keyword)}`)
-            .then(response => response.text())  // 응답을 텍스트로 받아서 확인
-            .then(text => {
-                console.log("응답 텍스트:", text);  // 텍스트로 확인하여 오류를 분석
-                try {
-                    const data = JSON.parse(text);  // JSON으로 파싱 시도
-                    if (!data.response?.body?.items?.item || data.response.body.items.item.length === 0) {
-                        alert("검색 결과가 없습니다.");
-                        return;
-                    }
+        // 카카오 지도 객체 생성
+        data.items.item.forEach(function(item) {
+            var markerPosition = new kakao.maps.LatLng(item.mapy, item.mapx);  // 위도, 경도
 
-                    const attractions = data.response.body.items.item;
-                    const bounds = new kakao.maps.LatLngBounds();
+            var marker = new kakao.maps.Marker({
+                position: markerPosition,
+                title: item.title // 마커에 관광지 이름 설정
+            });
 
-                    attractions.forEach(attraction => {
-                        const position = new kakao.maps.LatLng(attraction.mapy, attraction.mapx);
-                        const marker = new kakao.maps.Marker({ position });
-                        marker.setMap(map);
-                        bounds.extend(position);
-                    });
+            marker.setMap(map);  // 지도에 마커 표시
+        });
+    }
 
-                    map.setBounds(bounds);
-                } catch (err) {
-                    console.error("응답 파싱 실패:", err);
-                    alert("관광지 정보를 불러오는 데 실패했습니다.");
+    // 검색 요청을 보낼 함수
+    function searchAttraction() {
+        const keyword = document.getElementById('searchKeyword').value.trim();
+        if (!keyword) {
+            alert("검색어를 입력해주세요.");
+            return;
+        }
+
+        fetch(`/api/attraction?keyword=${keyword}`)
+            .then(response => response.json())
+            .then(data => {
+                if (!data || !data.items || !data.items.item) {
+                    console.error('검색된 관광지가 없습니다.');
+                    return;
                 }
+                displayMarkersOnMap(data);  // 데이터를 받아와서 지도에 표시
             })
-            .catch(err => {
-                console.error("관광지 조회 실패:", err);
-                alert("관광지 정보를 불러오는 데 실패했습니다.");
+            .catch(error => {
+                console.error('검색 오류:', error);
             });
     }
 </script>

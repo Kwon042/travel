@@ -1,22 +1,23 @@
 package com.example.travelProj.domain.attraction;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 @Getter
 @Setter
+@RequiredArgsConstructor
+// API 응답 데이터를 받을 DTO
 public class AttractionResponse {
+    private String title;
+    private String firstImage;
+    private String addr;
 
-    private List<AttractionItem> items; // 실제 관광지 정보를 담는 리스트
-
-    @Getter
-    @Setter
-    public static class AttractionItem {
-        private String name;        // 관광지 이름
-        private String description; // 관광지 설명
-        private String imageUrl;    // 관광지 이미지 URL
-        private String location;     // 관광지 위치
+    // 필드를 사용하여 DTO 객체를 생성하는 생성자
+    public AttractionResponse(String title, String firstImage, String addr) {
+        this.title = title;
+        this.firstImage = firstImage;
+        this.addr = addr;
     }
 }
