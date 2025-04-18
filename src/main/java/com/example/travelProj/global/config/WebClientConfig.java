@@ -10,14 +10,11 @@ public class WebClientConfig {
 
     // EUC-KR 인코딩 대응 방법
     @Bean
-    public WebClient webClient() {
-        return WebClient.builder()
+    public WebClient webClient(WebClient.Builder builder) {
+        return builder
                 .exchangeStrategies(ExchangeStrategies.builder()
-                        .codecs(configurer -> configurer
-                                .defaultCodecs()
-                                .maxInMemorySize(16 * 1024 * 1024) // 큰 응답 대비
-                        ).build())
-                .defaultHeader("Accept", "application/json")  // JSON 응답 요청
+                        .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(10 * 1024 * 1024)) // 10MB
+                        .build())
                 .build();
     }
 }

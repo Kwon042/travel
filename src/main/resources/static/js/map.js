@@ -27,12 +27,12 @@ function searchAttraction() {
         .then(response => response.json())
         .then(data => {
             console.log(data);  // 응답 확인을 위한 로그 추가
-            if (!data || !data.response || !data.response.body.items || !data.response.body.items.item || data.response.body.items.item.length === 0) {
+            if (!data || data.length === 0) {
                 console.error('검색된 관광지가 없습니다.');
                 alert('검색된 관광지가 없습니다.');
                 return;
             }
-            displayMarkersOnMap(data.response.body.items.item);
+            displayMarkersOnMap(data);  // 리스트로 바로 전달
         })
         .catch(error => {
             console.error('검색 오류:', error);

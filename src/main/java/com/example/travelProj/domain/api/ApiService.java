@@ -28,6 +28,7 @@ public class ApiService {
     @Value("${api.key}")
     private String apiKey;
 
+    // api 요청 전담
     public String searchAttraction(String keyword) {
         try {
             // keyword와 apiKey 둘 다 인코딩
@@ -58,6 +59,7 @@ public class ApiService {
         }
     }
 
+    // 데이터 가공 전담
     public List<AttractionResponse> parseApiResponse(String apiResponse) {
         List<AttractionResponse> attractions = new ArrayList<>();
         ObjectMapper mapper = new ObjectMapper();
@@ -75,6 +77,7 @@ public class ApiService {
             if (items.isArray()) {
                 for (JsonNode item : items) {
                     String title = item.path("title").asText();
+                    if (title.isEmpty()) continue;
                     String firstImage = item.path("firstimage").asText();
                     String addr = item.path("addr1").asText();
                     double mapx = item.path("mapx").asDouble();
