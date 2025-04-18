@@ -24,68 +24,7 @@
 <footer th:replace="~{layout/footer}"></footer>
 
 <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=a166f024ff1aa12ece8b74b52adde20d&libraries=services"></script>
-
-<script>
-    // 카카오 맵을 초기화하는 코드
-    let map;
-
-    window.onload = function() {
-        // 카카오맵이 정상적으로 로드되었는지 확인
-        if (typeof kakao === 'undefined') {
-            alert("카카오맵 API 로딩 실패");
-            return;
-        }
-
-        // 카카오 맵을 초기화하는 코드
-        map = new kakao.maps.Map(document.getElementById('map'), {
-            center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울 중심
-            level: 7
-        });
-    };
-
-    // 검색된 관광지 리스트를 카카오 지도에 마커로 표시
-    function displayMarkersOnMap(data) {
-        // 데이터가 제대로 반환되었는지 확인
-        if (!data || !data.items || !data.items.item) {
-            console.error('유효한 데이터가 아닙니다.');
-            return;
-        }
-
-        // 카카오 지도 객체 생성
-        data.items.item.forEach(function(item) {
-            var markerPosition = new kakao.maps.LatLng(item.mapy, item.mapx);  // 위도, 경도
-
-            var marker = new kakao.maps.Marker({
-                position: markerPosition,
-                title: item.title // 마커에 관광지 이름 설정
-            });
-
-            marker.setMap(map);  // 지도에 마커 표시
-        });
-    }
-
-    // 검색 요청을 보낼 함수
-    function searchAttraction() {
-        const keyword = document.getElementById('searchKeyword').value.trim();
-        if (!keyword) {
-            alert("검색어를 입력해주세요.");
-            return;
-        }
-
-        fetch(`/api/attraction?keyword=${keyword}`)
-            .then(response => response.json())
-            .then(data => {
-                if (!data || !data.items || !data.items.item) {
-                    console.error('검색된 관광지가 없습니다.');
-                    return;
-                }
-                displayMarkersOnMap(data);  // 데이터를 받아와서 지도에 표시
-            })
-            .catch(error => {
-                console.error('검색 오류:', error);
-            });
-    }
-</script>
+<script src="/js/map.js"></script>
 
 </body>
 </html>
