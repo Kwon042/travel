@@ -1,6 +1,5 @@
 package com.example.travelProj.domain.api;
 
-import com.example.travelProj.domain.attraction.AttractionResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,14 +17,9 @@ public class ApiController {
     private final ApiService apiService;
 
     @GetMapping("/search")
-    public ResponseEntity<List<AttractionResponse>> searchAttractions(@RequestParam String keyword) {
-        String rawResponse = apiService.searchAttraction(keyword);
-        List<AttractionResponse> parsedList = apiService.parseApiResponse(rawResponse);
-
-        return ResponseEntity.ok(parsedList);
+    public ResponseEntity<List<SimpleAttractionDto>> searchAttractions(@RequestParam String keyword) {
+        List<SimpleAttractionDto> result = apiService.fetchTouristAttractions(keyword);
+        return ResponseEntity.ok(result);
     }
-
-
-
 
 }

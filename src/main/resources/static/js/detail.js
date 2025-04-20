@@ -67,15 +67,25 @@ function updateLikeCount(boardId, likeElement) {
   });
 }
 
-// 좋아요 목록 표시 함수
-function showLikeList(boardId) {
-    fetch(`/reviewBoard/likes/${boardId}`)
-    .then(response => response.json())
-    .then(likeUsers => {
-        const userList = likeUsers.map(user => `<li>${user.nickname}</li>`).join('');
-        alert(`이 게시글을 좋아요한 사용자들:\n${userList}`);
+// 좋아요 클릭 시 서버에 요청하고, 성공 시 수만 갱신하는 함수
+function handleLikeClick(boardId) {
+    fetch(`/reviewBoard/likes/${boardId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            'X-CSRF-TOKEN': window.csrfToken
+        }
     })
-    .catch(error => console.error('Error fetching likes:', error));
+    .then(response => {
+        if (!response.ok) throw new Error("좋아요 실패");
+        return response.text();
+    })
+    .then(() => {
+        updateLikeCount(boardId);  // 성공하면 좋아요 수 새로고침
+    })
+    .catch(error => {
+        console.error("좋아요 에러:", error);
+    });
 }
 
 // 댓글 입력 창으로 전환하는 함수

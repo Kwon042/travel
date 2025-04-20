@@ -87,8 +87,8 @@
 
       <div class="action-buttons">
         <div class="like-comment-buttons" style="">
-          <button th:onclick="'showLikeList(' + ${board.id} + ')' " class="btn btn-light like-button" style="color: #888;">
-            💜 <span id="likeCount_{{board.id}}" th:text="${likeCount != null ? likeCount : 0}">0</span>
+          <button th:onclick="'handleLikeClick(' + ${board.id} + ')' " class="btn btn-light like-button" style="color: #888;">
+            💜 <span th:id="'likeCount_' + ${board.id}" th:text="${likeCount != null ? likeCount : 0}">0</span>
           </button>
           <button th:onclick="|goToComments(${board.id})|" class="btn btn-light comment-button" style="color: #888;">
             💬 <span th:id="'commentCount_' + ${board.id}" th:text="${commentsCount != null ? commentsCount : 0}">0</span>
