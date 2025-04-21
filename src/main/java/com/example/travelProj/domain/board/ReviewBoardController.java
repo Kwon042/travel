@@ -135,13 +135,22 @@ public class ReviewBoardController {
         }
 
         List<ImageBoard> images = board.getReview_images();
-        boolean hasLiked = reviewBoardLikeService.hasUserLiked(id, currentUser);
+
+        // 좋아요 상태 - user가 로그인 안 했을 때 false 처리
+        Boolean likeStatus = false;
+        if (currentUser != null) {
+            likeStatus = reviewBoardLikeService.hasUserLiked(id, currentUser);
+        }
+
+        // 좋아요 개수 - null 방어 처리
+        Long likeCount = reviewBoardLikeService.countLikes(id);
 
         model.addAttribute("board", board);
         model.addAttribute("region", regionName);
         model.addAttribute("images", images);
         model.addAttribute("currentUser", currentUser);
-        model.addAttribute("hasLiked", hasLiked);
+        model.addAttribute("likeStatus", likeStatus != null ? likeStatus : false);
+        model.addAttribute("likeCount", likeCount != null ? likeCount : 0);
 
         return "board/detail";
     }

@@ -83,7 +83,7 @@
                                 <span class="likes-comments">
                                     <span class="like-text" th:onclick="'showLikeList(' + ${board.id} + ')'"
                                           style="padding: 0; background: none; border: none; color: inherit; font-size: 1.0em; align-items: center;">
-                                        💜 <span id="likeCount_[[${board.id}]]" th:text="${likeCount != null ? likeCount : 0}">0</span>
+                                        💜 <span th:id="'likeCount_' + ${board.id}" th:text="${likeCount != null ? likeCount : 0}">0</span>
                                     </span>
                                     <div class="comments">
                                         💬 <span th:id="'commentCount_' + ${board.id}" th:text="${commentsCount != null ? commentsCount : 0}">0</span>

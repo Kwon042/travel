@@ -48,17 +48,6 @@ function updateLikeCount(boardId, likeElement) {
     });
 }
 
-// 좋아요 목록 표시 함수
-function showLikeList(boardId) {
-    fetch(`/reviewBoard/likes/${boardId}`)
-    .then(response => response.json())
-    .then(likeUsers => {
-        const userList = likeUsers.map(user => `<li>${user.nickname}</li>`).join('');
-        alert(`이 게시글을 좋아요한 사용자들:\n${userList}`);
-    })
-    .catch(error => console.error('Error fetching likes:', error));
-}
-
 // 댓글 수를 서버에서 가져와서 갱신하는 함수
 function updateCommentCount(boardId) {
     fetch(`/comments/${boardId}/count`)

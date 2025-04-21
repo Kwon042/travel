@@ -8,7 +8,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,10 +22,25 @@ public class ReviewBoardLikeController {
     // 좋아요 클릭
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/{reviewBoardId}")
-    public ResponseEntity<?> addLike(@PathVariable Long reviewBoardId, @AuthenticationPrincipal SiteUser user) {
-        reviewBoardLikeService.addLike(reviewBoardId, user);
-        return ResponseEntity.ok().body("Like added successfully.");
+    public ResponseEntity<Map<String, Object>> addLike(@PathVariable Long reviewBoardId, @AuthenticationPrincipal SiteUser user) {
+        try {
+            reviewBoardLikeService.addLike(reviewBoardId, user);
+
+            // 좋아요가 성공적으로 추가된 후 JSON 응답을 반환
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Like added successfully.");
+            response.put("hasLiked", true);  // 현재 좋아요 상태
+            response.put("likeCount", reviewBoardLikeService.countLikes(reviewBoardId));  // 좋아요 수
+
+            return ResponseEntity.ok(response);  // JSON 응답
+        } catch (IllegalStateException e) {
+            // 충돌 발생 시, 409 상태와 함께 메시지를 반환
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());
+            return ResponseEntity.status(409).body(errorResponse);  // JSON 응답
+        }
     }
+
 
     // 좋아요 제거
     @PreAuthorize("isAuthenticated()")
@@ -51,7 +68,8 @@ public class ReviewBoardLikeController {
     // 현재 로그인한 사용자가 해당 게시글 좋아요 눌렀는지 확인
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{reviewBoardId}/status")
-    public ResponseEntity<Boolean> checkLikeStatus(@PathVariable Long reviewBoardId, @AuthenticationPrincipal SiteUser user) {
+    public ResponseEntity<Boolean> checkLikeStatus(@PathVariable Long reviewBoardId,
+                                                   @AuthenticationPrincipal SiteUser user) {
         boolean hasLiked = reviewBoardLikeService.hasUserLiked(reviewBoardId, user);
         return ResponseEntity.ok(hasLiked);
     }
