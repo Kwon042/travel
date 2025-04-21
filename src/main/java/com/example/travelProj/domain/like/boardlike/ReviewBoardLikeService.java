@@ -53,4 +53,10 @@ public class ReviewBoardLikeService {
                 .collect(Collectors.toList());
     }
 
+    // 사용자가 해당 게시글 좋아요를 눌렀는지 확인
+    public boolean hasUserLiked(Long reviewBoardId, SiteUser user) {
+        ReviewBoard reviewBoard = reviewBoardService.getBoardById(reviewBoardId);
+        return reviewBoardLikeRepository.existsByReviewBoardAndUser(reviewBoard, user);
+    }
+
 }

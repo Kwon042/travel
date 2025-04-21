@@ -61,7 +61,7 @@ public class ReviewBoard {
         if (review_images != null && !review_images.isEmpty()) {
             this.mainImageUrl = review_images.get(0).getImageUrl(); // 첫 번째 이미지의 URL을 메인으로 사용
         } else {
-            this.mainImageUrl = "/images/default-profile.jpg"; // 기본 이미지 URL 설정
+            this.mainImageUrl = "/images/default-thumbnail.png"; // 기본 이미지 URL 설정
         }
     }
 

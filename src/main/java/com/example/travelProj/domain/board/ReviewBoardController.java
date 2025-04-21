@@ -114,7 +114,7 @@ public class ReviewBoardController {
 
     private String getMainImageUrl(List<String> uploadedImages, int mainImageIndex) {
         if (uploadedImages == null || uploadedImages.isEmpty()) {
-            return "/images/default-thumbnail.png";
+            return "/static/images/default-thumbnail.png";
         }
         int index = Math.min(mainImageIndex, uploadedImages.size() - 1);
         return uploadedImages.get(index);
