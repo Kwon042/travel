@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function() {
             writeButton.href = `/board/write?region=${region}&boardType=reviewBoard`;
         }
         // 페이지가 로드될 때 좋아요 수를 가져와서 업데이트
-        document.querySelectorAll('.likes').forEach(function(likeElement) {
+        document.querySelectorAll('.like-text span').forEach(function(likeElement) {
             const boardId = likeElement.id.split('_')[1];  // likes_{boardId}에서 boardId 추출
             if (boardId) {
                 updateLikeCount(boardId, likeElement);
@@ -37,7 +37,7 @@ function updateLikeCount(boardId, likeElement) {
     })
     .then(count => {
         if (typeof count === 'number') {
-            likeElement.textContent = `♡ ${count}`;  // 좋아요 수 업데이트
+            likeElement.textContent = `${count}`;  // 좋아요 수 업데이트
         } else {
             console.error('Invalid response format:', count);
         }
