@@ -25,14 +25,16 @@ function searchAttraction() {
 
     fetch(`/api/attraction/search?keyword=${encodeURIComponent(keyword)}`)
         .then(response => response.json())
-        .then(data => {
-            console.log(data);  // 응답 확인을 위한 로그 추가
-            if (!data || data.length === 0) {
+        .then(result => {
+            console.log(result);  // 응답 확인을 위한 로그 추가
+            const items = result?.response?.body?.items?.item;
+
+            if (!items || items.length === 0) {
                 console.error('검색된 관광지가 없습니다.');
                 alert('검색된 관광지가 없습니다.');
                 return;
             }
-            displayMarkersOnMap(data);  // 리스트로 바로 전달
+            displayMarkersOnMap(items);
         })
         .catch(error => {
             console.error('검색 오류:', error);
@@ -40,20 +42,21 @@ function searchAttraction() {
         });
 }
 
+let markers = [];  // 마커 배열을 전역으로 선언
+
 // 검색된 관광지 리스트를 카카오 지도에 마커로 표시
 function displayMarkersOnMap(data) {
-    if (!data || data.length === 0) {
-        console.error('검색된 관광지가 없습니다.');
-        alert('검색된 관광지가 없습니다.');
-        return;
-    }
+    // 기존 마커 제거
+    markers.forEach(marker => marker.setMap(null));
+    markers = [];
 
     data.forEach(function(item) {
-        var markerPosition = new kakao.maps.LatLng(item.mapy, item.mapx);
-        var marker = new kakao.maps.Marker({
+        const markerPosition = new kakao.maps.LatLng(item.mapy, item.mapx);
+        const marker = new kakao.maps.Marker({
             position: markerPosition,
             title: item.title
         });
         marker.setMap(map);
+        markers.push(marker);
     });
 }

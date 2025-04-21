@@ -62,7 +62,7 @@ function handleLikeClick(boardId) {
 
     // 1. UI에서 좋아요 상태를 즉시 반영 (클릭 즉시 하트 아이콘을 토글)
     updateHeartIcon(boardId, !isLiked); // 하트 아이콘 상태 토글
-    updateLikeCount(boardId); // 좋아요 수 업데이트
+    updateLikeCount(boardId);
 
     // 2. 서버 요청을 보내서 실제 좋아요 상태를 반영
     fetch(`/reviewBoard/likes/${boardId}/status`)  // 좋아요 상태 확인
@@ -109,10 +109,9 @@ function handleLikeClick(boardId) {
         });
 }
 
-
 function updateHeartIcon(boardId, hasLiked) {
     const icon = document.getElementById(`like-icon-${boardId}`);
-    if (icon) icon.textContent = hasLiked ? '💜' : '🤍';  // 보라색 또는 하얀색 하트로 업데이트
+    if (icon) icon.textContent = hasLiked ? '💜' : '🤍';
 }
 
 function deleteReviewBoard(boardId) {

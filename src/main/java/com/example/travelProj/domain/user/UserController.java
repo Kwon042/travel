@@ -46,9 +46,24 @@ public class UserController {
                     "Passwords do not match.");
             return "signup_form";
         }
+        // 사용자 이름에 "admin"이 포함되어 있으면 ADMIN 권한 부여
+        boolean isAdmin = userCreateForm.getUsername().toLowerCase().contains("admin");
+
         try {
-            userService.create(userCreateForm.getUsername(),
-                    userCreateForm.getEmail(), userCreateForm.getPassword1(), userCreateForm.getNickname());
+            // 사용자 이름에 "admin"이 포함되면 createAdmin 사용, 그렇지 않으면 create 사용
+            if (isAdmin) {
+                userService.createAdmin(userCreateForm.getUsername(),
+                        userCreateForm.getEmail(),
+                        userCreateForm.getPassword1(),
+                        userCreateForm.getNickname(),
+                        "ADMIN");
+            } else {
+                userService.create(userCreateForm.getUsername(),
+                        userCreateForm.getEmail(),
+                        userCreateForm.getPassword1(),
+                        userCreateForm.getNickname(),
+                        "USER");
+            }
         }catch(DataIntegrityViolationException e) {
             e.printStackTrace();
             bindingResult.reject("signupFailed", "User already exists.");

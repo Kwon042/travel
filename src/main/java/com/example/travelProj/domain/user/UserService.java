@@ -23,15 +23,24 @@ public class UserService {
     private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB (5 * 1024 * 1024 바이트)
 
     @Transactional
-    public SiteUser create(String username, String email, String password, String nickname) {
+    private SiteUser buildUser(String username, String email, String password, String nickname, UserRole role) {
         SiteUser user = new SiteUser();
         user.setUsername(username);
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password));
         user.setNickname(nickname);
-
-        this.userRepository.save(user);
+        user.setRole(role);
         return user;
+    }
+
+    @Transactional
+    public SiteUser create(String username, String email, String password, String nickname, String role) {
+        return userRepository.save(buildUser(username, email, password, nickname, UserRole.valueOf(role)));
+    }
+
+    @Transactional
+    public SiteUser createAdmin(String username, String email, String password, String nickname, String role) {
+        return userRepository.save(buildUser(username, email, password, nickname, UserRole.ADMIN));
     }
 
     @Transactional
@@ -50,13 +59,11 @@ public class UserService {
     // 닉네임 수정
     @Transactional
     public void updateNickname(Long userId, String newNickname) {
-        // 중복 체크
-        String duplicateMessage = checkFieldDuplicate("nickname", newNickname);
-        if (duplicateMessage != null) {
-            throw new IllegalArgumentException(duplicateMessage);
+        if (isNicknameAlreadyRegistered(newNickname)) {
+            throw new IllegalArgumentException("이미 등록된 닉네임입니다.");
         }
-
-        SiteUser user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        SiteUser user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
         user.setNickname(newNickname);
         userRepository.save(user);
     }

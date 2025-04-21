@@ -17,8 +17,9 @@ public class AttractionService {
     private final ApiService apiService;
 
     // 랜덤 여행지 가져오기
-    public List<SimpleAttractionDto> getRandomAttractions() {
-        List<SimpleAttractionDto> attractions = apiService.fetchTouristAttractions("전국");
+    public List<AttractionResponse> getRandomAttractions() {
+        String apiResponse = apiService.searchAttraction("전국");
+        List<AttractionResponse> attractions = apiService.parseApiResponse(apiResponse);
 
         Collections.shuffle(attractions);  // 순서 섞기
         return attractions.stream()
