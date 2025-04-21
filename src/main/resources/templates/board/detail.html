@@ -86,9 +86,12 @@
       <hr style="border: 1px solid #5b30a4; margin: 20px 0;">
 
       <div class="action-buttons">
-        <div class="like-comment-buttons" style="">
-          <button th:onclick="'handleLikeClick(' + ${board.id} + ')' " class="btn btn-light like-button" style="color: #888;">
-            💜 <span th:id="'likeCount_' + ${board.id}" th:text="${likeCount != null ? likeCount : 0}">0</span>
+        <div class="like-comment-buttons">
+          <button th:onclick="|handleLikeClick(${board.id})|" class="btn btn-light like-button" style="color: #888;">
+            <span id="like-icon-${board.id}" class="like-icon"
+                  th:utext="${likeStatus != null ? (likeStatus ? '💜' : '🤍') : '🤍'}">
+            </span>
+            <span th:id="'likeCount_' + ${board.id}" th:text="${likeCount != null ? likeCount : 0}">0</span>
           </button>
           <button th:onclick="|goToComments(${board.id})|" class="btn btn-light comment-button" style="color: #888;">
             💬 <span th:id="'commentCount_' + ${board.id}" th:text="${commentsCount != null ? commentsCount : 0}">0</span>

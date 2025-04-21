@@ -2,6 +2,7 @@ package com.example.travelProj.domain.board;
 
 import com.example.travelProj.domain.image.imageboard.ImageBoard;
 import com.example.travelProj.domain.image.imageboard.ImageBoardService;
+import com.example.travelProj.domain.like.boardlike.ReviewBoardLikeService;
 import com.example.travelProj.domain.region.Region;
 import com.example.travelProj.domain.region.RegionRepository;
 import com.example.travelProj.domain.user.SiteUser;
@@ -41,6 +42,7 @@ public class ReviewBoardController {
     private final RegionRepository regionRepository;
     private final ReviewBoardService reviewBoardService;
     private final ImageBoardService imageBoardService;
+    private final ReviewBoardLikeService reviewBoardLikeService;
     private static final Logger logger = LoggerFactory.getLogger(ReviewBoardController.class);
 
     // 리뷰 게시판 목록
@@ -133,12 +135,13 @@ public class ReviewBoardController {
         }
 
         List<ImageBoard> images = board.getReview_images();
+        boolean hasLiked = reviewBoardLikeService.hasUserLiked(id, currentUser);
 
         model.addAttribute("board", board);
         model.addAttribute("region", regionName);
         model.addAttribute("images", images);
         model.addAttribute("currentUser", currentUser);
-
+        model.addAttribute("hasLiked", hasLiked);
 
         return "board/detail";
     }

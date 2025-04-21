@@ -15,7 +15,8 @@ document.addEventListener("DOMContentLoaded", function() {
   document.querySelectorAll('.likes').forEach(function(likeElement) {
       const boardId = likeElement.id.split('_')[1];  // likes_{boardId}에서 boardId 추출
       if (boardId) {
-          updateLikeCount(boardId, likeElement);  // 좋아요 수를 가져와서 갱신
+          updateLikeCount(boardId);
+          checkUserLikeStatus(boardId);  // 하트 색상도 초기화
       }
   });
 
@@ -41,9 +42,28 @@ document.addEventListener("DOMContentLoaded", function() {
     let csrfTokenInput = document.querySelector("input[name='_csrf']");
     const csrfToken = csrfTokenInput ? csrfTokenInput.value : null; // CSRF 토큰 값 설정
 
-    // CSRF 토큰을 deleteReviewBoard에 전달합니다.
+    // CSRF 토큰을 deleteReviewBoard에 전달
     window.csrfToken = csrfToken; // 전역에서 사용할 수 있도록 설정
   });
+
+// 좋아요 상태 확인해서 하트 색상 맞추는 함수
+function checkUserLikeStatus(boardId) {
+    fetch(`/reviewBoard/likes/${boardId}/status`)
+        .then(response => {
+            if (!response.ok) throw new Error("상태 확인 실패");
+            return response.json();
+        })
+        .then(hasLiked => {
+            const likeIcon = document.getElementById(`like-icon-${boardId}`);
+            if (likeIcon) {
+                likeIcon.textContent = hasLiked ? '💜' : '🤍';
+            }
+        })
+        .catch(error => {
+            console.error("좋아요 상태 확인 실패:", error);
+        });
+}
+
 
 // 좋아요 수를 서버에서 가져와서 갱신하는 함수
 function updateLikeCount(boardId, likeElement) {
@@ -56,7 +76,7 @@ function updateLikeCount(boardId, likeElement) {
   })
   .then(count => {
     if (typeof count === 'number') {
-        document.getElementById(`like-count-${boardId}`).textContent = count;  // 좋아요 수 업데이트
+        document.getElementById(`likeCount_${boardId}`).textContent = count;
     } else {
         console.error('Invalid response format:', count);
     }
@@ -67,26 +87,34 @@ function updateLikeCount(boardId, likeElement) {
   });
 }
 
-// 좋아요 클릭 시 서버에 요청하고, 성공 시 수만 갱신하는 함수
 function handleLikeClick(boardId) {
+    const likeIcon = document.getElementById(`like-icon-${boardId}`);
+    const isLiked = likeIcon && likeIcon.textContent === '💜';
+
+    const method = isLiked ? "DELETE" : "POST";
+
     fetch(`/reviewBoard/likes/${boardId}`, {
-        method: "POST",
+        method: method,
         headers: {
             "Content-Type": "application/json",
             'X-CSRF-TOKEN': window.csrfToken
         }
     })
     .then(response => {
-        if (!response.ok) throw new Error("좋아요 실패");
+        if (!response.ok) throw new Error(isLiked ? "좋아요 취소 실패" : "좋아요 실패");
         return response.text();
     })
     .then(() => {
-        updateLikeCount(boardId);  // 성공하면 좋아요 수 새로고침
+        if (likeIcon) {
+            likeIcon.textContent = isLiked ? '🤍' : '💜'; // 보라색 하트(💜)로 변경
+        }
+        updateLikeCount(boardId);  // 좋아요 수 최신화
     })
     .catch(error => {
-        console.error("좋아요 에러:", error);
+        console.error("좋아요 처리 에러:", error);
     });
 }
+
 
 // 댓글 입력 창으로 전환하는 함수
 function goToComments(reviewBoardId) {

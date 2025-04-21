@@ -54,7 +54,7 @@ main {
 }
 
 .board-detail {
-    width: 900px; /* 가로 크기를 900px로 설정 */
+    width: 1000px; /* 가로 크기를 900px로 설정 */
     margin: 0 auto; /* 화면 중앙에 수평으로 정렬되도록 설정 (선택적) */
 }
 
