@@ -48,11 +48,10 @@ public class ApiService {
             // WebClient로 GET 요청
             String response = webClient.get()
                     .uri(requestUrl)
-                    .header("Accept-Charset", "UTF-8")
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
-            return new String(response.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+            return response;
 
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -63,43 +62,41 @@ public class ApiService {
     // 데이터 가공 전담
     public List<AttractionResponse> parseApiResponse(String apiResponse) {
         List<AttractionResponse> attractions = new ArrayList<>();
-        ObjectMapper mapper = new ObjectMapper();
-
         try {
-            // JSON 응답을 파싱
-            JsonNode root = mapper.readTree(apiResponse);
-            JsonNode items = root.at("/response/body/items/item"); // JSON 구조 맞춰서 수정
+            JsonNode root = objectMapper.readTree(apiResponse);
+            JsonNode itemsNode = root.at("/response/body/items/item");
 
-            if (items.isMissingNode() || items.isNull()) {
+            if (itemsNode.isMissingNode() || itemsNode.isNull()) {
                 System.out.println("관광지 검색 결과가 없습니다.");
-                return attractions; // 빈 리스트 반환
+                return attractions;
             }
-            if (items.isArray()) {
-                for (JsonNode item : items) {
-                    String title = item.path("title").asText();
-                    if (title.isEmpty()) continue;
-                    String firstImage = item.path("firstimage").asText();
-                    String addr = item.path("addr1").asText();
-                    double mapx = item.path("mapx").asDouble();
-                    double mapy = item.path("mapy").asDouble();
-                    AttractionResponse attractionResponse = new AttractionResponse(title, firstImage, addr, mapx, mapy);
-                    attractions.add(attractionResponse);
-                }
-            } else {
-                // 검색결과가 1건일 경우 JSON 배열이 아닌 단일 객체 형태로 내려올 수도 있음
-                String title = items.path("title").asText();
-                String firstImage = items.path("firstimage").asText();
-                String addr = items.path("addr1").asText();
-                double mapx = items.path("mapx").asDouble();
-                double mapy = items.path("mapy").asDouble();
 
-                attractions.add(new AttractionResponse(title, firstImage, addr, mapx, mapy));
+            if (itemsNode.isArray()) {
+                for (JsonNode item : itemsNode) {
+                    AttractionResponse attraction = convertToAttraction(item);
+                    if (attraction != null) attractions.add(attraction);
+                }
+            } else if (itemsNode.isObject()) {
+                AttractionResponse attraction = convertToAttraction(itemsNode);
+                if (attraction != null) attractions.add(attraction);
             }
+
         } catch (Exception e) {
             e.printStackTrace();
-            return Collections.emptyList();
         }
-
         return attractions;
+    }
+
+    // 변환
+    private AttractionResponse convertToAttraction(JsonNode item) {
+        String title = item.path("title").asText(null);
+        if (title == null || title.isBlank()) return null;
+
+        String firstImage = item.path("firstimage").asText("");
+        String addr = item.path("addr1").asText("");
+        double mapx = item.path("mapx").asDouble(0.0);
+        double mapy = item.path("mapy").asDouble(0.0);
+
+        return new AttractionResponse(title, firstImage, addr, mapx, mapy);
     }
 }
