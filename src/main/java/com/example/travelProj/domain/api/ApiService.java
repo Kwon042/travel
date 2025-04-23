@@ -43,7 +43,7 @@ public class ApiService {
     // 지역 코드로 관광지 목록을 요청
     private String fetchAttractionsByRegion(String areaCode) {
         try {
-            logger.info("지역 검색 요청 - 지역 코드: {}", areaCode);
+            logger.info("Region search request - Region code: {}", areaCode);
 
             String response = webClient.get()
                     .uri(uriBuilder -> uriBuilder
@@ -62,12 +62,12 @@ public class ApiService {
                     .bodyToMono(String.class)
                     .block();
 
-            logger.debug("API 응답: {}", response);
+            logger.debug("API response: {}", response);
             return response;
 
         } catch (Exception e) {
-            logger.error("API 요청 실패", e);
-            return "{\"error\": \"API 요청 중 오류 발생\"}";
+            logger.error("API request failed", e);
+            return "{\"error\": \"An error occurred during the API request\"}";
         }
     }
 
@@ -80,14 +80,14 @@ public class ApiService {
             // API 오류 확인
             String resultCode = root.at("/response/header/resultCode").asText();
             if (!"0000".equals(resultCode)) {
-                logger.warn("공공 API 오류 resultCode: {}", resultCode);
+                logger.warn("Public API error resultCode: {}", resultCode);
                 return Collections.emptyList();
             }
 
             JsonNode itemsNode = root.at("/response/body/items/item");
 
             if (itemsNode.isMissingNode() || itemsNode.isNull()) {
-                logger.info("검색 결과 없음");
+                logger.info("No search results found");
                 return Collections.emptyList();
             }
 
@@ -102,7 +102,7 @@ public class ApiService {
             }
 
         } catch (Exception e) {
-            logger.error("응답 파싱 중 오류", e);
+            logger.error("Error while parsing the response", e);
         }
 
         return attractions;

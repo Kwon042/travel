@@ -27,6 +27,7 @@ public class AttractionResponse {
 
     // 이미지 URL을 반환하는 메서드
     public String getImageUrl() {
+
         return firstImage;
     }
 
@@ -37,6 +38,6 @@ public class AttractionResponse {
 
     // 관광지 설명을 반환하는 메서드 (예시로 주소를 설명으로 사용)
     public String getDescription() {
-        return addr;  // 실제로는 적합한 설명을 반환해야 합니다.
+        return addr;
     }
 }

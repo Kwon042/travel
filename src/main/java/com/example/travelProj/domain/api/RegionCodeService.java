@@ -33,30 +33,30 @@ public class RegionCodeService {
         if (keyword == null || keyword.isBlank()) return null;
 
         String normalized = keyword.trim().toLowerCase();
-        logger.info("입력된 지역명: {}", normalized);
+        logger.info("Entered region name: {}", normalized);
 
         // 숫자만 있는 경우, 이미 지역 코드로 간주
         if (isNumeric(normalized)) {
-            logger.info("입력된 지역명이 숫자만 포함되어 있어 지역 코드로 간주: {}", normalized);
+            logger.info("Entered region name contains only numbers, considered as region code: {}", normalized);
             return normalized;
         }
 
         // 1. RegionMapper를 이용한 시/도 코드 반환
         String mappedCode = RegionMapper.getAreaCode(normalized);
         if (mappedCode != null) {
-            logger.info("지역명 '{}'에 대한 시/도 코드 반환: {}", normalized, mappedCode);
+            logger.info("Returning city/province code for region name '{}': {}", normalized, mappedCode);
             return mappedCode;
         } else {
-            logger.warn("지역명 '{}'에 대한 시/도 코드 찾기 실패", normalized);
+            logger.warn("Failed to find city/province code for region name '{}'", normalized);
         }
 
         // 2. 시/도에 없으면 시/군/구 단위로 API 조회
         String apiCode = findAreaCodeBySigunguFromApi(normalized);
         if (apiCode != null) {
-            logger.info("지역명 '{}'에 대한 시/군/구 코드 반환: {}", normalized, apiCode);
+            logger.info("Returning city/county/district code for region name '{}': {}", normalized, apiCode);
             return apiCode;
         } else {
-            logger.warn("지역명 '{}'에 대한 시/군/구 코드 찾기 실패", normalized);
+            logger.warn("Failed to find city/county/district code for region name '{}'", normalized);
         }
 
         return null;  // 두 방법 모두 실패한 경우 null 반환
@@ -69,6 +69,8 @@ public class RegionCodeService {
 
     // 시/군/구 단위 키워드로 지역 코드를 API에서 조회
     private String findAreaCodeBySigunguFromApi(String keyword) {
+        logger.info("findAreaCodeBySigunguFromApi - keyword: {}", keyword);
+
         // 캐시 확인
         if (sigunguToAreaCodeCache.containsKey(keyword)) {
             return sigunguToAreaCodeCache.get(keyword);
