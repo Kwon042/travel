@@ -15,14 +15,16 @@ public class AttractionResponse {
     private String addr;
     private double mapx;  // 경도 (longitude)
     private double mapy;  // 위도 (latitude)
+    private Long contentId;
 
     // 모든 필드를 사용하는 생성자
-    public AttractionResponse(String title, String firstImage, String addr, double mapx, double mapy) {
+    public AttractionResponse(String title, String firstImage, String addr, double mapx, double mapy, Long contentId) {
         this.title = title;
         this.firstImage = firstImage;
         this.addr = addr;
         this.mapx = mapx;
         this.mapy = mapy;
+        this.contentId = contentId;
     }
 
     // 이미지 URL을 반환하는 메서드

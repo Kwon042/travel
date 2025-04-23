@@ -76,7 +76,6 @@ function displayMarkersOnMap(data) {
     }
 
     data.forEach(function(item) {
-        console.log(item.contentId);  // 디버깅용
 
         const markerPosition = new kakao.maps.LatLng(item.mapy, item.mapx);
         const marker = new kakao.maps.Marker({
@@ -126,6 +125,18 @@ function fetchAndShowDetail(contentId) {
 
 function showDetailModal(detail) {
     const modalBody = document.getElementById('modalBody');
+    let infoHtml = '';
+    if (detail.infoList) {
+        detail.infoList.forEach(info => {
+            infoHtml += `
+                <div>
+                    <strong>${info.infoName}</strong>
+                    <p>${info.infoText}</p>
+                </div>
+            `;
+        });
+    }
+
     modalBody.innerHTML = `
         <h4>${detail.title}</h4>
         <p><strong>주소:</strong> ${detail.addr1 || '정보 없음'}</p>
@@ -133,6 +144,7 @@ function showDetailModal(detail) {
         <p>${detail.overview || '설명 없음'}</p>
         <img src="${detail.firstimage || 'images/no-image.png'}"
              alt="이미지" style="width:100%; max-height:300px; object-fit:cover;">
+        ${infoHtml}
     `;
 
     const modal = new bootstrap.Modal(document.getElementById('attractionModal'));

@@ -118,8 +118,9 @@ public class ApiService {
         String addr = item.path("addr1").asText("");
         double mapx = item.path("mapx").asDouble(0.0);
         double mapy = item.path("mapy").asDouble(0.0);
+        Long contentId = item.path("contentid").asLong(0);
 
-        return new AttractionResponse(title, firstImage, addr, mapx, mapy);
+        return new AttractionResponse(title, firstImage, addr, mapx, mapy, contentId);
     }
 
     // 관광지 상세정보 /detailInfo1로 가져오기
@@ -142,6 +143,7 @@ public class ApiService {
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
+            logger.debug("Detail Info API response: {}", response);
 
             JsonNode root = objectMapper.readTree(response);
 
