@@ -76,6 +76,8 @@ function displayMarkersOnMap(data) {
     }
 
     data.forEach(function(item) {
+        console.log(item.contentId);  // 디버깅용
+
         const markerPosition = new kakao.maps.LatLng(item.mapy, item.mapx);
         const marker = new kakao.maps.Marker({
             position: markerPosition,
@@ -84,15 +86,14 @@ function displayMarkersOnMap(data) {
         marker.setMap(map);
         markers.push(marker);
 
-        const imageUrl = item.firstimage && item.firstimage !== 'undefined' ? item.firstimage : '/resources/static/images/logo.png';
+        const imageUrl = item.firstimage && item.firstimage !== 'undefined' ? item.firstimage : 'images/no-image.png';
 
-        // 인포윈도우 내용: 제목 + 이미지 + 좋아요 + 상세보기
+        // 인포윈도우 내용
         const infowindowContent = `
             <div style="padding:10px; text-align:center;">
                 <strong>${item.title}</strong><br>
-                <img src="${item.firstimage}" alt="${item.title}" style="width:100px;height:100px;object-fit:cover;"><br>
-                <button onclick="likeAttraction(${item.contentId})" style="margin-top:5px;">❤️ 좋아요</button><br>
-                <button onclick="moveToDetail(${item.contentId})" style="margin-top:5px;">상세보기</button>
+                <img src="${imageUrl}" alt="${item.title}" style="width:100px;height:100px;object-fit:cover;"><br>
+                <button onclick="fetchAndShowDetail(${item.contentId})" style="margin-top:5px;">상세보기</button>
             </div>
         `;
 
@@ -108,6 +109,34 @@ function displayMarkersOnMap(data) {
             activeInfoWindow = infowindow;
         });
     });
+}
+
+function fetchAndShowDetail(contentId) {
+    fetch(`/api/attraction/detail/${contentId}`)
+        .then(res => res.json())
+        .then(detail => {
+            console.log(detail); // 디버깅을 위해 로그 추가
+            showDetailModal(detail);
+        })
+        .catch(error => {
+            console.error('상세정보 로딩 실패:', error);
+            alert('상세정보를 불러오는 데 실패했습니다.');
+        });
+}
+
+function showDetailModal(detail) {
+    const modalBody = document.getElementById('modalBody');
+    modalBody.innerHTML = `
+        <h4>${detail.title}</h4>
+        <p><strong>주소:</strong> ${detail.addr1 || '정보 없음'}</p>
+        <p><strong>전화번호:</strong> ${detail.tel || '정보 없음'}</p>
+        <p>${detail.overview || '설명 없음'}</p>
+        <img src="${detail.firstimage || 'images/no-image.png'}"
+             alt="이미지" style="width:100%; max-height:300px; object-fit:cover;">
+    `;
+
+    const modal = new bootstrap.Modal(document.getElementById('attractionModal'));
+    modal.show();
 }
 
 // 좋아요 처리 함수 (API 호출 방식으로 구현 가능)

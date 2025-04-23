@@ -1,5 +1,6 @@
 package com.example.travelProj.domain.api;
 
+import com.example.travelProj.domain.attraction.AttractionDetailResponse;
 import com.example.travelProj.domain.attraction.AttractionResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -119,6 +120,48 @@ public class ApiService {
         double mapy = item.path("mapy").asDouble(0.0);
 
         return new AttractionResponse(title, firstImage, addr, mapx, mapy);
+    }
+
+    // 관광지 상세정보 /detailInfo1로 가져오기
+    public AttractionDetailResponse fetchDetailInfo(Long contentId) {
+        try {
+            logger.info("Fetching detail info from /detailInfo1 for contentId: {}", contentId);
+
+            String response = webClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .scheme("http")
+                            .host("apis.data.go.kr")
+                            .path("/B551011/KorService1/detailInfo1")
+                            .queryParam("serviceKey", apiKey)
+                            .queryParam("MobileOS", "ETC")
+                            .queryParam("MobileApp", "TestApp")
+                            .queryParam("contentId", contentId)
+                            .queryParam("contentTypeId", "12") // 관광타입: 12 > 관광지
+                            .queryParam("_type", "json")
+                            .build())
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+
+            JsonNode root = objectMapper.readTree(response);
+
+            String resultCode = root.at("/response/header/resultCode").asText();
+            if (!"0000".equals(resultCode)) {
+                logger.warn("DetailInfo API returned error: {}", resultCode);
+                return null;
+            }
+
+            JsonNode itemNode = root.at("/response/body/items/item");
+            if (itemNode.isMissingNode() || itemNode.isNull()) {
+                return null;
+            }
+
+            return new AttractionDetailResponse(itemNode);
+
+        } catch (Exception e) {
+            logger.error("Failed to fetch detail info from /detailInfo1", e);
+            return null;
+        }
     }
 }
 

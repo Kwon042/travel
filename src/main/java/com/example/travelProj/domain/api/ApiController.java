@@ -1,11 +1,10 @@
 package com.example.travelProj.domain.api;
 
+import com.example.travelProj.domain.attraction.AttractionDetailResponse;
 import com.example.travelProj.domain.attraction.AttractionResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,6 +25,16 @@ public class ApiController {
         }
         // 지역 코드로 관광지 검색
         return apiService.searchAttractionByRegion(regionCode);
+    }
+
+    // 관광지 상세정보를 가져오는 API
+    @GetMapping("/api/attraction/detail/{contentId}")
+    public ResponseEntity<AttractionDetailResponse> getAttractionDetail(@PathVariable Long contentId) {
+        AttractionDetailResponse detail = apiService.fetchDetailInfo(contentId);
+        if (detail == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(detail);
     }
 
 }
