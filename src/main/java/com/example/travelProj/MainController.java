@@ -1,6 +1,5 @@
 package com.example.travelProj;
 
-import com.example.travelProj.domain.api.SimpleAttractionDto;
 import com.example.travelProj.domain.attraction.AttractionResponse;
 import com.example.travelProj.domain.attraction.AttractionService;
 import lombok.RequiredArgsConstructor;

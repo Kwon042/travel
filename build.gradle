@@ -60,7 +60,7 @@ dependencies {
 	// MacOS용 최적화된 DNS 처리 네이티브 라이브러리
 	runtimeOnly "io.netty:netty-resolver-dns-native-macos:4.1.109.Final:osx-aarch_64"
 
-
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0'
 }
 
 tasks.named('test') {

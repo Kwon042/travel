@@ -25,30 +25,43 @@ window.onload = function() {
     });
 };
 
-// 검색 요청을 보낼 함수
 function searchAttraction() {
-    const keyword = document.getElementById('searchKeyword').value.trim();
-    if (!keyword) {
-        alert("검색어를 입력해주세요.");
+    const regionName = document.getElementById('searchKeyword').value.trim();
+    if (!regionName) {
+        alert("지역명을 입력해주세요.");
         return;
     }
 
-    fetch(`/api/attraction/search?keyword=${encodeURIComponent(keyword)}`)
+    fetch(`/api/attraction/search?regionName=${encodeURIComponent(regionName)}`)
         .then(response => response.json())
-        .then(result => {
-            console.log(result);
+        .then(data => {
+            console.log("검색 결과:", data);
 
-            // 결과가 빈 배열이 아니라면 마커 표시
-            if (result && Array.isArray(result) && result.length > 0) {
-                displayMarkersOnMap(result);
+            if (Array.isArray(data) && data.length > 0) {
+                displayMarkersOnMap(data);
             } else {
-                console.error('검색된 관광지가 없습니다.');
-                alert('검색된 관광지가 없습니다.');
+                alert("검색된 관광지가 없습니다.");
             }
         })
         .catch(error => {
             console.error('검색 오류:', error);
             alert('검색 도중 오류가 발생했습니다.');
+        });
+}
+
+function loadAttractions() {
+    fetch('/api/attractions')
+        .then(response => response.json())
+        .then(data => {
+            if (Array.isArray(data) && data.length > 0) {
+                displayMarkersOnMap(data);
+            } else {
+                console.warn('데이터 없음 또는 잘못된 형식');
+            }
+        })
+        .catch(error => {
+            console.error('초기 관광지 로드 실패:', error);
+            alert('잘못된 데이터 형식입니다.');
         });
 }
 
@@ -70,6 +83,8 @@ function displayMarkersOnMap(data) {
         });
         marker.setMap(map);
         markers.push(marker);
+
+        const imageUrl = item.firstimage && item.firstimage !== 'undefined' ? item.firstimage : '/resources/static/images/logo.png';
 
         // 인포윈도우 내용: 제목 + 이미지 + 좋아요 + 상세보기
         const infowindowContent = `

@@ -24,4 +24,19 @@ public class AttractionResponse {
         this.mapx = mapx;
         this.mapy = mapy;
     }
+
+    // 이미지 URL을 반환하는 메서드
+    public String getImageUrl() {
+        return firstImage;
+    }
+
+    // 관광지 이름을 반환하는 메서드
+    public String getName() {
+        return title;
+    }
+
+    // 관광지 설명을 반환하는 메서드 (예시로 주소를 설명으로 사용)
+    public String getDescription() {
+        return addr;  // 실제로는 적합한 설명을 반환해야 합니다.
+    }
 }

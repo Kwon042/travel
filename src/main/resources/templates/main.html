@@ -16,10 +16,10 @@
       <!-- 랜덤 관광지 목록 출력 -->
       <div th:each="attraction : ${randomAttractions}" class="col-md-4">
         <div class="card mb-4">
-          <img th:src="${attraction.imageUrl}" class="card-img-top" alt="관광지 이미지">
+          <img th:src="${attraction.firstImage}" class="card-img-top" alt="관광지 이미지">
           <div class="card-body">
-            <h5 class="card-title" th:text="${attraction.name}">관광지 이름</h5>
-            <p class="card-text" th:text="${attraction.description}">관광지 설명</p>
+            <h5 class="card-title" th:text="${attraction.title}">관광지 이름</h5>
+            <p class="card-text" th:text="${attraction.addr}">관광지 설명</p>
           </div>
         </div>
       </div>
