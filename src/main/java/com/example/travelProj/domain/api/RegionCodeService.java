@@ -43,7 +43,7 @@ public class RegionCodeService {
 
         // 1. RegionMapper를 이용한 시/도 코드 반환
         String mappedCode = RegionMapper.getAreaCode(normalized);
-        if (mappedCode != null) {
+        if (mappedCode != null && !mappedCode.isBlank()) {
             logger.info("Returning city/province code for region name '{}': {}", normalized, mappedCode);
             return mappedCode;
         } else {
