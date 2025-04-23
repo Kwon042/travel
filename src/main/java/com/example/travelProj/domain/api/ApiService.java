@@ -22,6 +22,7 @@ public class ApiService {
 
     private final WebClient webClient;
     private final ObjectMapper objectMapper;
+    private final RegionCodeService regionCodeService;
 
     @Value("${api.url}")
     private String apiUrl;
@@ -29,13 +30,13 @@ public class ApiService {
     private String apiKey;
 
     // 지역명을 기반으로 관광지 검색
-    public List<AttractionResponse> searchAttractionByRegion(String regionCode) {
-        if (regionCode == null || regionCode.isBlank()) {
+    public List<AttractionResponse> searchAttractionByRegion(String areaCode) {
+        if (areaCode == null || areaCode.isBlank()) {
             return Collections.emptyList();
         }
 
         // 지역 코드로 관광지 검색
-        String apiResponse = fetchAttractionsByRegion(regionCode);
+        String apiResponse = fetchAttractionsByRegion(areaCode);
         return parseApiResponse(apiResponse);
     }
 
@@ -54,7 +55,8 @@ public class ApiService {
                             .queryParam("MobileOS", "ETC")
                             .queryParam("MobileApp", "TestApp")
                             .queryParam("_type", "json")
-                            .queryParam("numOfRows", 50)
+                            .queryParam("contentTypeId", "12") // 관광타입: 12 > 관광지
+                            .queryParam("numOfRows", 100)
                             .build())
                     .retrieve()
                     .bodyToMono(String.class)
