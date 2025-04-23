@@ -32,6 +32,6 @@ public class RegionMapper {
     }
 
     public static String getAreaCode(String regionName) {
-        return regionToCodeMap.getOrDefault(regionName, null);
+        return regionToCodeMap.getOrDefault(regionName, "");
     }
 }

@@ -22,7 +22,7 @@ public class MapController {
         return "map";
     }
 
-    // /api/attractions 요청 시 JSON 데이터 반환 (js에서)
+    // /api/attractions 요청 시 JSON 데이터 반환 (js에서) > 마커 찍기 위해
     @GetMapping("/api/attractions")
     @ResponseBody
     public List<AttractionResponse> getAttractionsForMap(@RequestParam String region) {

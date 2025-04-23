@@ -5,6 +5,7 @@ import com.example.travelProj.domain.api.RegionMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -16,29 +17,31 @@ public class AttractionService {
     private final AttractionRepository attractionRepository;
     private final ApiService apiService;
 
-    // 메인 페이지에서 랜덤 여행지 가져오기 (전국 기준)
     public List<AttractionResponse> getRandomAttractions() {
-        return getRandomAttractionsByRegion("전국");  // 기본 "전국" 기준으로 랜덤 여행지 3~5개 가져오기
-    }
+        // 모든 지역 코드 리스트
+        List<String> regionCodes = List.of("1", "2", "3", "4", "5", "6", "7", "8", "31", "32", "33", "34", "35", "36", "37", "38", "39");
 
-    // 지역 기반 랜덤 여행지 가져오기
-    public List<AttractionResponse> getRandomAttractionsByRegion(String regionName) {
-        String regionCode = RegionMapper.getAreaCode(regionName);  // "전국" → "" 자동 매핑
-        List<AttractionResponse> attractions = apiService.searchAttractionByRegion(regionCode);
+        // 모든 지역 코드에 대해 관광지 데이터를 가져옴
+        List<AttractionResponse> allAttractions = new ArrayList<>();
+        for (String regionCode : regionCodes) {
+            List<AttractionResponse> attractions = apiService.searchAttractionByRegion(regionCode);
+            allAttractions.addAll(attractions);
+        }
 
-        Collections.shuffle(attractions);
-        return attractions.stream()
-                .limit(new Random().nextInt(3) + 3) // 3~5개 랜덤
+        // 랜덤으로 3~5개 선택
+        Collections.shuffle(allAttractions);
+        return allAttractions.stream()
+                .limit(new Random().nextInt(2) + 5)
                 .toList();
     }
 
-    // 지도 페이지에서 지역에 맞는 관광지 최대 50개 가져오기
+    // 지도 페이지에서 지역에 맞는 관광지 최대 100개 가져오기
     public List<AttractionResponse> getAttractionsForMap(String regionName) {
         String regionCode = RegionMapper.getAreaCode(regionName);
         List<AttractionResponse> attractions = apiService.searchAttractionByRegion(regionCode);
 
         return attractions.stream()
-                .limit(50)
+                .limit(100)
                 .toList();
     }
 
