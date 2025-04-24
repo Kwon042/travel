@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,7 +24,6 @@ public class ApiService {
 
     private final WebClient webClient;
     private final ObjectMapper objectMapper;
-    private final RegionCodeService regionCodeService;
 
     @Value("${api.url}")
     private String apiUrl;
@@ -31,18 +31,18 @@ public class ApiService {
     private String apiKey;
 
     // 지역명을 기반으로 관광지 검색
-    public List<AttractionResponse> searchAttractionByRegion(String areaCode) {
+    public List<AttractionResponse> searchAttractionByRegion(String areaCode, String contentTypeId) {
         if (areaCode == null || areaCode.isBlank()) {
             return Collections.emptyList();
         }
 
         // 지역 코드로 관광지 검색
-        String apiResponse = fetchAttractionsByRegion(areaCode);
+        String apiResponse = fetchAttractionsByRegion(areaCode, contentTypeId);
         return parseApiResponse(apiResponse);
     }
 
     // 지역 코드로 관광지 목록을 요청
-    private String fetchAttractionsByRegion(String areaCode) {
+    private String fetchAttractionsByRegion(String areaCode, String contentTypeId) {
         try {
             logger.info("Region search request - Region code: {}", areaCode);
 
@@ -56,7 +56,7 @@ public class ApiService {
                             .queryParam("MobileOS", "ETC")
                             .queryParam("MobileApp", "TestApp")
                             .queryParam("_type", "json")
-                            .queryParam("contentTypeId", "12") // 관광타입: 12 > 관광지
+                            .queryParam("contentTypeId", contentTypeId)
                             .queryParam("numOfRows", 100)
                             .build())
                     .retrieve()
@@ -116,54 +116,80 @@ public class ApiService {
 
         String firstImage = item.path("firstimage").asText("");
         String addr = item.path("addr1").asText("");
+        String description = item.path("description").asText("");
         double mapx = item.path("mapx").asDouble(0.0);
         double mapy = item.path("mapy").asDouble(0.0);
         Long contentId = item.path("contentid").asLong(0);
 
-        return new AttractionResponse(title, firstImage, addr, mapx, mapy, contentId);
+        return new AttractionResponse(title, firstImage, addr, description, mapx, mapy, contentId);
     }
 
-    // 관광지 상세정보 /detailInfo1로 가져오기
+    // 상세정보 - 메인
     public AttractionDetailResponse fetchDetailInfo(Long contentId) {
         try {
-            logger.info("Fetching detail info from /detailInfo1 for contentId: {}", contentId);
+            JsonNode mainItemNode = fetchCommonInfo(contentId);
+            if (mainItemNode == null) return null;
 
-            String response = webClient.get()
-                    .uri(uriBuilder -> uriBuilder
-                            .scheme("http")
-                            .host("apis.data.go.kr")
-                            .path("/B551011/KorService1/detailInfo1")
-                            .queryParam("serviceKey", apiKey)
-                            .queryParam("MobileOS", "ETC")
-                            .queryParam("MobileApp", "TestApp")
-                            .queryParam("contentId", contentId)
-                            .queryParam("contentTypeId", "12") // 관광타입: 12 > 관광지
-                            .queryParam("_type", "json")
-                            .build())
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
-            logger.debug("Detail Info API response: {}", response);
+            JsonNode infoListNode = fetchAdditionalInfo(contentId);
 
-            JsonNode root = objectMapper.readTree(response);
-
-            String resultCode = root.at("/response/header/resultCode").asText();
-            if (!"0000".equals(resultCode)) {
-                logger.warn("DetailInfo API returned error: {}", resultCode);
-                return null;
-            }
-
-            JsonNode itemNode = root.at("/response/body/items/item");
-            if (itemNode.isMissingNode() || itemNode.isNull()) {
-                return null;
-            }
-
-            return new AttractionDetailResponse(itemNode);
-
+            return new AttractionDetailResponse(mainItemNode, infoListNode);
         } catch (Exception e) {
-            logger.error("Failed to fetch detail info from /detailInfo1", e);
+            logger.error("Failed to fetch detail info", e);
             return null;
         }
     }
+
+    // 상세정보 - 기본적인  정보만
+    private JsonNode fetchCommonInfo(Long contentId) throws IOException {
+        String response = webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .scheme("http")
+                        .host("apis.data.go.kr")
+                        .path("/B551011/KorService1/detailCommon1")
+                        .queryParam("serviceKey", apiKey)
+                        .queryParam("MobileOS", "ETC")
+                        .queryParam("MobileApp", "TestApp")
+                        .queryParam("contentId", contentId)
+                        .queryParam("contentTypeId", "12")
+                        .queryParam("defaultYN", "Y")
+                        .queryParam("overviewYN", "Y")
+                        .queryParam("_type", "json")
+                        .build())
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+
+        JsonNode root = objectMapper.readTree(response);
+        String resultCode = root.at("/response/header/resultCode").asText();
+        if (!"0000".equals(resultCode)) {
+            logger.warn("CommonInfo API error: {}", resultCode);
+            return null;
+        }
+
+        return root.at("/response/body/items/item");
+    }
+
+    // 상세정보 - 부가적인 정보
+    private JsonNode fetchAdditionalInfo(Long contentId) throws IOException {
+        String response = webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .scheme("http")
+                        .host("apis.data.go.kr")
+                        .path("/B551011/KorService1/detailInfo1")
+                        .queryParam("serviceKey", apiKey)
+                        .queryParam("MobileOS", "ETC")
+                        .queryParam("MobileApp", "TestApp")
+                        .queryParam("contentId", contentId)
+                        .queryParam("contentTypeId", "12")
+                        .queryParam("_type", "json")
+                        .build())
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+
+        JsonNode root = objectMapper.readTree(response);
+        return root.at("/response/body/items/item");
+    }
+
 }
 

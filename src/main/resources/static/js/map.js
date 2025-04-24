@@ -16,23 +16,31 @@ window.onload = function() {
         level: 7
     });
 
-    // 검색창에서 엔터 눌렀을 때 검색 실행
-    const searchInput = document.getElementById('searchKeyword');
-    searchInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-            searchAttraction();
-        }
+    // 카테고리 버튼 클릭 이벤트 (선택된 지역 + contentTypeId로 검색)
+    document.querySelectorAll('.category-btn').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const regionName = document.getElementById('searchKeyword').value.trim();
+            if (!regionName) {
+                alert("먼저 지역명을 입력해주세요.");
+                return;
+            }
+
+            // 버튼 시각적 표시
+            document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('selected'));
+
+            // 버튼 클릭 또는 내부 요소(span 등) 클릭 시에도 항상 button에 selected 부여
+            const clickedButton = event.currentTarget;
+            clickedButton.classList.add('selected');
+            event.target.classList.add('selected');
+
+            const contentTypeId = event.target.getAttribute('data-type');
+            searchAttraction(regionName, contentTypeId);
+        });
     });
 };
 
-function searchAttraction() {
-    const regionName = document.getElementById('searchKeyword').value.trim();
-    if (!regionName) {
-        alert("지역명을 입력해주세요.");
-        return;
-    }
-
-    fetch(`/api/attraction/search?regionName=${encodeURIComponent(regionName)}`)
+function searchAttraction(regionName, contentTypeId) {
+    fetch(`/api/attraction/search?regionName=${encodeURIComponent(regionName)}&contentTypeId=${contentTypeId}`)
         .then(response => response.json())
         .then(data => {
             console.log("검색 결과:", data);
@@ -85,14 +93,14 @@ function displayMarkersOnMap(data) {
         marker.setMap(map);
         markers.push(marker);
 
-        const imageUrl = item.firstimage && item.firstimage !== 'undefined' ? item.firstimage : 'images/no-image.png';
+        const imageUrl = item.firstImage && item.firstImage !== 'undefined' ? item.firstImage : 'images/no-image.png';
 
         // 인포윈도우 내용
         const infowindowContent = `
-            <div style="padding:10px; text-align:center;">
-                <strong>${item.title}</strong><br>
-                <img src="${imageUrl}" alt="${item.title}" style="width:100px;height:100px;object-fit:cover;"><br>
-                <button onclick="fetchAndShowDetail(${item.contentId})" style="margin-top:5px;">상세보기</button>
+            <div class="kakao-map-info-window-content">
+                <strong>${item.title}</strong>
+                <img src="${imageUrl}" alt="${item.title}">
+                <button onclick="fetchAndShowDetail(${item.contentId})">상세보기</button>
             </div>
         `;
 
@@ -126,27 +134,35 @@ function fetchAndShowDetail(contentId) {
 function showDetailModal(detail) {
     const modalBody = document.getElementById('modalBody');
     let infoHtml = '';
-    if (detail.infoList) {
+
+    // infoList가 존재하는 경우에만 반복문 실행
+    if (Array.isArray(detail.infoList) && detail.infoList.length > 0) {
         detail.infoList.forEach(info => {
             infoHtml += `
                 <div>
-                    <strong>${info.infoName}</strong>
-                    <p>${info.infoText}</p>
+                    <strong>${info.infoName || '정보 없음'}</strong>
+                    <p>${info.infoText || '정보 없음'}</p>
                 </div>
             `;
         });
+    } else {
+        infoHtml = '<p>추가 정보가 없습니다.</p>';
     }
 
+    // 모달의 내용 설정
     modalBody.innerHTML = `
-        <h4>${detail.title}</h4>
-        <p><strong>주소:</strong> ${detail.addr1 || '정보 없음'}</p>
+        <h4>${detail.title || '제목 없음'}</h4>
+        <p><strong>주소:</strong> ${detail.addr || '정보 없음'}</p>
         <p><strong>전화번호:</strong> ${detail.tel || '정보 없음'}</p>
-        <p>${detail.overview || '설명 없음'}</p>
-        <img src="${detail.firstimage || 'images/no-image.png'}"
-             alt="이미지" style="width:100%; max-height:300px; object-fit:cover;">
+        <p><strong>설명:</strong> ${detail.description || '설명 없음'}</p>
+        <img src="${detail.firstimage || '/images/no-image.png'}"
+             alt="이미지" style="width:200px; height:150px; object-fit:cover;">
+
+        <h5>시설 정보</h5>
         ${infoHtml}
     `;
 
+    // 부트스트랩 모달을 사용하여 모달 띄우기
     const modal = new bootstrap.Modal(document.getElementById('attractionModal'));
     modal.show();
 }

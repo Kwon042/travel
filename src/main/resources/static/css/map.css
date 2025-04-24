@@ -1,0 +1,132 @@
+#map {
+    width: 100%;
+    height: 100%;
+    margin-top: 20px;
+    border: 1px solid #ccc;
+}
+
+.kakao-map-info-window-content {
+    width: 150px;
+    height: 177px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    font-size: 13px;
+}
+
+.kakao-map-info-window-content strong,
+.kakao-map-info-window-content img,
+.kakao-map-info-window-content button {
+    margin: 5px 0; /* 간격 최소화 */
+    line-height: 1.2;
+}
+
+.kakao-map-info-window-content strong {
+    margin: 5px 0; /* 기존 유지 */
+    line-height: 1.2; /* 기존 유지 */
+    position: relative;
+    display: inline-block;
+    padding-bottom: 6px; /* 밑줄과 텍스트 사이 간격 */
+}
+
+.kakao-map-info-window-content strong::before,
+.kakao-map-info-window-content strong::after {
+    content: "";
+    position: absolute;
+    left: -5px; /* 왼쪽으로 5px 늘림 */
+    right: -5px;
+    height: 1px;
+    background-color: black; /* 검정색 밑줄 */
+}
+
+.kakao-map-info-window-content strong::before {
+    bottom: 0;
+}
+
+.kakao-map-info-window-content strong::after {
+    bottom: 3px; /* 두 번째 밑줄은 위쪽에 */
+}
+
+.kakao-map-info-window-content img {
+    width: 120px;
+    height: 100px;
+    object-fit: cover;
+}
+
+.kakao-map-info-window-content button {
+    padding: 2px 5px;
+    border: none;
+    background-color: transparent;
+    color: black;
+    border: 1px solid #D3D3D3;
+    border-radius: 2px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.search-area {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;  /* 각 요소 간의 간격 */
+}
+
+#searchKeyword {
+    padding: 8px;
+    font-size: 16px;
+    width: 200px;  /* 원하는 너비로 설정 */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.category-buttons {
+    display: flex;
+    overflow-x: auto;
+    padding: 5px;
+    gap: 10px;  /* 아이템 사이 간격 */
+    scrollbar-width: thin;  /* 기본 스크롤바 크기 */
+    -ms-overflow-style: none;  /* IE/Edge에서 스크롤바 숨기기 */
+    justify-content: center;  /* 글씨를 중앙 정렬 */
+    overflow-y: hidden; /* 세로 스크롤 숨기기 */
+    white-space: nowrap;  /* 항목들이 한 줄로 표시되도록 설정 */
+}
+
+.category-btn {
+    white-space: nowrap;  /* 텍스트 줄바꿈 방지 */
+    padding: 5px 7px;
+    background-color: transparent;  /* 배경색 없음 */
+    border: 1px solid #333;  /* 진한 회색 테두리 */
+    border-radius: 5px;
+    cursor: pointer;
+    flex-shrink: 0;  /* 항목이 축소되지 않도록 */
+    transition: background-color 0.3s ease;
+    color: black;  /* 글씨 색상 검정 */
+    text-align: center;  /* 글씨 중앙 정렬 */
+    position: relative; /* check-icon 위치를 위해 추가 */
+}
+
+.category-btn .check-icon {
+    display: none;
+    position: absolute;
+    top: 5%;  /* 수직 중앙 위치 */
+    right: 10px;  /* 버튼의 오른쪽에 위치 */
+    transform: translateY(-50%);  /* 수직으로 정확히 중앙 맞추기 */
+    font-size: 24px;
+    font-family: 'Arial', sans-serif; /* 아이콘 글꼴 설정 */
+    color: red;
+    font-weight: bold;
+}
+
+.category-btn.selected .check-icon {
+    display: inline;  /* 선택된 버튼에서만 체크 표시 보이기 */
+}

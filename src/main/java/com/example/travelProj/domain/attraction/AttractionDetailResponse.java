@@ -20,19 +20,16 @@ public class AttractionDetailResponse {
     private String firstimage;
     private List<Info> infoList; // 새로운 필드 추가
 
+    public AttractionDetailResponse(JsonNode mainItemNode, JsonNode itemsArrayNode) {
+        this.title = mainItemNode.at("title").asText();
+        this.addr1 = mainItemNode.at("addr1").asText();
+        this.tel = mainItemNode.at("tel").asText();
+        this.overview = mainItemNode.at("overview").asText();
+        this.firstimage = mainItemNode.at("firstimage").asText();
 
-    public AttractionDetailResponse(JsonNode itemNode) {
-        this.title = itemNode.at("/title").asText();
-        this.addr1 = itemNode.at("/addr1").asText();
-        this.tel = itemNode.at("/tel").asText();
-        this.overview = itemNode.at("/overview").asText();
-        this.firstimage = itemNode.at("/firstimage").asText();
-
-        // info 데이터를 파싱하여 리스트로 추가
         this.infoList = new ArrayList<>();
-        JsonNode itemsNode = itemNode.path("items").path("item");
-        if (itemsNode.isArray()) {
-            for (JsonNode infoNode : itemsNode) {
+        if (itemsArrayNode.isArray()) {
+            for (JsonNode infoNode : itemsArrayNode) {
                 Info info = new Info(infoNode.path("infoname").asText(),
                         infoNode.path("infotext").asText());
                 this.infoList.add(info);

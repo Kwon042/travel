@@ -23,8 +23,10 @@ public class AttractionService {
 
         // 모든 지역 코드에 대해 관광지 데이터를 가져옴
         List<AttractionResponse> allAttractions = new ArrayList<>();
+        String contentTypeId = "12";  // 기본 관광지 타입 12로 설정
+
         for (String regionCode : regionCodes) {
-            List<AttractionResponse> attractions = apiService.searchAttractionByRegion(regionCode);
+            List<AttractionResponse> attractions = apiService.searchAttractionByRegion(regionCode, contentTypeId);
             allAttractions.addAll(attractions);
         }
 
@@ -38,7 +40,8 @@ public class AttractionService {
     // 지도 페이지에서 지역에 맞는 관광지 최대 100개 가져오기
     public List<AttractionResponse> getAttractionsForMap(String regionName) {
         String regionCode = RegionMapper.getAreaCode(regionName);
-        List<AttractionResponse> attractions = apiService.searchAttractionByRegion(regionCode);
+        String contentTypeId = "12";  // 기본 관광지 타입 12로 설정
+        List<AttractionResponse> attractions = apiService.searchAttractionByRegion(regionCode, contentTypeId);
 
         return attractions.stream()
                 .limit(100)

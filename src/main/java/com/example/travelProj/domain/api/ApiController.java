@@ -18,13 +18,15 @@ public class ApiController {
 
     // 지역명으로 검색 > 내부에서 지역코드 변환
     @GetMapping("/search")
-    public List<AttractionResponse> searchAttractionByRegionName(@RequestParam String regionName) {
+    public List<AttractionResponse> searchAttractionByRegionName(
+            @RequestParam String regionName,
+            @RequestParam(required = false, defaultValue = "12") Integer contentTypeId) {  // 관광지 타입 파라미터 추가
         String regionCode = regionCodeService.findAreaCodeByKeyword(regionName);
         if (regionCode == null) {
             return List.of();  // 또는 적절한 오류 메시지를 반환할 수 있음
         }
-        // 지역 코드로 관광지 검색
-        return apiService.searchAttractionByRegion(regionCode);
+        // 지역 코드와 선택된 관광지 타입으로 관광지 검색
+        return apiService.searchAttractionByRegion(regionCode, contentTypeId.toString());
     }
 
     // 관광지 상세정보를 가져오는 API

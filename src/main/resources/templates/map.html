@@ -4,13 +4,9 @@
 <head>
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/map.css">
 
     <title>여행 지도</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
-        #map { width: 100%; height: 100%; margin-top: 20px; border: 1px solid #ccc; }
-        .search-area { margin-bottom: 10px; }
-    </style>
 </head>
 <body>
 <header th:replace="~{layout/header}"></header>
@@ -18,8 +14,32 @@
 <h2>관광지 검색 지도</h2>
 <div class="search-area">
     <input type="text" id="searchKeyword" placeholder="지역명을 입력하세요" />
-    <button onclick="searchAttraction()">검색</button>
 </div>
+
+<div class="category-buttons">
+    <button class="category-btn" data-type="12">관광지
+        <span class="check-icon">✔</span>
+    </button>
+    <button class="category-btn" data-type="14">문화시설
+        <span class="check-icon">✔</span>
+    </button>
+    <button class="category-btn" data-type="15">축제
+        <span class="check-icon">✔</span>
+    </button>
+    <button class="category-btn" data-type="28">레포츠
+        <span class="check-icon">✔</span>
+    </button>
+    <button class="category-btn" data-type="32">숙박
+        <span class="check-icon">✔</span>
+    </button>
+    <button class="category-btn" data-type="38">쇼핑
+        <span class="check-icon">✔</span>
+    </button>
+    <button class="category-btn" data-type="39">음식점
+        <span class="check-icon">✔</span>
+    </button>
+</div>
+
 <div id="map"></div>
 
 <div class="modal fade" id="attractionModal" tabindex="-1" aria-hidden="true">
