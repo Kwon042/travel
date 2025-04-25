@@ -28,12 +28,11 @@ window.onload = function() {
             // 버튼 시각적 표시
             document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('selected'));
 
-            // 버튼 클릭 또는 내부 요소(span 등) 클릭 시에도 항상 button에 selected 부여
             const clickedButton = event.currentTarget;
             clickedButton.classList.add('selected');
-            event.target.classList.add('selected');
 
-            const contentTypeId = event.target.getAttribute('data-type');
+            const contentTypeIdStr = clickedButton.getAttribute('data-type');
+            const contentTypeId = parseInt(contentTypeIdStr, 10); // 확실하게 정수 변환
             searchAttraction(regionName, contentTypeId);
         });
     });
@@ -104,7 +103,7 @@ function displayMarkersOnMap(data) {
             <div class="kakao-map-info-window-content">
                 <strong>${item.title}</strong>
                 <img src="${imageUrl}" alt="${item.title}">
-                <button onclick="fetchAndShowDetail(${item.contentId}, '${imageUrl}')">상세보기</button>
+                <button onclick="fetchAndShowDetail(${item.contentId}, '${imageUrl}', ${item.contentTypeId})">상세보기</button>
             </div>
         `;
 
@@ -122,8 +121,13 @@ function displayMarkersOnMap(data) {
     });
 }
 
-function fetchAndShowDetail(contentId, fallbackImage) {
-    fetch(`/api/attraction/detail/${contentId}`)
+function fetchAndShowDetail(contentId, fallbackImage, contentTypeId) {
+    // 디버깅: contentTypeId가 undefined인지 확인
+    if (typeof contentTypeId === 'undefined') {
+        console.error("contentTypeId가 전달되지 않았습니다.");
+    }
+
+    fetch(`/api/attraction/detail/${contentId}/${contentTypeId}`)
         .then(res => res.json())
         .then(detail => {
             console.log(detail); // 디버깅을 위해 로그 추가

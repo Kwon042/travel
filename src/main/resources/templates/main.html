@@ -10,48 +10,44 @@
 </head>
 <body>
   <!-- 로딩 스피너 -->
-  <div id="loadingSpinner" style="display: none;">
-    <div class="spinner-border" role="status">
+  <div id="loadingSpinner" style="position: fixed; top: 50%; left: 50%;
+      transform: translate(-50%, -50%); z-index: 9999; display: block;">
+    <div class="spinner-border text-primary" role="status">
       <span class="visually-hidden">✽ 금방 열려요 ✽</span>
     </div>
   </div>
 
-  <div class="tour-destination">
-    <header th:replace="~{layout/header}"></header>
-
-    <h2>오늘의 추천 여행지</h2>
-    <div class="row justify-content-center">
-      <!-- 랜덤 관광지 목록 출력 -->
-      <div th:each="attraction : ${randomAttractions}" class="col-md-4">
-        <div class="card mb-4">
-          <img th:src="@{${attraction.firstImage != null and !attraction.firstImage.isEmpty() ? attraction.firstImage : '/images/travel.jpg'}}" class="card-img-top" alt="관광지 이미지">
-          <div class="card-body">
-            <h5 class="card-title" th:text="${attraction.title}">관광지 이름</h5>
-            <p class="card-text" th:text="${attraction.addr}">관광지 설명</p>
+  <!-- 본문 내용 (처음엔 안 보임) -->
+  <div id="mainContent" style="visibility: hidden;">
+    <div class="tour-destination">
+      <header th:replace="~{layout/header}"></header>
+      <h2>오늘의 추천 여행지</h2>
+      <div class="row justify-content-center">
+        <div th:each="attraction : ${randomAttractions}" class="col-md-4">
+          <div class="card mb-4">
+            <img th:src="@{${attraction.firstImage != null and !attraction.firstImage.isEmpty() ? attraction.firstImage : '/images/travel.jpg'}}"
+                 class="card-img-top" alt="관광지 이미지">
+            <div class="card-body">
+              <h5 class="card-title" th:text="${attraction.title}">관광지 이름</h5>
+              <p class="card-text" th:text="${attraction.addr}">관광지 설명</p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-
       <footer th:replace="~{layout/footer}"></footer>
-
     </div>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    // 로딩 스피너 보이기
-    function showLoading() {
-      document.getElementById("loadingSpinner").style.display = "block";
-    }
+  </div>
 
-    // 로딩 스피너 숨기기
+  <script>
     function hideLoading() {
       document.getElementById("loadingSpinner").style.display = "none";
+      document.getElementById("mainContent").style.visibility = "visible";
     }
 
-    // 페이지 로딩 후 로딩 스피너 숨기기
-    document.addEventListener("DOMContentLoaded", function() {
-      hideLoading(); // 페이지 로딩 완료 후 로딩 스피너 숨기기
-    });
+    // window.onload는 이미지 포함 모든 리소스 로드 후 실행됨
+    window.onload = function() {
+      hideLoading();
+    };
   </script>
 
 </body>
