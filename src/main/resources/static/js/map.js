@@ -40,9 +40,12 @@ window.onload = function() {
 };
 
 function searchAttraction(regionName, contentTypeId) {
+    showLoading(); // 로딩 표시
+
     fetch(`/api/attraction/search?regionName=${encodeURIComponent(regionName)}&contentTypeId=${contentTypeId}`)
         .then(response => response.json())
         .then(data => {
+            hideLoading();
             console.log("검색 결과:", data);
 
             if (Array.isArray(data) && data.length > 0) {
@@ -52,6 +55,7 @@ function searchAttraction(regionName, contentTypeId) {
             }
         })
         .catch(error => {
+            hideLoading(); // 로딩 표시
             console.error('검색 오류:', error);
             alert('검색 도중 오류가 발생했습니다.');
         });
@@ -93,14 +97,14 @@ function displayMarkersOnMap(data) {
         marker.setMap(map);
         markers.push(marker);
 
-        const imageUrl = item.firstImage && item.firstImage !== 'undefined' ? item.firstImage : 'images/no-image.png';
+        const imageUrl = item.firstImage?.trim() ? item.firstImage : '/images/no-image.png';
 
         // 인포윈도우 내용
         const infowindowContent = `
             <div class="kakao-map-info-window-content">
                 <strong>${item.title}</strong>
                 <img src="${imageUrl}" alt="${item.title}">
-                <button onclick="fetchAndShowDetail(${item.contentId})">상세보기</button>
+                <button onclick="fetchAndShowDetail(${item.contentId}, '${imageUrl}')">상세보기</button>
             </div>
         `;
 
@@ -118,11 +122,14 @@ function displayMarkersOnMap(data) {
     });
 }
 
-function fetchAndShowDetail(contentId) {
+function fetchAndShowDetail(contentId, fallbackImage) {
     fetch(`/api/attraction/detail/${contentId}`)
         .then(res => res.json())
         .then(detail => {
             console.log(detail); // 디버깅을 위해 로그 추가
+            if (!detail.firstimage || detail.firstimage === '') {
+                detail.firstimage = fallbackImage;
+            }
             showDetailModal(detail);
         })
         .catch(error => {
@@ -140,6 +147,7 @@ function showDetailModal(detail) {
         detail.infoList.forEach(info => {
             infoHtml += `
                 <div>
+                    <hr style="border: none; border-top: 1px solid black; margin: 10px 0;">
                     <strong>${info.infoName || '정보 없음'}</strong>
                     <p>${info.infoText || '정보 없음'}</p>
                 </div>
@@ -151,14 +159,24 @@ function showDetailModal(detail) {
 
     // 모달의 내용 설정
     modalBody.innerHTML = `
-        <h4>${detail.title || '제목 없음'}</h4>
-        <p><strong>주소:</strong> ${detail.addr || '정보 없음'}</p>
-        <p><strong>전화번호:</strong> ${detail.tel || '정보 없음'}</p>
-        <p><strong>설명:</strong> ${detail.description || '설명 없음'}</p>
-        <img src="${detail.firstimage || '/images/no-image.png'}"
-             alt="이미지" style="width:200px; height:150px; object-fit:cover;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <h4 style="margin: 0;">${detail.title || '제목 없음'}</h4>
+            <img src="${detail.firstimage || '/images/no-image.png'}" alt="이미지" class="detail-image" style="width: 150px; height: 100px; object-fit: cover;">
+        </div>
+        <hr style="border: none; border-top: 2px solid black; margin: 10px 0;">
+        <p style="margin: 0;"><strong>주소</strong></p>
+        <p style="margin: 0;">${detail.addr1 || '정보 없음'}</p>
+        <hr style="border: none; border-top: 1px solid black; margin: 10px 0;">
 
-        <h5>시설 정보</h5>
+        <p style="margin: 0;"><strong>전화번호</strong></p>
+        <p style="margin: 0;">${detail.tel || '정보 없음'}</p>
+        <hr style="border: none; border-top: 1px solid black; margin: 10px 0;">
+
+        <p style="margin: 0;"><strong>설명</strong></p>
+        <p style="margin: 0;">${detail.overview || '설명 없음'}</p>
+        <hr style="border: none; border-top: 2px solid black; margin: 10px 0;">
+
+        <h5 style="margin-top: 10px; margin-bottom: 10px;">시설 정보</h5>
         ${infoHtml}
     `;
 
@@ -188,4 +206,12 @@ function likeAttraction(contentId) {
 // 상세보기 페이지 이동
 function moveToDetail(contentId) {
     window.location.href = `/attraction/detail/${contentId}`;
+}
+
+function showLoading() {
+    document.getElementById("loadingSpinner").style.display = "block";
+}
+
+function hideLoading() {
+    document.getElementById("loadingSpinner").style.display = "none";
 }

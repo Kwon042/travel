@@ -63,7 +63,8 @@ public class ApiService {
                     .bodyToMono(String.class)
                     .block();
 
-            logger.debug("API response: {}", response);
+            JsonNode root = objectMapper.readTree(response);
+            logger.debug("API response: {}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(root));
             return response;
 
         } catch (Exception e) {
@@ -125,12 +126,21 @@ public class ApiService {
     }
 
     // 상세정보 - 메인
-    public AttractionDetailResponse fetchDetailInfo(Long contentId) {
+    public AttractionDetailResponse fetchDetailInfo(Long contentId, int contentTypeId) {
         try {
-            JsonNode mainItemNode = fetchCommonInfo(contentId);
-            if (mainItemNode == null) return null;
+            JsonNode mainItemNode = fetchCommonInfo(contentId, contentTypeId);
+            if (mainItemNode == null || mainItemNode.isMissingNode()) return null;
+
+            // 배열 형태로 오는 경우 첫 번째 요소만 사용
+            if (mainItemNode.isArray() && mainItemNode.size() > 0) {
+                mainItemNode = mainItemNode.get(0);
+            }
+
+            logger.debug("Main Detail JSON:\n{}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(mainItemNode));
 
             JsonNode infoListNode = fetchAdditionalInfo(contentId);
+
+            logger.debug("Additional Info JSON:\n{}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(infoListNode));
 
             return new AttractionDetailResponse(mainItemNode, infoListNode);
         } catch (Exception e) {
@@ -140,7 +150,7 @@ public class ApiService {
     }
 
     // 상세정보 - 기본적인  정보만
-    private JsonNode fetchCommonInfo(Long contentId) throws IOException {
+    private JsonNode fetchCommonInfo(Long contentId, int contentTypeId) throws IOException {
         String response = webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .scheme("http")
@@ -150,7 +160,7 @@ public class ApiService {
                         .queryParam("MobileOS", "ETC")
                         .queryParam("MobileApp", "TestApp")
                         .queryParam("contentId", contentId)
-                        .queryParam("contentTypeId", "12")
+                        .queryParam("contentTypeId", contentTypeId)
                         .queryParam("defaultYN", "Y")
                         .queryParam("overviewYN", "Y")
                         .queryParam("_type", "json")

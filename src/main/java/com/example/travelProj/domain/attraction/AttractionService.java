@@ -30,10 +30,10 @@ public class AttractionService {
             allAttractions.addAll(attractions);
         }
 
-        // 랜덤으로 3~5개 선택
+        // 랜덤으로
         Collections.shuffle(allAttractions);
         return allAttractions.stream()
-                .limit(new Random().nextInt(2) + 5)
+                .limit(new Random().nextInt(1) + 9)
                 .toList();
     }
 

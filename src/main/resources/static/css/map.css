@@ -27,35 +27,27 @@
 }
 
 .kakao-map-info-window-content strong {
-    margin: 5px 0; /* 기존 유지 */
-    line-height: 1.2; /* 기존 유지 */
     position: relative;
     display: inline-block;
-    padding-bottom: 6px; /* 밑줄과 텍스트 사이 간격 */
+    padding: 0 4px;
+    font-weight: bold;
 }
 
 .kakao-map-info-window-content strong::before,
 .kakao-map-info-window-content strong::after {
-    content: "";
-    position: absolute;
-    left: -5px; /* 왼쪽으로 5px 늘림 */
-    right: -5px;
-    height: 1px;
-    background-color: black; /* 검정색 밑줄 */
-}
-
-.kakao-map-info-window-content strong::before {
-    bottom: 0;
-}
-
-.kakao-map-info-window-content strong::after {
-    bottom: 3px; /* 두 번째 밑줄은 위쪽에 */
+    content: "ෆ";
+    margin: 0 4px;
+    font-family: 'Arial', sans-serif;
+    color: red;
 }
 
 .kakao-map-info-window-content img {
     width: 120px;
     height: 100px;
     object-fit: cover;
+    border: 1px solid #dcdcdc; /* 옅은 회색 테두리 */
+    border-radius: 4px; /* 둥근 테두리 */
+    padding: 2px; /* 테두리와 이미지 사이에 간격 추가 */
 }
 
 .kakao-map-info-window-content button {
@@ -75,18 +67,25 @@
     margin-bottom: 20px;
 }
 
-.search-container {
-    display: flex;
-    align-items: center;
-    gap: 15px;  /* 각 요소 간의 간격 */
-}
-
 #searchKeyword {
     padding: 8px;
     font-size: 16px;
     width: 200px;  /* 원하는 너비로 설정 */
     border: 1px solid #ccc;
     border-radius: 5px;
+    background-color: transparent !important;  /* 배경색 없음 */
+    outline: none;
+}
+
+/* 자동완성 항목이 채워질 때 배경색 변경 */
+input:-webkit-autofill {
+    background-color: transparent !important;  /* 자동완성 입력 시 배경색을 연한 파란색으로 변경 */
+}
+
+/* 검색어 입력 시 배경색 변경 방지 */
+#searchKeyword:focus {
+    background-color: transparent !important;
+    outline: none;
 }
 
 .category-buttons {
@@ -130,3 +129,41 @@
 .category-btn.selected .check-icon {
     display: inline;  /* 선택된 버튼에서만 체크 표시 보이기 */
 }
+
+.detail-image {
+    width: 200px;
+    height: 150px;
+    object-fit: cover;
+    border: 1px solid #dcdcdc; /* 옅은 회색 테두리 */
+    border-radius: 4px; /* 둥근 테두리 */
+    padding: 2px; /* 테두리와 이미지 사이에 간격 추가 */
+    margin-bottom: 10px;
+}
+
+.spinner-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    text-align: center;
+    background-color: transparent;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.spinner {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #3498db;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+

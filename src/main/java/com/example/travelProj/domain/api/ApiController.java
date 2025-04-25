@@ -31,8 +31,8 @@ public class ApiController {
 
     // 관광지 상세정보를 가져오는 API
     @GetMapping("/detail/{contentId}")
-    public ResponseEntity<AttractionDetailResponse> getAttractionDetail(@PathVariable Long contentId) {
-        AttractionDetailResponse detail = apiService.fetchDetailInfo(contentId);
+    public ResponseEntity<AttractionDetailResponse> getAttractionDetail(@PathVariable Long contentId, @PathVariable int contentTypeId) {
+        AttractionDetailResponse detail = apiService.fetchDetailInfo(contentId, contentTypeId);
         if (detail == null) {
             return ResponseEntity.notFound().build();
         }
