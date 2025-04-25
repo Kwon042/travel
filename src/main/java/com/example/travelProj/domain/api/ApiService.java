@@ -121,12 +121,13 @@ public class ApiService {
         double mapx = item.path("mapx").asDouble(0.0);
         double mapy = item.path("mapy").asDouble(0.0);
         Long contentId = item.path("contentid").asLong(0);
+        String contentTypeId = item.path("contenttypeid").asText("");
 
-        return new AttractionResponse(title, firstImage, addr, description, mapx, mapy, contentId);
+        return new AttractionResponse(title, firstImage, addr, description, mapx, mapy, contentId, contentTypeId);
     }
 
     // 상세정보 - 메인
-    public AttractionDetailResponse fetchDetailInfo(Long contentId, int contentTypeId) {
+    public AttractionDetailResponse fetchDetailInfo(Long contentId, String contentTypeId) {
         try {
             JsonNode mainItemNode = fetchCommonInfo(contentId, contentTypeId);
             if (mainItemNode == null || mainItemNode.isMissingNode()) return null;
@@ -138,7 +139,7 @@ public class ApiService {
 
             logger.debug("Main Detail JSON:\n{}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(mainItemNode));
 
-            JsonNode infoListNode = fetchAdditionalInfo(contentId);
+            JsonNode infoListNode = fetchAdditionalInfo(contentId, contentTypeId);
 
             logger.debug("Additional Info JSON:\n{}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(infoListNode));
 
@@ -150,7 +151,7 @@ public class ApiService {
     }
 
     // 상세정보 - 기본적인  정보만
-    private JsonNode fetchCommonInfo(Long contentId, int contentTypeId) throws IOException {
+    private JsonNode fetchCommonInfo(Long contentId, String contentTypeId) throws IOException {
         String response = webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .scheme("http")
@@ -168,6 +169,8 @@ public class ApiService {
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
+        logger.debug("Received response: {}", response);  // 응답 로그 추가
+
 
         JsonNode root = objectMapper.readTree(response);
         String resultCode = root.at("/response/header/resultCode").asText();
@@ -180,7 +183,7 @@ public class ApiService {
     }
 
     // 상세정보 - 부가적인 정보
-    private JsonNode fetchAdditionalInfo(Long contentId) throws IOException {
+    private JsonNode fetchAdditionalInfo(Long contentId, String contentTypeId) throws IOException {
         String response = webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .scheme("http")
@@ -190,7 +193,7 @@ public class ApiService {
                         .queryParam("MobileOS", "ETC")
                         .queryParam("MobileApp", "TestApp")
                         .queryParam("contentId", contentId)
-                        .queryParam("contentTypeId", "12")
+                        .queryParam("contentTypeId", contentTypeId)
                         .queryParam("_type", "json")
                         .build())
                 .retrieve()

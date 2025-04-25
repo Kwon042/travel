@@ -16,9 +16,10 @@ public class AttractionResponse {
     private double mapx;  // 경도 (longitude)
     private double mapy;  // 위도 (latitude)
     private Long contentId;
+    private String contentTypeId;
 
     // 모든 필드를 사용하는 생성자
-    public AttractionResponse(String title, String firstImage, String addr, String description, double mapx, double mapy, Long contentId) {
+    public AttractionResponse(String title, String firstImage, String addr, String description, double mapx, double mapy, Long contentId, String contentTypeId) {
         this.title = title;
         this.firstImage = firstImage;
         this.addr = addr;
@@ -26,6 +27,7 @@ public class AttractionResponse {
         this.mapx = mapx;
         this.mapy = mapy;
         this.contentId = contentId;
+        this.contentTypeId = contentTypeId;
 
     }
 

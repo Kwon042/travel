@@ -31,8 +31,9 @@ window.onload = function() {
             const clickedButton = event.currentTarget;
             clickedButton.classList.add('selected');
 
-            const contentTypeIdStr = clickedButton.getAttribute('data-type');
-            const contentTypeId = parseInt(contentTypeIdStr, 10); // 확실하게 정수 변환
+            const contentTypeId = clickedButton.getAttribute('data-type');
+            console.log('contentTypeId:', contentTypeId);  // 이 로그를 추가하여 확인
+
             searchAttraction(regionName, contentTypeId);
         });
     });
@@ -40,8 +41,9 @@ window.onload = function() {
 
 function searchAttraction(regionName, contentTypeId) {
     showLoading(); // 로딩 표시
+    const url = `/api/attraction/search?regionName=${encodeURIComponent(regionName)}&contentTypeId=${contentTypeId}`;
 
-    fetch(`/api/attraction/search?regionName=${encodeURIComponent(regionName)}&contentTypeId=${contentTypeId}`)
+    fetch(url)
         .then(response => response.json())
         .then(data => {
             hideLoading();
@@ -122,11 +124,6 @@ function displayMarkersOnMap(data) {
 }
 
 function fetchAndShowDetail(contentId, fallbackImage, contentTypeId) {
-    // 디버깅: contentTypeId가 undefined인지 확인
-    if (typeof contentTypeId === 'undefined') {
-        console.error("contentTypeId가 전달되지 않았습니다.");
-    }
-
     fetch(`/api/attraction/detail/${contentId}/${contentTypeId}`)
         .then(res => res.json())
         .then(detail => {
@@ -161,10 +158,12 @@ function showDetailModal(detail) {
         infoHtml = '<p>추가 정보가 없습니다.</p>';
     }
 
+    const emoji = getEmojiByContentTypeId(detail.contentTypeId);
+
     // 모달의 내용 설정
     modalBody.innerHTML = `
         <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-            <h4 style="margin: 0;">${detail.title || '제목 없음'}</h4>
+            <h4 style="margin: 0;">${emoji} ${detail.title || '제목 없음'}</h4>
             <img src="${detail.firstimage || '/images/no-image.png'}" alt="이미지" class="detail-image" style="width: 150px; height: 100px; object-fit: cover;">
         </div>
         <hr style="border: none; border-top: 2px solid black; margin: 10px 0;">
@@ -218,4 +217,17 @@ function showLoading() {
 
 function hideLoading() {
     document.getElementById("loadingSpinner").style.display = "none";
+}
+
+function getEmojiByContentTypeId(contentTypeId) {
+    const emojiMap = {
+        "12": "🗽",  // 관광지
+        "14": "🏕️",  // 문화시설
+        "15": "🎡",  // 축제
+        "28": "🤿",  // 레포츠
+        "32": "🏨",  // 숙박
+        "38": "🛒",  // 쇼핑
+        "39": "🍽️",  // 음식점
+    };
+    return emojiMap[contentTypeId] || "";
 }
