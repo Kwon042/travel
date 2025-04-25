@@ -38,6 +38,9 @@ public class ApiService {
 
         // 지역 코드로 관광지 검색
         String apiResponse = fetchAttractionsByRegion(areaCode, contentTypeId);
+
+        System.out.println(apiResponse);
+
         return parseApiResponse(apiResponse);
     }
 

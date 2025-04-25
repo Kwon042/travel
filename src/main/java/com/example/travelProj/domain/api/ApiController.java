@@ -25,6 +25,7 @@ public class ApiController {
         if (regionCode == null) {
             return List.of();  // 또는 적절한 오류 메시지를 반환할 수 있음
         }
+
         // 지역 코드와 선택된 관광지 타입으로 관광지 검색
         return apiService.searchAttractionByRegion(regionCode, contentTypeId.toString());
     }
