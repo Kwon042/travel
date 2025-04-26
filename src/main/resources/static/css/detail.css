@@ -158,6 +158,12 @@ main {
     color: inherit; /* 색상 유지 */
 }
 
+.like-icon {
+    transition: color 0.3s ease; /* 부드러운 색상 변화 */
+    font-family: 'Arial', sans-serif;
+    color: purple;
+}
+
 .btn-light {
     color: #495057;
 }

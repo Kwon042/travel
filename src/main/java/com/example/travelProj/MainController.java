@@ -18,8 +18,8 @@ public class MainController {
     @GetMapping("/")
     public String showMainPage(Model model) {
         // 랜덤 여행지를 가져와서 모델에 추가
-        List<AttractionResponse> randomAttractions = attractionService.getRandomAttractions();
-        model.addAttribute("randomAttractions", randomAttractions);
+//        List<AttractionResponse> randomAttractions = attractionService.getRandomAttractions();
+//        model.addAttribute("randomAttractions", randomAttractions);
         return "main";
     }
 }

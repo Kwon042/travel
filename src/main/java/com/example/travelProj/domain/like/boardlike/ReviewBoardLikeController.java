@@ -41,14 +41,18 @@ public class ReviewBoardLikeController {
         }
     }
 
-
     // 좋아요 제거
-    @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/{reviewBoardId}")
-    public ResponseEntity<?> removeLike(@PathVariable Long reviewBoardId, @AuthenticationPrincipal SiteUser user) {
+    public ResponseEntity<Map<String, Object>> removeLike(@PathVariable Long reviewBoardId, @AuthenticationPrincipal SiteUser user) {
         reviewBoardLikeService.removeLike(reviewBoardId, user);
-        return ResponseEntity.ok().body("Like removed successfully.");
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Like removed successfully.");
+        response.put("hasLiked", false);  // 좋아요 해제됨
+        response.put("likeCount", reviewBoardLikeService.countLikes(reviewBoardId));  // 좋아요 수 반환
+
+        return ResponseEntity.ok(response);
     }
+
 
     // 좋아요 수 조회
     @GetMapping("/{reviewBoardId}/count")
