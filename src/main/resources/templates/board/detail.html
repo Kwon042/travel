@@ -13,126 +13,110 @@
   <link rel="stylesheet" href="/css/detail.css">
 </head>
 <body>
-<!-- 네비게이션바 -->
-<header th:replace="~{layout/header}"></header>
+  <!-- 네비게이션바 -->
+  <header th:replace="~{layout/header}"></header>
 
-<div class="container mt-4">
-  <div class="row">
-    <!-- 게시판 내용 -->
-    <main class="col-md-12">
-      <!-- 게시판 제목 -->
-      <h2 id="region-title">전체 리뷰 게시판</h2>
-      <div class="divider"></div>
-      <hr style="border: 1px solid #5b30a4; margin: 20px 0;"> <!-- 구분선 추가 -->
+  <div class="container mt-4">
+    <div class="row">
+      <!-- 게시판 내용 -->
+      <main class="col-md-12">
+        <!-- 게시판 제목 -->
+        <h2 id="region-title">전체 리뷰 게시판</h2>
+        <div class="divider"></div>
+        <hr style="border: 1px solid #5b30a4; margin: 20px 0;"> <!-- 구분선 추가 -->
 
-      <!-- 지역 필터링 테이블 추가 -->
-      <table class="travel-table table table-bordered text-center">
-        <tr>
-          <th><a th:href="@{/board/reviewBoard(region='전체')}">전체</a></th>
-          <th><a th:href="@{/board/reviewBoard(region='서울')}">서울</a></th>
-          <th><a th:href="@{/board/reviewBoard(region='대전')}">대전</a></th>
-          <th><a th:href="@{/board/reviewBoard(region='대구')}">대구</a></th>
-          <th><a th:href="@{/board/reviewBoard(region='광주')}">광주</a></th>
-          <th><a th:href="@{/board/reviewBoard(region='부산')}">부산</a></th>
-          <th><a th:href="@{/board/reviewBoard(region='울산')}">울산</a></th>
-          <th><a th:href="@{/board/reviewBoard(region='세종')}">세종</a></th>
-          <th><a th:href="@{/board/reviewBoard(region='경기')}">경기</a></th>
-        </tr>
-        <tr>
-          <th><a th:href="@{/board/reviewBoard(region='인천')}">인천</a></th>
-          <th><a th:href="@{/board/reviewBoard(region='강원')}">강원</a></th>
-          <th><a th:href="@{/board/reviewBoard(region='충북')}">충북</a></th>
-          <th><a th:href="@{/board/reviewBoard(region='충남')}">충남</a></th>
-          <th><a th:href="@{/board/reviewBoard(region='경북')}">경북</a></th>
-          <th><a th:href="@{/board/reviewBoard(region='경남')}">경남</a></th>
-          <th><a th:href="@{/board/reviewBoard(region='전북')}">전북</a></th>
-          <th><a th:href="@{/board/reviewBoard(region='전남')}">전남</a></th>
-          <th><a th:href="@{/board/reviewBoard(region='제주')}">제주</a></th>
-        </tr>
-      </table>
+        <!-- 지역 필터링 테이블 추가 -->
+        <table class="travel-table table table-bordered text-center">
+          <tr>
+            <th><a th:href="@{/board/reviewBoard(region='전체')}">전체</a></th>
+            <th><a th:href="@{/board/reviewBoard(region='서울')}">서울</a></th>
+            <th><a th:href="@{/board/reviewBoard(region='대전')}">대전</a></th>
+            <th><a th:href="@{/board/reviewBoard(region='대구')}">대구</a></th>
+            <th><a th:href="@{/board/reviewBoard(region='광주')}">광주</a></th>
+            <th><a th:href="@{/board/reviewBoard(region='부산')}">부산</a></th>
+            <th><a th:href="@{/board/reviewBoard(region='울산')}">울산</a></th>
+            <th><a th:href="@{/board/reviewBoard(region='세종')}">세종</a></th>
+            <th><a th:href="@{/board/reviewBoard(region='경기')}">경기</a></th>
+          </tr>
+          <tr>
+            <th><a th:href="@{/board/reviewBoard(region='인천')}">인천</a></th>
+            <th><a th:href="@{/board/reviewBoard(region='강원')}">강원</a></th>
+            <th><a th:href="@{/board/reviewBoard(region='충북')}">충북</a></th>
+            <th><a th:href="@{/board/reviewBoard(region='충남')}">충남</a></th>
+            <th><a th:href="@{/board/reviewBoard(region='경북')}">경북</a></th>
+            <th><a th:href="@{/board/reviewBoard(region='경남')}">경남</a></th>
+            <th><a th:href="@{/board/reviewBoard(region='전북')}">전북</a></th>
+            <th><a th:href="@{/board/reviewBoard(region='전남')}">전남</a></th>
+            <th><a th:href="@{/board/reviewBoard(region='제주')}">제주</a></th>
+          </tr>
+        </table>
 
-      <hr style="border: 1px solid #5b30a4; margin-top: 20px;"> <!-- 구분선 추가 -->
+        <hr style="border: 1px solid #5b30a4; margin-top: 20px;"> <!-- 구분선 추가 -->
 
-      <div class="board-detail" id="board-details" th:attr="data-board-id=${board.id}">
-        <h2 class="board-title" th:text="${board.title}"></h2>
+        <div class="board-detail" id="board-details" th:attr="data-board-id=${board.id}">
+          <h2 class="board-title" th:text="${board.title}"></h2>
 
-        <div class="board-user mt-4 d-flex align-items-center">
-          <div class="profile-image"
-               th:style="'background-image: url(' + ${board.user.profileImageUrl} + ');'">
+          <div class="board-user mt-4 d-flex align-items-center">
+            <div class="profile-image"
+                 th:style="'background-image: url(' + ${board.user.profileImageUrl} + ');'">
+            </div>
+            <div>
+              <p class="nickname mb-0" th:text="${board.user.nickname}"></p>
+              <span class="board-time"
+                    th:with="isEdited=${board.updatedAt != null and not board.updatedAt.equals(board.createdAt)},
+                        displayDate=${isEdited} ?
+                            ${#dates.format(T(com.example.travelProj.global.util.DateUtil).convertToDate(board.updatedAt), 'yyyy-MM-dd HH:mm')} :
+                            ${#dates.format(T(com.example.travelProj.global.util.DateUtil).convertToDate(board.createdAt), 'yyyy-MM-dd HH:mm')}"
+                    th:text="${isEdited} ? ${displayDate + ' (수정됨)'} : ${displayDate}">
+              </span>
+            </div>
           </div>
-          <div>
-            <p class="nickname mb-0" th:text="${board.user.nickname}"></p>
-            <span class="board-time"
-                  th:with="isEdited=${board.updatedAt != null and not board.updatedAt.equals(board.createdAt)},
-                      displayDate=${isEdited} ?
-                          ${#dates.format(T(com.example.travelProj.global.util.DateUtil).convertToDate(board.updatedAt), 'yyyy-MM-dd HH:mm')} :
-                          ${#dates.format(T(com.example.travelProj.global.util.DateUtil).convertToDate(board.createdAt), 'yyyy-MM-dd HH:mm')}"
-                  th:text="${isEdited} ? ${displayDate + ' (수정됨)'} : ${displayDate}">
-            </span>
+
+          <hr class="board-separator">
+
+          <div class="board-viewer" id="viewer"></div> <!-- 이 부분에서 내용을 마크다운으로 표현 -->
+
+          <div class="board-image mt-3" th:if="${images != null and #lists.size(images) > 0}">
+            <div th:each="img : ${images}">
+              <img th:src="@{'/' + ${img.url}}" />
+            </div>
           </div>
         </div>
 
-        <hr class="board-separator">
+        <hr style="border: 1px solid #5b30a4; margin: 20px 0;">
 
-        <div class="board-viewer" id="viewer"></div> <!-- 이 부분에서 내용을 마크다운으로 표현 -->
+        <div class="action-buttons">
+          <div class="like-comment-buttons">
+            <button class="btn btn-light like-button">
+              <span id="like-icon-${board.id}" class="like-icon"
+                    th:text="${likeStatus ? '💜' : '🤍'}"
+                    th:data-id="${board.id}">🤍</span>
+              <span th:id="'likeCount_' + ${board.id}" th:text="${likeCount}">0</span>
+            </button>
+            <button th:onclick="|goToComments(${board.id})|" class="btn btn-light comment-button" style="color: #888;">
+              💬 <span th:id="'commentCount_' + ${board.id}" th:text="${commentsCount != null ? commentsCount : 0}">0</span>
+            </button>
+          </div>
 
-        <div class="board-image mt-3" th:if="${images != null and #lists.size(images) > 0}">
-          <div th:each="img : ${images}">
-            <img th:src="@{'/' + ${img.url}}" />
+          <div th:if="${board != null and board.user != null and board.user.id != null and currentUser != null and board.user.id == currentUser.id}">
+            <a th:href="@{'/board/detail/' + ${board.id} + '/update'}" class="edit-button">수정</a>
+            <button th:onclick="'deleteReviewBoard(' + ${board.id} + ')'" class="delete-button">삭제</button>
           </div>
         </div>
-      </div>
 
-      <hr style="border: 1px solid #5b30a4; margin: 20px 0;">
+        <a th:href="@{/board/reviewBoard(region=${region})}" class="back-button">
+          목록으로 돌아가기
+        </a>
 
-      <div class="action-buttons">
-        <div class="like-comment-buttons">
-          <button th:onclick="|handleLikeClick(${board.id})|" class="btn btn-light like-button">
-            <span id="like-icon-${board.id}" class="like-icon"
-                  th:text="${likeStatus ? '💜' : '🤍'}"
-                  th:data-id="${board.id}">🤍</span>
-            <span th:id="'likeCount_' + ${board.id}" th:text="${likeCount}">0</span>
-          </button>
-          <button th:onclick="|goToComments(${board.id})|" class="btn btn-light comment-button" style="color: #888;">
-            💬 <span th:id="'commentCount_' + ${board.id}" th:text="${commentsCount != null ? commentsCount : 0}">0</span>
-          </button>
-        </div>
-
-        <div th:if="${board != null and board.user != null and board.user.id != null and currentUser != null and board.user.id == currentUser.id}">
-          <a th:href="@{'/board/detail/' + ${board.id} + '/update'}" class="edit-button">수정</a>
-          <button th:onclick="'deleteReviewBoard(' + ${board.id} + ')'" class="delete-button">삭제</button>
-        </div>
-      </div>
-
-      <a th:href="@{/board/reviewBoard(region=${region})}" class="back-button">
-        목록으로 돌아가기
-      </a>
-
-    </main>
+      </main>
+    </div>
   </div>
-</div>
 
-<!-- 풋터 추가 -->
-<footer th:replace="~{layout/footer}"></footer>
+  <!-- 풋터 추가 -->
+  <footer th:replace="~{layout/footer}"></footer>
 
-<script src="/js/detail.js"></script>
-<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
-<script th:inline="javascript">
-  document.addEventListener("DOMContentLoaded", function() {
-    const boardId = document.getElementById('board-details').getAttribute('data-board-id');
-
-    // Toast UI Viewer로 마크다운 렌더링
-    const markdownContent = /*[[${board.content}]]*/ "";
-    const viewer = new toastui.Editor.factory({
-      el: document.querySelector('#viewer'),
-      viewer: true,
-      initialValue: markdownContent
-    });
-
-    // 댓글 수 갱신
-    updateCommentCount(boardId);
-  });
-</script>
-
+  <!-- 외부 JavaScript 파일 호출 -->
+  <script src="/js/detail.js"></script>
+  <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 </body>
 </html>
