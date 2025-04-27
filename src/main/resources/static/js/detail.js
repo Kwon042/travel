@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const region = urlParams.get('region') || "전체";
     const regionTitle = document.getElementById('region-title');
     const writeButton = document.getElementById('writeButton');
+    const likeButtons = document.querySelectorAll('.like-button');
 
     // 지역 제목 설정
     if (regionTitle) regionTitle.textContent = `${region} 게시판`;
@@ -61,6 +62,8 @@ function handleLikeClick(boardId) {
 
     // 현재 상태 확인
     const isLiked = likeIcon?.textContent === '💜';
+
+    updateHeartIcon(boardId, !isLiked);
 
     // 서버에서 좋아요 상태를 먼저 확인
     fetch(`/reviewBoard/likes/${boardId}/status`)

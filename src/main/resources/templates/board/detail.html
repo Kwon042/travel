@@ -88,7 +88,7 @@
         <div class="action-buttons">
           <div class="like-comment-buttons">
             <button class="btn btn-light like-button">
-              <span id="like-icon-${board.id}" class="like-icon"
+              <span th:id="'like-icon-' + ${board.id}" class="like-icon"
                     th:text="${likeStatus ? '💜' : '🤍'}"
                     th:data-id="${board.id}">🤍</span>
               <span th:id="'likeCount_' + ${board.id}" th:text="${likeCount}">0</span>
