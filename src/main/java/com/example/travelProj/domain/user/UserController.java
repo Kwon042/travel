@@ -89,7 +89,7 @@ public class UserController {
         }
 
         // 프로필 이미지 URL을 출력
-        String profileImageUrl = (user.getProfileImage() != null) ? user.getProfileImage().getUrl() : null;
+        String profileImageUrl = user.getProfileImageUrl();
 
         System.out.println("Profile Image URL: " + profileImageUrl);
 
@@ -97,7 +97,7 @@ public class UserController {
         model.addAttribute("user", user);
         model.addAttribute("profileImageUrl", profileImageUrl);
 
-        return "user/mypage"; // 사용자 마이페이지로 이동
+        return "user/mypage";
     }
 
     @GetMapping("/mypage/edit")
@@ -119,7 +119,7 @@ public class UserController {
         }
 
         // 사용자 정보 저장
-        userService.updateUser(user); // 현재 사용자 정보 업데이트
+        userService.updateUser(user);
         return "redirect:/mypage";
     }
 

@@ -43,56 +43,64 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // 🔹 프로필 이미지 업로드
-     window.uploadProfileImage = function() {
-         const input = document.getElementById('profileImageInput');
-         const file = input.files[0]; // 선택된 파일 가져오기
+    window.uploadProfileImage = function() {
+        const input = document.getElementById('profileImageInput');
+        const file = input.files[0]; // 선택된 파일 가져오기
 
-         if (!file) {
-             alert("Choose the file.");
-             return;
-         }
+        if (!file) {
+            alert("Choose the file.");
+            return;
+        }
 
-         const formData = new FormData();
-         formData.append('profileImage', file);
-         formData.append('userId', currentUserId);
+        const formData = new FormData();
+        formData.append('profileImage', file);
+        formData.append('userId', currentUserId); // 사용자의 ID를 서버로 전송 (예시)
 
-         // 서버로 파일 전송
-         fetch('/api/image/user/uploadProfileImage', {
-             method: 'POST',
-             body: formData
-         })
-         .then(response => {
-             if (!response.ok) {
-                 return response.json().then(data => {
-                     throw new Error(data.message || `서버에서 오류가 발생했습니다. 상태 코드: ${response.status}`);
-                 });
-             }
-             return response.json(); // JSON 응답 처리
-         })
-         .then(data => {
-             if (data.success) {
-                 const profileImage = document.querySelector('.profile-image');
+        // 서버로 파일 전송
+        fetch('/api/image/user/uploadProfileImage', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(data => {
+                    throw new Error(data.message || `서버에서 오류가 발생했습니다. 상태 코드: ${response.status}`);
+                });
+            }
+            return response.json(); // JSON 응답 처리
+        })
+        .then(data => {
+            if (data.success) {
+                const profileImage = document.querySelector('.profile-image');
 
-                 if (profileImage) {
-                     if (data.newProfileImageUrl) {
-                         profileImage.src = data.newProfileImageUrl; // 새 URL로 갱신
-                     } else {
-                         alert("새 프로필 이미지 URL이 없습니다.");
-                         // 대체 이미지 경로로 변경
-                         profileImage.src = '/images/default-profile.jpg';
-                     }
-                 }
-                 alert("The profile image has been successfully uploaded.");
-                 closeProfileImageModal();
-             } else {
-                 alert(data.message);
-             }
-         })
-         .catch(error => {
-             console.error("An error occurred during file upload: ", error);
-             alert("An error occurred during file upload.");
-         });
-     }
+                if (profileImage) {
+                    if (data.newProfileImageUrl) {
+                        profileImage.src = data.newProfileImageUrl;
+                    } else {
+                        alert("새 프로필 이미지 URL이 없습니다.");
+                        profileImage.src = data.profileImageUrl || '/images/default-profile.jpg'; // 백엔드에서 처리된 URL 사용
+                    }
+                }
+                alert("The profile image has been successfully uploaded.");
+                closeProfileImageModal();
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            console.error("An error occurred during file upload: ", error);
+            alert("An error occurred during file upload.");
+        });
+    }
+
+    // 프로필 이미지 업로드 모달 닫기 함수
+    function closeProfileImageModal() {
+        const modal = document.getElementById('profileImageModal'); // 모달의 ID
+        if (modal) {
+            modal.style.display = 'none'; // 모달 숨기기
+        }
+    }
+
 
     // 🔹 비밀번호 수정 폼 보이기/숨기기
     function togglePasswordForm() {

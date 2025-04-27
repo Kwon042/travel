@@ -34,7 +34,7 @@ public class SiteUser implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserRole role = UserRole.USER;
+    private UserRole role;
 
     @Column(unique = true)
     private String email;
@@ -66,6 +66,9 @@ public class SiteUser implements UserDetails {
         if (profileImage != null && profileImage.getUrl() != null) {
             return profileImage.getUrl();
         }
+        if (UserRole.ADMIN.equals(this.getRole())) {
+            return "/images/default-adminprofile.png";
+        }
         return "/images/default-profile.jpg";
     }
 
@@ -76,12 +79,12 @@ public class SiteUser implements UserDetails {
 
     @Override
     public String getPassword() {
-        return this.password; // 비밀번호 반환
+        return this.password;
     }
 
     @Override
     public String getUsername() {
-        return this.username; // 사용자 이름 반환
+        return this.username;
     }
 
     @Override
