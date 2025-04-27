@@ -1,3 +1,11 @@
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const region = urlParams.get('region') || "전체"; // 기본값 "전체"
+
+    // 'write-title'의 내용을 업데이트
+    document.getElementById('write-title').textContent = `그때 ${region}에서 ⅏`;
+});
+
 let selectedFiles = [];
 let selectedMainIndex = null;
 

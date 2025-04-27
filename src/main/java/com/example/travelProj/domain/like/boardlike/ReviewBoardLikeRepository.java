@@ -10,6 +10,8 @@ public interface ReviewBoardLikeRepository extends JpaRepository<ReviewBoardLike
     boolean existsByReviewBoardAndUser(ReviewBoard reviewBoard, SiteUser user);
     long countByReviewBoardId(Long reviewBoard);
     void deleteByReviewBoardAndUser(ReviewBoard reviewBoard, SiteUser user);
+    // reviewBoard 와 관련된 모든 좋아요 삭제
+    void deleteByReviewBoard(ReviewBoard reviewBoard);
     // 특정 리뷰 게시판에 대한 좋아요 리스트 조회
     List<ReviewBoardLike> findByReviewBoard(ReviewBoard reviewBoard);
 }

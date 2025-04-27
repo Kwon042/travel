@@ -1,0 +1,13 @@
+.submit-button {
+    color: #5b30a4;
+    background-color: transparent;
+    border: 1px solid #d3d3d3;
+    border-radius: 4px;
+    padding: 2px 5px;
+    text-decoration: none; /* 기본 밑줄 제거 */
+    font-size: 1em;
+    line-height: 1.5; /* 줄 간격을 동일하게 맞춤 */
+    display: inline-block; /* inline-block으로 설정하여 너비 고정 */
+    vertical-align: middle; /* 세로 정렬 맞추기 */
+    float: right; /* 오른쪽 정렬 */
+}

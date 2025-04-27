@@ -36,6 +36,12 @@ public class ReviewBoardLikeService {
         reviewBoardLikeRepository.deleteByReviewBoardAndUser(reviewBoard, user);
     }
 
+    @Transactional
+    public void removeAllLikes(Long reviewBoardId) {
+        ReviewBoard reviewBoard = reviewBoardService.getBoardById(reviewBoardId);
+        reviewBoardLikeRepository.deleteByReviewBoard(reviewBoard);  // 해당 게시글과 관련된 모든 좋아요 삭제
+    }
+
     public long countLikes(Long reviewBoardId) {
         return reviewBoardLikeRepository.countByReviewBoardId(reviewBoardId); // 리뷰 게시판에 대한 좋아요 개수
     }

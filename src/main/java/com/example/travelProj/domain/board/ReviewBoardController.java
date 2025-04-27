@@ -155,7 +155,7 @@ public class ReviewBoardController {
         return "board/detail";
     }
 
-    // 게시글 수정
+    // 게시글 수정 - get
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/detail/{id}/update")
     public String update(@PathVariable Long id, Model model, HttpServletRequest request) {
@@ -174,7 +174,7 @@ public class ReviewBoardController {
         return "board/update";
     }
 
-    // 게시글 수정
+    // 게시글 수정 - post
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/reviewBoard/update")
     public String updateReviewBoard(@ModelAttribute @Valid ReviewBoardDTO reviewBoardDTO,
@@ -193,12 +193,12 @@ public class ReviewBoardController {
         return "redirect:/board/detail/" + reviewBoardDTO.getId();
     }
 
+    // 게시글 삭제
     @PreAuthorize("isAuthenticated() and (principal.id == #currentUser.id or hasRole('ADMIN'))")
     @DeleteMapping("/reviewBoard/delete/{id}")
     public ResponseEntity<Void> deleteReviewBoard(@PathVariable Long id,
                                                   @AuthenticationPrincipal SiteUser currentUser) {
-        logger.info("Current user id: {}", currentUser != null ? currentUser.getId() : "null");
-        logger.info("Attempting to delete post with id: {}", id);
+        reviewBoardLikeService.removeAllLikes(id); // 모든 좋아요 삭제
         reviewBoardService.deleteReviewBoard(id);
         return ResponseEntity.ok().build();
     }

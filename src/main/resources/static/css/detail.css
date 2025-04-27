@@ -162,21 +162,21 @@ main {
     color: #495057;
 }
 
-.edit-button {
+.edit-button, .delete-button {
     color: black;
     background-color: transparent;
     border: 1px solid #d3d3d3;
     border-radius: 2px;
     padding: 2px 5px;
     text-decoration: none; /* 기본 밑줄 제거 */
+    font-size: 1em; /* 동일한 폰트 크기 적용 */
+    line-height: 1.5; /* 줄 간격을 동일하게 맞춤 */
+    display: inline-block; /* inline-block으로 설정하여 너비 고정 */
+    vertical-align: middle; /* 세로 정렬 맞추기 */
 }
 
 .delete-button {
     color: #800020;
-    background-color: transparent;
-    border: 1px solid #d3d3d3;
-    border-radius: 2px;
-    padding: 2px 5px;
 }
 
 /* 목록으로 돌아가기 버튼 */
