@@ -24,6 +24,8 @@
       <a sec:authorize="isAnonymous()" th:href="@{/user/login}">Login</a>
       <a id="logoutButton" sec:authorize="isAuthenticated()" th:href="@{/user/logout}">Logout</a>
       <a href="/user/mypage" sec:authorize="isAuthenticated()">Mypage</a>
+      <!-- 관리자일 경우에만 'Dashboard' 링크 추가 -->
+      <a href="/admin/dashboard" sec:authorize="hasRole('ROLE_ADMIN')">Dashboard</a>
     </div>
   </div>
 </header>

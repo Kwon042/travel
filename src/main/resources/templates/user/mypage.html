@@ -50,7 +50,9 @@
     <ul class="my-favorites" id="favouritePlaces">
 
     </ul>
-    <button id="deleteAccountButton" class="delete-account-button">회원 탈퇴</button>
+    <button id="deleteAccountButton" class="delete-account-button"
+            th:text="${#authentication.authorities.?[authority == 'ROLE_ADMIN'].size() > 0} ? '관리자 탈퇴' : '회원 탈퇴'">
+    </button>
 
     <!-- 프로필 이미지 업로드 모달 -->
     <div id="profileImageModal" class="modal hidden">

@@ -1,6 +1,7 @@
 package com.example.travelProj.domain.board;
 
 import com.example.travelProj.domain.image.imageboard.ImageBoard;
+import com.example.travelProj.domain.like.boardlike.ReviewBoardLike;
 import com.example.travelProj.domain.region.Region;
 import com.example.travelProj.domain.comment.Comment;
 import com.example.travelProj.domain.user.SiteUser;
@@ -45,6 +46,18 @@ public class ReviewBoard {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    // 여러 댓글을 포함할 수 있도록 관계 설정
+    @OneToMany(mappedBy = "reviewBoard")
+    private List<Comment> comments;
+
+    @OneToMany(mappedBy = "reviewBoard")
+    private List<ReviewBoardLike> reviewBoardLikes;
+
+    // 좋아요 수 계산
+    public long getLikesCount() {
+        return reviewBoardLikes != null ? reviewBoardLikes.size() : 0;
+    }
+
     // cascade = CascadeType.ALL : 부모 엔티티(reviewBoard)에서 생성, 업데이트, 삭제되면 image도 동일하게 처리
     // orphanRemoval = true : 부모 엔티티(reviewBoard)에서 image를 참조 제거하면 image엔티티에서도 DB에서 삭제
     @OneToMany(mappedBy = "reviewBoard", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -65,10 +78,6 @@ public class ReviewBoard {
         }
     }
 
-    // 여러 댓글을 포함할 수 있도록 관계 설정
-    @OneToMany(mappedBy = "reviewBoard")
-    private List<Comment> comments;
-
     // PrePersist 메소드 하나로 모든 초기화를 처리 (timestamp)
     @PrePersist
     public void prePersist() {
@@ -84,8 +93,6 @@ public class ReviewBoard {
     }
 
     public Long getId() { return id; }
-
-    private long likesCount;
 
 
 

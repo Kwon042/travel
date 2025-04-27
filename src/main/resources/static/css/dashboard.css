@@ -1,0 +1,219 @@
+/* 기본적인 스타일 초기화 */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+/* 컨테이너 */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* 대시보드 제목 */
+h1 {
+    font-size: 32px;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+h3, h4 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.wave-title {
+    position: relative;
+    font-size: 30px; /* 글씨 크기 */
+    display: inline-block; /* 글씨와 물결이 같은 라인에 오도록 */
+    margin-bottom: 30px;
+}
+
+.wave-title::after {
+    content: "〰〰〰〰〰"; /* 물결 모양 */
+    position: absolute;
+    left: 50%; /* 글씨 중앙을 기준으로 위치 */
+    bottom: -28px; /* 글씨 밑에 위치 */
+    font-size: 40px; /* 물결 크기 */
+    font-family: 'Arial', sans-serif;
+    color: #800020; /* 버건디색 *
+    color: #333; /* 물결 색상 */
+    width: 100%; /* 물결 길이를 글씨의 너비로 맞춤 */
+    display: block;
+    transform: translateX(-50%); /* 중앙 정렬 */
+    white-space: nowrap; /* 물결이 한 줄로 이어지도록 */
+    overflow: hidden; /* 넘치지 않게 잘라냄 */
+    text-align: center; /* 물결을 중앙 정렬 */
+}
+
+/* 테이블 스타일 */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: transparent;
+}
+
+.table th, .table td {
+    padding: 15px;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.table th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+}
+
+.table td {
+    background-color: #ffffff;
+    border-bottom: 1px solid #ddd; /* 셀 간 하단에만 선 적용 */
+}
+
+/* 가장 마지막 행의 마지막 셀에는 하단 선을 없앰 */
+.table tr:last-child td {
+    border-bottom: none; /* 가장 아래 셀의 하단 선 제거 */
+}
+
+/* table-main 추가 스타일 */
+.table-main {
+    width: auto; /* 테이블의 폭을 자동으로 설정 */
+    max-width: 600px; /* 최대 너비를 설정하여 너무 넓어지지 않도록 */
+    margin-left: 0; /* 왼쪽 정렬 */
+}
+
+.table-main th, .table-main td {
+    padding: 12px 15px; /* 적당한 여백 추가 */
+    text-align: center;
+}
+
+.table-main th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+    padding-right: 30px !important;
+}
+
+.table-main td {
+    word-wrap: break-word;
+    padding-right: 30px !important;
+}
+
+/* 버튼 스타일 */
+.delete-button {
+    color: #800020;
+    background-color: transparent;
+    border: 1px solid #d3d3d3;
+    border-radius: 4px;
+    padding: 2px 5px;
+    text-decoration: none; /* 기본 밑줄 제거 */
+    font-size: 1em; /* 동일한 폰트 크기 적용 */
+    line-height: 1.5; /* 줄 간격을 동일하게 맞춤 */
+    display: inline-block; /* inline-block으로 설정하여 너비 고정 */
+    vertical-align: middle; /* 세로 정렬 맞추기 */
+}
+
+/* 카드 스타일 */
+.card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+/* 사용자 목록 섹션 */
+h4 {
+    font-size: 20px;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.text-end {
+    text-align: right;
+}
+
+/* 모달 배경 스타일 */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* 모달 내용 스타일 */
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 15px;
+    max-width: 500px;
+    width: auto;
+    box-sizing: border-box;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+/* 모달 닫기 버튼 스타일 */
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* 버튼 스타일 */
+.modal-content button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+/* 버튼 호버 스타일 */
+.action-button {
+    cursor: pointer;
+    color: Black;
+    font-size: 18px;
+}
+
+/* 모달 숨김 스타일 */
+.modal.hidden {
+    display: none;
+}
+
+.modal.show {
+    display: block;
+}
+
+/* 삭제 버튼 스타일 */
+.delete-account-button {
+    color: #800020;
+    background-color: transparent;
+    border: 1px solid #d3d3d3;
+    padding: 3px 6px;
+    border-radius: 2px;
+    float: right;
+}
+
+.text-end {
+    text-align: end;
+}

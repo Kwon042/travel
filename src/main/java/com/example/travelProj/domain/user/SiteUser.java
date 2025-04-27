@@ -3,6 +3,7 @@ package com.example.travelProj.domain.user;
 import com.example.travelProj.domain.board.ReviewBoard;
 import com.example.travelProj.domain.comment.Comment;
 import com.example.travelProj.domain.image.imageuser.ImageUser;
+import com.example.travelProj.domain.like.boardlike.ReviewBoardLike;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -49,10 +50,14 @@ public class SiteUser implements UserDetails {
     private ImageUser profileImage;
 
     // 연관관계 설정: 사용자가 작성한 리뷰와 댓글
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<ReviewBoard> reviewBoards;
 
-    @OneToMany(mappedBy = "user")
+    // ReviewBoardLike와의 관계 추가 (양방향)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReviewBoardLike> reviewBoardLikes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Comment> comments;
 
     @PrePersist

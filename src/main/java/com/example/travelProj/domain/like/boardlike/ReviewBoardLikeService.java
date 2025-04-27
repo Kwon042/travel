@@ -42,6 +42,8 @@ public class ReviewBoardLikeService {
         reviewBoardLikeRepository.deleteByReviewBoard(reviewBoard);  // 해당 게시글과 관련된 모든 좋아요 삭제
     }
 
+    public long countTotalLikes() { return reviewBoardLikeRepository.countTotalLikes(); }
+
     public long countLikes(Long reviewBoardId) {
         return reviewBoardLikeRepository.countByReviewBoardId(reviewBoardId); // 리뷰 게시판에 대한 좋아요 개수
     }

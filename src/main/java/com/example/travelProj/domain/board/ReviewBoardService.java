@@ -138,13 +138,6 @@ public class ReviewBoardService {
         reviewBoardRepository.deleteById(id);
     }
 
-    // 전체 게시글 조회 로직
-    public List<ReviewBoard> getAllBoards() {
-        List<ReviewBoard> boards = reviewBoardRepository.findAll();
-        System.out.println("전체 게시글 조회: " + boards.size());
-        return boards;
-    }
-
     // 특정 지역의 게시글 조회
     public List<ReviewBoard> getBoardsByRegion(Region region) {
         return reviewBoardRepository.findByRegion_RegionName(region.getRegionName());
@@ -157,8 +150,11 @@ public class ReviewBoardService {
 
     // 특정 ID에 해당하는 게시글을 조회
     public ReviewBoard getBoardById(Long id) {
-
         return reviewBoardRepository.findById(id).orElse(null);
+    }
+
+    public long countPosts() {
+        return reviewBoardRepository.count();
     }
 
 }

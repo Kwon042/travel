@@ -36,7 +36,7 @@
                             ${#dates.format(T(com.example.travelProj.global.util.DateUtil).convertToDate(comment.createdAt), 'yyyy-MM-dd HH:mm')}"
                       th:text="${isEdited} ? ${displayDate + ' (수정됨)'} : ${displayDate}">
                 </span>
-                <span th:if="${#authentication.name == comment.username}" style="margin-left: auto;">
+                <span th:if="${#authentication.name == comment.username or #authentication.authorities.?[authority == 'ROLE_ADMIN'].size() > 0}" style="margin-left: auto;">
                     <button class="edit-button" th:attr="data-id=${comment.id}">수정</button>
                     <button class="delete-button" th:attr="data-id=${comment.id}">삭제</button>
                 </span>
@@ -82,7 +82,7 @@
                             ${#dates.format(T(com.example.travelProj.global.util.DateUtil).convertToDate(reply.createdAt), 'yyyy-MM-dd HH:mm')}"
                       th:text="${isEdited} ? ${displayDate + ' (수정됨)'} : ${displayDate}">
                 </span>
-                <span th:if="${#authentication.name == reply.username}" style="margin-left: auto;">
+                <span th:if="${#authentication.name == reply.username or #authentication.authorities.?[authority == 'ROLE_ADMIN'].size() > 0}" style="margin-left: auto;">
                     <button class="edit-button" th:attr="data-id=${reply.id}" style="font-size: 0.8em;">수정</button>
                     <button class="delete-button" th:attr="data-id=${reply.id}" style="font-size: 0.8em;">삭제</button>
                 </span>

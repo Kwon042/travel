@@ -120,5 +120,14 @@ public class UserService {
         return userRepository.existsByNickname(nickname);
     }
 
+    // 유저만
+    public long countUsers() {  return userRepository.countByRoleNot(UserRole.ADMIN); }
+    // 관리자 수를 세는 메서드
+    public long countAdmins() { return userRepository.countByRole(UserRole.ADMIN); }
+
+    // 모든 사용자 정보 가져오기
+    public Iterable<SiteUser> findAllUsers() { return userRepository.findAll(); }
+    // 일반 사용자 목록 반환
+    public Iterable<SiteUser> findByRole(UserRole role) { return userRepository.findByRole(role); }
 
 }

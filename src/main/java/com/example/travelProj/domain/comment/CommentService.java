@@ -2,6 +2,7 @@ package com.example.travelProj.domain.comment;
 
 import com.example.travelProj.domain.board.ReviewBoard;
 import com.example.travelProj.domain.user.SiteUser;
+import com.example.travelProj.domain.user.UserRole;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
@@ -110,17 +111,21 @@ public class CommentService {
         dto.setUpdatedAt(comment.getUpdatedAt());
         dto.setLikesCount(comment.getLikes().size());
 
+        // 댓글 이미지 보이기
+        dto.setProfileImageUrl(
+                (comment.getUser().getProfileImage() != null) ? comment.getUser().getProfileImage().getUrl()
+                        : (comment.getUser().getRole() == UserRole.ADMIN ? "/images/default-adminprofile.png" : "/images/default-profile.jpg")
+        );
 
-        if (comment.getUser().getProfileImage() != null) {
-            dto.setProfileImageUrl(comment.getUser().getProfileImage().getUrl());
-        } else {
-            dto.setProfileImageUrl("/default-profile.png");
-        }
         // 대댓글 재귀 처리
         dto.setChildren(comment.getChildren().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList()));
         return dto;
+    }
+
+    public long countComments() {
+        return commentRepository.count();
     }
 
 }

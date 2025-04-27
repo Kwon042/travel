@@ -173,12 +173,6 @@ public class UserController {
         }
     }
 
-    @PostMapping("/mypage/delete")
-    public String deleteUser(@AuthenticationPrincipal SiteUser siteUser) {
-        userService.deleteUser(siteUser.getId());
-        return "redirect:/";
-    }
-
     @GetMapping("/getCurrentUserId")
     public ResponseEntity<Map<String, Object>> getCurrentUserId(@AuthenticationPrincipal SiteUser user) {
         if (user == null) {

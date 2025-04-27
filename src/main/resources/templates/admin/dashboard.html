@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>관리자 대시보드</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/header.css">
+  <link rel="stylesheet" href="/css/footer.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<header th:replace="~{layout/header}"></header>
+
+<div class="container">
+  <h1 class="my-4">⚙️ 관리자 대시보드 ⚙️</h1>
+  <hr style="border: 1px solid #5b30a4; margin: 20px 0;"> <!-- 구분선 추가 -->
+
+  <h3 class="wave-title">대시보드 통계</h3>
+  <table class="table table-main">
+    <thead>
+    <tr>
+      <th scope="col">항목</th>
+      <th scope="col">수치</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>총 사용자 수</td>
+      <td th:text="${totalUsers}">0</td>
+    </tr>
+
+    <tr>
+      <td>총 관리자 수</td>
+      <td th:text="${totalAdmins}">0</td>
+    </tr>
+
+    <tr>
+      <td>총 게시글 수</td>
+      <td th:text="${totalPosts}">0</td>
+    </tr>
+
+    <tr>
+      <td>총 댓글 수</td>
+      <td th:text="${totalComments}">0</td>
+    </tr>
+
+    <tr>
+      <td>총 게시글 좋아요 수</td>
+      <td th:text="${totalLikes}">0</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <hr style="border: 1px solid #5b30a4; margin: 30px 0;"> <!-- 구분선 추가 -->
+  <h3 class="wave-title">사용자 관리</h3>
+
+  <!-- 사용자 목록 -->
+  <h4>👤 일반 사용자 목록</h4>
+  <table class="table">
+    <thead>
+    <tr>
+      <th scope="col">번호</th>
+      <th scope="col">아이디</th>
+      <th scope="col">이메일</th>
+      <th scope="col">역할</th>
+      <th scope="col"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user, iterStat : ${userList}">
+      <td th:text="${iterStat.index + 1}"></td>
+      <td th:text="${user.username}"></td>
+      <td th:text="${user.email}"></td>
+      <td th:text="${user.role}"></td>
+      <td>
+        <form th:action="@{/admin/user/delete/{id}(id=${user.id})}" method="post" onsubmit="return confirm('Are you sure you want to delete your account?');">
+          <button type="submit" class="delete-button">삭제</button>
+        </form>
+      </td>
+    </tr>
+    </tbody>
+
+  </table>
+
+  <hr style="border: 1px solid #666; margin: 20px 0; width: 18%; text-align: left;">
+
+  <!-- 관리자 목록 -->
+  <h4>🛠️  관리자 목록</h4>
+  <table class="table">
+    <thead>
+    <tr>
+      <th scope="col">번호</th>
+      <th scope="col">아이디</th>
+      <th scope="col">이메일</th>
+      <th scope="col">역할</th>
+      <th scope="col"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user, iterStat : ${adminList}">
+      <td th:text="${iterStat.index + 1}"></td>
+      <td th:text="${user.username}"></td>
+      <td th:text="${user.email}"></td>
+      <td th:text="${user.role}"></td>
+      <td>
+        <form th:action="@{/admin/user/delete/{id}(id=${user.id})}" method="post" onsubmit="return confirm('Are you sure you want to delete your account?');">
+          <button type="submit" class="delete-button">삭제</button>
+        </form>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+</div>
+<footer th:replace="~{layout/footer}"></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
