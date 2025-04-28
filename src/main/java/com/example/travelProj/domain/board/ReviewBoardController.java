@@ -6,6 +6,7 @@ import com.example.travelProj.domain.like.boardlike.ReviewBoardLikeService;
 import com.example.travelProj.domain.region.Region;
 import com.example.travelProj.domain.region.RegionRepository;
 import com.example.travelProj.domain.user.SiteUser;
+import com.example.travelProj.domain.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,7 @@ import java.util.Map;
 public class ReviewBoardController {
 
     private final CsrfTokenRepository csrfTokenRepository;
+    private final UserService userService;
     private final RegionRepository regionRepository;
     private final ReviewBoardService reviewBoardService;
     private final ImageBoardService imageBoardService;
@@ -50,10 +52,16 @@ public class ReviewBoardController {
     public String showReviewBoard(@RequestParam(value = "region", required = false, defaultValue = "전체") String regionName,
                                   @RequestParam(value = "page", defaultValue = "0") int page,
                                   @RequestParam(value = "size", defaultValue = "5") int size,
+                                  @AuthenticationPrincipal SiteUser user,
                                   HttpServletRequest request,
                                   Model model) {
+        if (user == null) {
+            return "redirect:/login";
+        }
+
         Page<ReviewBoard> boardPage = reviewBoardService.getBoardPage(regionName, page, size);
 
+        model.addAttribute("user", user);
         model.addAttribute("boards", boardPage.getContent()); // 현재 페이지의 게시글 목록
         model.addAttribute("region", regionName); // 선택된 지역
         model.addAttribute("currentPage", page); // 현재 페이지 번호
@@ -69,8 +77,10 @@ public class ReviewBoardController {
     // 게시글 작성
     @GetMapping("/write")
     public String write(@RequestParam(value = "region", required = false) String region,
+                        @AuthenticationPrincipal SiteUser user,
                         HttpServletRequest request, Model model) {
         CsrfToken csrfToken = csrfTokenRepository.generateToken(request);
+        model.addAttribute("user", user);
         model.addAttribute("_csrf", csrfToken);
         model.addAttribute("region", region);
 
@@ -145,6 +155,7 @@ public class ReviewBoardController {
         // 좋아요 개수 - null 방어 처리
         Long likeCount = reviewBoardLikeService.countLikes(id);
 
+        model.addAttribute("user", currentUser);
         model.addAttribute("board", board);
         model.addAttribute("region", regionName);
         model.addAttribute("images", images);
@@ -158,7 +169,8 @@ public class ReviewBoardController {
     // 게시글 수정 - get
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/detail/{id}/update")
-    public String update(@PathVariable Long id, Model model, HttpServletRequest request) {
+    public String update(@PathVariable Long id, Model model,
+                         @AuthenticationPrincipal SiteUser user, HttpServletRequest request) {
         ReviewBoard board = reviewBoardService.getBoardById(id);
 
         if (board == null) {
@@ -167,6 +179,8 @@ public class ReviewBoardController {
         List<String> imageUrls = reviewBoardService.getImageUrlsByBoardId(id);
 
         CsrfToken csrfToken = csrfTokenRepository.generateToken(request);
+
+        model.addAttribute("user", user);
         model.addAttribute("_csrf", csrfToken);
         model.addAttribute("board", board);
         model.addAttribute("imageUrls", imageUrls);

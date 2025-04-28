@@ -99,9 +99,10 @@ public class UserService {
         return null;
     }
 
-    public SiteUser getByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + username));
+    @Transactional
+    public SiteUser findUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
     }
 
     public void deleteUser(Long userId) {

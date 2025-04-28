@@ -46,18 +46,41 @@ header {
     text-decoration: none; /* 마우스 오버 시 밑줄 제거 */
 }
 
-/* 드롭다운 메뉴 스타일 (필요 시) */
-.dropdown-menu {
-    background-color: #f9f9f9; /* 드롭다운 배경 */
-    border-radius: 5px;
-}
-
-.dropdown-menu .dropdown-item:hover {
-    background-color: #ddd;
-}
-
 /* 추가적인 스타일 (필요 시) */
 .navbar-brand img {
     width: 80px; /* 로고 이미지 너비 설정 */
     height: auto; /* 자동 높이 설정 */
+}
+
+.profile-menu {
+  position: relative;
+  display: inline-block;
+}
+
+.profile-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 0.5px solid black;
+    z-index: 10;
+    margin-left: 18px;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: white;
+  min-width: 120px;
+  z-index: 1;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
 }

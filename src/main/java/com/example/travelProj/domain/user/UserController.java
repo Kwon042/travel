@@ -3,6 +3,7 @@ package com.example.travelProj.domain.user;
 import com.example.travelProj.domain.image.imageuser.ImageUserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -87,14 +88,14 @@ public class UserController {
         if (user == null) {
             return "redirect:/user/login";
         }
-
+        SiteUser currentUser = userService.findUserById(user.getId());
         // 프로필 이미지 URL을 출력
         String profileImageUrl = user.getProfileImageUrl();
 
         System.out.println("Profile Image URL: " + profileImageUrl);
 
         // 모델에 사용자 정보 및 프로필 이미지 URL 추가
-        model.addAttribute("user", user);
+        model.addAttribute("user", currentUser);
         model.addAttribute("profileImageUrl", profileImageUrl);
 
         return "user/mypage";
@@ -109,18 +110,24 @@ public class UserController {
     @PostMapping("/mypage/edit")
     public String updateUserInfo(@ModelAttribute SiteUser updatedUser,
                                  @RequestParam(value = "file", required = false) MultipartFile file,
-                                 @AuthenticationPrincipal SiteUser user) throws IOException {
+                                 @AuthenticationPrincipal SiteUser user,
+                                 HttpSession session)throws IOException {
         // 닉네임 업데이트
         user.setNickname(updatedUser.getNickname());
 
         // 프로필 이미지 업로드
         if (file != null && !file.isEmpty()) {
             String imageUrl = imageUserService.uploadProfileImage(user.getId(), file);
+            System.out.println("Uploaded image URL: " + imageUrl);
+
+            String cacheBustedImageUrl = imageUrl + "?v=" + System.currentTimeMillis();  // 캐시 무효화
+            user.setProfileImageUrl(cacheBustedImageUrl);
         }
 
         // 사용자 정보 저장
         userService.updateUser(user);
-        return "redirect:/mypage";
+        session.setAttribute("user", user);
+        return "redirect:/user/mypage";
     }
 
     // 사용자 닉네임 및 이메일 업데이트 메서드

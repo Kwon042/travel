@@ -70,17 +70,15 @@ document.addEventListener("DOMContentLoaded", function () {
             return response.json(); // JSON 응답 처리
         })
         .then(data => {
-            if (data.success) {
-                const profileImage = document.querySelector('.profile-image');
+            console.log(data);
 
-                if (profileImage) {
-                    if (data.newProfileImageUrl) {
-                        profileImage.src = data.newProfileImageUrl;
-                    } else {
-                        alert("새 프로필 이미지 URL이 없습니다.");
-                        profileImage.src = data.profileImageUrl || '/images/default-profile.jpg'; // 백엔드에서 처리된 URL 사용
-                    }
-                }
+            if (data.success) {
+                const profileImages = document.querySelectorAll('.profile-image');
+
+                profileImages.forEach(img => {
+                    img.src = data.newProfileImageUrl + "?t=" + new Date().getTime(); // 캐시 방지
+                });
+
                 alert("The profile image has been successfully uploaded.");
                 closeProfileImageModal();
             } else {
@@ -92,15 +90,6 @@ document.addEventListener("DOMContentLoaded", function () {
             alert("An error occurred during file upload.");
         });
     }
-
-    // 프로필 이미지 업로드 모달 닫기 함수
-    function closeProfileImageModal() {
-        const modal = document.getElementById('profileImageModal'); // 모달의 ID
-        if (modal) {
-            modal.style.display = 'none'; // 모달 숨기기
-        }
-    }
-
 
     // 🔹 비밀번호 수정 폼 보이기/숨기기
     function togglePasswordForm() {
@@ -333,12 +322,13 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // 🔹 전역에서 접근할 수 있도록 함수 등록
+    // 전역 등록
     window.openProfileImageModal = openProfileImageModal;
     window.closeProfileImageModal = closeProfileImageModal;
     window.openEditModal = openEditModal;
     window.togglePasswordForm = togglePasswordForm;
     window.closeEditModal = closeEditModal;
     window.closeErrorModal = closeErrorModal;
+    window.showErrorModal = showErrorModal;
     window.changePassword = changePassword;
 });

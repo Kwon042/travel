@@ -76,6 +76,16 @@ public class SiteUser implements UserDetails {
         }
         return "/images/default-profile.jpg";
     }
+    public void setProfileImageUrl(String url) {
+        if (this.profileImage != null) {
+            this.profileImage.setUrl(url);
+        } else {
+            ImageUser newProfileImage = new ImageUser();
+            newProfileImage.setUrl(url);
+            newProfileImage.setUser(this); // 역방향 매핑도 설정해줌
+            this.profileImage = newProfileImage;
+        }
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

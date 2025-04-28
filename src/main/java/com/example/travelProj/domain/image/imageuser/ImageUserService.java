@@ -42,6 +42,7 @@ public class ImageUserService {
 
         // 이미지 정보 저장 또는 업데이트
         saveOrUpdateImageRecord(user, newFileName, imageUrl);
+        System.out.println("최종 저장된 이미지 URL: " + imageUrl);
 
         return imageUrl;
     }

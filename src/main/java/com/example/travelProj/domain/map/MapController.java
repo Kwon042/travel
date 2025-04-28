@@ -2,8 +2,13 @@ package com.example.travelProj.domain.map;
 
 import com.example.travelProj.domain.attraction.AttractionResponse;
 import com.example.travelProj.domain.attraction.AttractionService;
+import com.example.travelProj.domain.user.SiteUser;
+import com.example.travelProj.domain.user.UserService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -16,9 +21,14 @@ import java.util.List;
 public class MapController {
 
     private final AttractionService attractionService;
+    private final UserService userService;
 
     @GetMapping("/map")
-    public String showMapPage() {
+    public String showMapPage(@AuthenticationPrincipal SiteUser user, Model model, HttpSession session) {
+        SiteUser updatedUser = userService.findUserById(user.getId());
+        session.setAttribute("user", updatedUser);
+        model.addAttribute("user", updatedUser);
+
         return "map";
     }
 
