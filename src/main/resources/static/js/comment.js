@@ -49,6 +49,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 const replyForm = document.getElementById(`replyForm_${commentId}`);
                 replyForm.classList.remove("active"); // 폼 닫기
             }
+            // 좋아요 버튼 클릭
+            if (target.classList.contains("comment-like-button")) {
+                const likeIcon = target.querySelector('.comment-like-icon');
+                const commentId = likeIcon.getAttribute('data-comment-id');
+                toggleLike(commentId, target);
+            }
         });
     }
 });
@@ -194,6 +200,33 @@ function submitReply(reviewBoardId, parentId) {
             location.reload(); // 페이지를 새로 고침
         } else {
             console.error('답글 추가 실패');
+        }
+    })
+    .catch(error => {
+        console.error('에러:', error);
+    });
+}
+
+// 좋아요 상태 토글
+function toggleLike(commentId, target) {
+    console.log('Clicked ID:', commentId);
+
+    fetch(`/comment/likes/${commentId}`, {
+        method: 'POST',
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const likeIcon = target.querySelector('.comment-like-icon');
+            const likeCountElement = document.getElementById('commentLikeCount_' + commentId);
+
+            if (data.likeStatus) {
+                likeIcon.textContent = '💜'; // 좋아요
+            } else {
+                likeIcon.textContent = '🤍'; // 좋아요 취소
+            }
+
+            likeCountElement.textContent = data.likesCount; // 좋아요 수 업데이트
         }
     })
     .catch(error => {

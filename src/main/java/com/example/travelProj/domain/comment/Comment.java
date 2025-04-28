@@ -65,8 +65,15 @@ public class Comment {
     @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY)
     private List<CommentLike> likes;
 
-    public int getLikesCount() {
-        return likes != null ? likes.size() : 0; // likes의 수를 가져오는 메서드
+    // 좋아요 수 계산
+    public Long getLikeCount() {
+        return (long) this.likes.size();
+    }
+
+    // 사용자가 좋아요를 눌렀는지 확인하는 메서드
+    public boolean getLikeStatus(SiteUser user) {
+        return this.likes.stream()
+                .anyMatch(like -> like.getUser().equals(user));
     }
 
 }

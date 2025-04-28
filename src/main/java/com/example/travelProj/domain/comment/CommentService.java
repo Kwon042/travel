@@ -68,7 +68,7 @@ public class CommentService {
     }
 
     // 댓글 트리 구조 조회 (대댓글 포함)
-    public List<CommentResponseDTO> getCommentsWithReplies(Long reviewBoardId) {
+    public List<CommentResponseDTO> getCommentsWithReplies(Long reviewBoardId, SiteUser user) {
         List<Comment> comments = commentRepository.findByReviewBoard_Id(reviewBoardId);
 
         // 부모 댓글만 필터링
@@ -77,7 +77,7 @@ public class CommentService {
                 .collect(Collectors.toList());
 
         return parentComments.stream()
-                .map(this::convertToDTO)
+                .map(comment -> convertToDTO(comment, user))
                 .collect(Collectors.toList());
     }
 
@@ -101,7 +101,7 @@ public class CommentService {
     }
 
     // Entity → DTO 변환 (트리 구조)
-    CommentResponseDTO convertToDTO(Comment comment) {
+    CommentResponseDTO convertToDTO(Comment comment, SiteUser user) {
         CommentResponseDTO dto = new CommentResponseDTO();
         dto.setId(comment.getId());
         dto.setUsername(comment.getUser().getUsername());
@@ -109,7 +109,9 @@ public class CommentService {
         dto.setContent(comment.getContent());
         dto.setCreatedAt(comment.getCreatedAt());
         dto.setUpdatedAt(comment.getUpdatedAt());
-        dto.setLikesCount(comment.getLikes().size());
+        dto.setLikeStatus(comment.getLikeStatus(user));
+        dto.setLikesCount(comment.getLikeCount());
+
 
         // 댓글 이미지 보이기
         dto.setProfileImageUrl(
@@ -119,7 +121,7 @@ public class CommentService {
 
         // 대댓글 재귀 처리
         dto.setChildren(comment.getChildren().stream()
-                .map(this::convertToDTO)
+                .map(childComment -> convertToDTO(childComment, user))
                 .collect(Collectors.toList()));
         return dto;
     }
@@ -127,5 +129,6 @@ public class CommentService {
     public long countComments() {
         return commentRepository.count();
     }
+
 
 }

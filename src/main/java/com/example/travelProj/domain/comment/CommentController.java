@@ -1,5 +1,6 @@
 package com.example.travelProj.domain.comment;
 
+import com.example.travelProj.domain.like.commentlike.CommentLikeService;
 import com.example.travelProj.domain.user.SiteUser;
 import com.example.travelProj.domain.user.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -20,6 +21,7 @@ import java.util.Map;
 public class CommentController {
     private final CommentService commentService;
     private final UserService userService;
+    private final CommentLikeService commentLikeService;
 
     @GetMapping("/{reviewBoardId}/show")
     public String showComment(@PathVariable Long reviewBoardId,
@@ -30,12 +32,16 @@ public class CommentController {
         session.setAttribute("user", updatedUser);
         model.addAttribute("user", updatedUser);
 
-        List<CommentResponseDTO> comments = commentService.getCommentsWithReplies(reviewBoardId);
+        List<CommentResponseDTO> comments = commentService.getCommentsWithReplies(reviewBoardId, user);
         int commentsCount = commentService.countByReviewBoardId(reviewBoardId);
+
+        for (CommentResponseDTO comment : comments) {
+            long likeCount = commentLikeService.countLikes(comment.getId()); // 좋아요 수
+            comment.setLikesCount(likeCount);
+        }
 
         model.addAttribute("comments", comments);
         model.addAttribute("commentsCount", commentsCount);
-        //model.addAttribute("likeCount", commentsWithCount.get("likeCount"));
 
         return "board/comment";
     }
@@ -52,8 +58,9 @@ public class CommentController {
 
     // 댓글 조회 (목록  + 대댓글 트리 구조)
     @GetMapping("/{reviewBoardId}")
-    public ResponseEntity<List<CommentResponseDTO>> getComments(@PathVariable Long reviewBoardId) {
-        List<CommentResponseDTO> comments = commentService.getCommentsWithReplies(reviewBoardId);
+    public ResponseEntity<List<CommentResponseDTO>> getComments(@PathVariable Long reviewBoardId,
+                                                                @AuthenticationPrincipal SiteUser user) {
+        List<CommentResponseDTO> comments = commentService.getCommentsWithReplies(reviewBoardId, user);
         return ResponseEntity.ok(comments);
     }
 
@@ -79,7 +86,7 @@ public class CommentController {
         String newContent = requestBody.get("content");
         commentService.updateComment(commentId, newContent, user);
         Comment updatedComment = commentService.getCommentById(commentId);
-        CommentResponseDTO dto = commentService.convertToDTO(updatedComment);
+        CommentResponseDTO dto = commentService.convertToDTO(updatedComment, user);
         return ResponseEntity.ok().build();
     }
 }

@@ -43,7 +43,15 @@
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <button class="reply-button" style="margin-right: auto;" th:data-comment-id="${comment.id}">답글</button>
-                <span class="likes" style="margin-left: auto;">♥️ <span th:text="${comment.likesCount}">0</span></span>
+                <button class="comment-like-button" style="background:none; border:none; display: flex; align-items: center;">
+                    <span th:id="'comment-like-icon-' + ${comment.id}" class="comment-like-icon"
+                          th:text="${comment.likeStatus != null and comment.likeStatus ? '💜' : '🤍'}"
+                          th:data-comment-id="${comment.id}"
+                          style="margin-right: 4px;">
+                        🤍
+                    </span>
+                    <span th:id="'commentLikeCount_' + ${comment.id}" th:text="${comment.likesCount}">0</span>
+                </button>
             </div>
         </div>
 
