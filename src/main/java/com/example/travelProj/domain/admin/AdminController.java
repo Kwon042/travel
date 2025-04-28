@@ -10,6 +10,7 @@ import com.example.travelProj.domain.comment.Comment;
 import com.example.travelProj.domain.comment.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +29,7 @@ public class AdminController {
     private final ReviewBoardLikeService reviewBoardLikeService;
 
     @GetMapping("/dashboard")
-    public String dashboard(Model model) {
+    public String dashboard(@AuthenticationPrincipal SiteUser user, Model model) {
         long totalUsers = userService.countUsers();
         long totalAdmins = userService.countAdmins();
         long totalPosts = reviewBoardService.countPosts();
@@ -40,6 +41,7 @@ public class AdminController {
         Iterable<SiteUser> adminList = userService.findByRole(UserRole.ADMIN);
 
         // 모델에 데이터 추가
+        model.addAttribute("user", user);
         model.addAttribute("totalUsers", totalUsers);
         model.addAttribute("totalAdmins", totalAdmins);
         model.addAttribute("totalPosts", totalPosts);

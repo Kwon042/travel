@@ -2,6 +2,7 @@ package com.example.travelProj.domain.comment;
 
 import com.example.travelProj.domain.user.SiteUser;
 import com.example.travelProj.domain.user.UserService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,8 +22,13 @@ public class CommentController {
     private final UserService userService;
 
     @GetMapping("/{reviewBoardId}/show")
-    public String showComment(@PathVariable Long reviewBoardId, Model model) {
+    public String showComment(@PathVariable Long reviewBoardId,
+                              @AuthenticationPrincipal SiteUser user,
+                              Model model, HttpSession session) {
         model.addAttribute("reviewBoardId", reviewBoardId);
+        SiteUser updatedUser = userService.findUserById(user.getId());
+        session.setAttribute("user", updatedUser);
+        model.addAttribute("user", updatedUser);
 
         List<CommentResponseDTO> comments = commentService.getCommentsWithReplies(reviewBoardId);
         int commentsCount = commentService.countByReviewBoardId(reviewBoardId);

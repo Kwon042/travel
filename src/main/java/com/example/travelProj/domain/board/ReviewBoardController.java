@@ -8,6 +8,7 @@ import com.example.travelProj.domain.region.RegionRepository;
 import com.example.travelProj.domain.user.SiteUser;
 import com.example.travelProj.domain.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -53,7 +54,7 @@ public class ReviewBoardController {
                                   @RequestParam(value = "page", defaultValue = "0") int page,
                                   @RequestParam(value = "size", defaultValue = "5") int size,
                                   @AuthenticationPrincipal SiteUser user,
-                                  HttpServletRequest request,
+                                  HttpServletRequest request, HttpSession session,
                                   Model model) {
         if (user == null) {
             return "redirect:/login";
@@ -61,7 +62,9 @@ public class ReviewBoardController {
 
         Page<ReviewBoard> boardPage = reviewBoardService.getBoardPage(regionName, page, size);
 
-        model.addAttribute("user", user);
+        SiteUser updatedUser = userService.findUserById(user.getId());
+        session.setAttribute("user", updatedUser);
+        model.addAttribute("user", updatedUser);
         model.addAttribute("boards", boardPage.getContent()); // 현재 페이지의 게시글 목록
         model.addAttribute("region", regionName); // 선택된 지역
         model.addAttribute("currentPage", page); // 현재 페이지 번호

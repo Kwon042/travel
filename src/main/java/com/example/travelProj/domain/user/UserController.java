@@ -39,13 +39,13 @@ public class UserController {
     @PostMapping("/signup")
     public String signup(@Valid UserCreateForm userCreateForm, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "signup_form";
+            return "/user/signup_form";
         }
 
         if (!userCreateForm.getPassword1().equals(userCreateForm.getPassword2())) {
             bindingResult.rejectValue("password2", "notEqual",
                     "Passwords do not match.");
-            return "signup_form";
+            return "/user/signup_form";
         }
         // 사용자 이름에 "admin"이 포함되어 있으면 ADMIN 권한 부여
         boolean isAdmin = userCreateForm.getUsername().toLowerCase().contains("admin");
@@ -65,14 +65,15 @@ public class UserController {
                         userCreateForm.getNickname(),
                         "USER");
             }
+
         }catch(DataIntegrityViolationException e) {
             e.printStackTrace();
             bindingResult.reject("signupFailed", "User already exists.");
-            return "signup_form";
+            return "/user/signup_form";
         }catch(Exception e) {
             e.printStackTrace();
             bindingResult.reject("signupFailed", e.getMessage());
-            return "signup_form";
+            return "/user/signup_form";
         }
         return "redirect:/";
     }
