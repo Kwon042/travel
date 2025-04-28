@@ -220,10 +220,14 @@ function toggleLike(commentId, target) {
             const likeIcon = target.querySelector('.comment-like-icon');
             const likeCountElement = document.getElementById('commentLikeCount_' + commentId);
 
+            // 데이터 값 확인
+            console.log('현재 좋아요 상태:', data.likeStatus);
+            console.log('현재 좋아요 수:', data.likesCount);
+
             if (data.likeStatus) {
-                likeIcon.textContent = '💜'; // 좋아요
+                likeIcon.textContent = '💜';
             } else {
-                likeIcon.textContent = '🤍'; // 좋아요 취소
+                likeIcon.textContent = '🤍';
             }
 
             likeCountElement.textContent = data.likesCount; // 좋아요 수 업데이트
