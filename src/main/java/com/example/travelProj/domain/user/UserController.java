@@ -37,19 +37,54 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public String signup(@Valid UserCreateForm userCreateForm, BindingResult bindingResult) {
+    public String signUp(@ModelAttribute("userCreateForm") UserCreateForm userCreateForm,
+                         BindingResult bindingResult) {
+        // 중복 체크 및 비밀번호 확인
+        checkForDuplicateFields(userCreateForm, bindingResult);
+        checkPasswordMatch(userCreateForm, bindingResult);
+
+        // 오류가 있으면 폼을 다시 반환
         if (bindingResult.hasErrors()) {
-            return "/user/signup_form";
+            return "user/signup_form";
         }
 
-        if (!userCreateForm.getPassword1().equals(userCreateForm.getPassword2())) {
-            bindingResult.rejectValue("password2", "notEqual",
-                    "Passwords do not match.");
-            return "/user/signup_form";
-        }
         // 사용자 이름에 "admin"이 포함되어 있으면 ADMIN 권한 부여
         boolean isAdmin = userCreateForm.getUsername().toLowerCase().contains("admin");
 
+        // 회원가입 처리
+        String result = handleUserCreation(userCreateForm, bindingResult, isAdmin);
+
+        if (result != null) {
+            return result; // 오류가 발생하면 폼을 다시 반환
+        }
+
+        // 회원가입 성공 시 로그인 페이지로 리디렉션
+        return "redirect:/user/login";
+    }
+
+    private void checkForDuplicateFields(UserCreateForm userCreateForm, BindingResult bindingResult) {
+        // username 중복 체크
+        if (userService.existsByUsername(userCreateForm.getUsername())) {
+            bindingResult.rejectValue("username", "username.exists", "Username is already taken.");
+        }
+        // email 중복 체크
+        if (userService.existsByEmail(userCreateForm.getEmail())) {
+            bindingResult.rejectValue("email", "email.exists", "Email is already taken.");
+        }
+        // nickname 중복 체크
+        if (userService.existsByNickname(userCreateForm.getNickname())) {
+            bindingResult.rejectValue("nickname", "nickname.exists", "Nickname is already taken.");
+        }
+    }
+
+    private void checkPasswordMatch(UserCreateForm userCreateForm, BindingResult bindingResult) {
+        // 비밀번호 일치 확인
+        if (!userCreateForm.getPassword1().equals(userCreateForm.getPassword2())) {
+            bindingResult.rejectValue("password2", "notEqual", "Passwords do not match.");
+        }
+    }
+
+    private String handleUserCreation(UserCreateForm userCreateForm, BindingResult bindingResult, boolean isAdmin) {
         try {
             // 사용자 이름에 "admin"이 포함되면 createAdmin 사용, 그렇지 않으면 create 사용
             if (isAdmin) {
@@ -65,17 +100,16 @@ public class UserController {
                         userCreateForm.getNickname(),
                         "USER");
             }
-
-        }catch(DataIntegrityViolationException e) {
+        } catch (DataIntegrityViolationException e) {
             e.printStackTrace();
             bindingResult.reject("signupFailed", "User already exists.");
-            return "/user/signup_form";
-        }catch(Exception e) {
+            return "user/signup_form"; // 오류가 있으면 다시 폼을 반환
+        } catch (Exception e) {
             e.printStackTrace();
             bindingResult.reject("signupFailed", e.getMessage());
-            return "/user/signup_form";
+            return "user/signup_form"; // 오류가 있으면 다시 폼을 반환
         }
-        return "redirect:/";
+        return null; // 오류가 없으면 null 반환
     }
 
     @GetMapping("/login")

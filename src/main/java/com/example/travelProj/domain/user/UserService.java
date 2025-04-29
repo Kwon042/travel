@@ -43,23 +43,10 @@ public class UserService {
         return userRepository.save(buildUser(username, email, password, nickname, UserRole.ADMIN));
     }
 
-    @Transactional
-    public SiteUser authenticate(String username, String password) {
-        Optional<SiteUser> optionalUser = userRepository.findByUsername(username);
-        if (optionalUser.isPresent()) {
-            SiteUser user = optionalUser.get();
-            // 비밀번호 매칭 확인
-            if (passwordEncoder.matches(password, user.getPassword())) {
-                return user;
-            }
-        }
-        return null; // 인증 실패 시 null 리턴
-    }
-
     // 닉네임 수정
     @Transactional
     public void updateNickname(Long userId, String newNickname) {
-        if (isNicknameAlreadyRegistered(newNickname)) {
+        if (existsByNickname(newNickname)) {
             throw new IllegalArgumentException("이미 등록된 닉네임입니다.");
         }
         SiteUser user = userRepository.findById(userId)
@@ -72,31 +59,23 @@ public class UserService {
     @Transactional
     public void updateEmail(Long userId, String newEmail) {
         // 중복 체크
-        String duplicateMessage = checkFieldDuplicate("email", newEmail);
-        if (duplicateMessage != null) {
-            throw new IllegalArgumentException(duplicateMessage);
-        }
+        checkFieldDuplicate("email", newEmail);  // 중복 체크만 수행, 예외가 발생하면 처리됨
 
-        SiteUser user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        SiteUser user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
         user.setEmail(newEmail);
         userRepository.save(user);
     }
 
     // 중복 체크 공통 메서드
-    @Transactional
-    private String checkFieldDuplicate(String field, String value) {
-        if ("nickname".equals(field)) {
-            boolean nicknameExists = isNicknameAlreadyRegistered(value);
-            if (nicknameExists) {
-                throw new IllegalArgumentException("이미 등록된 닉네임입니다.");
-            }
-        } else if ("email".equals(field)) {
-            boolean emailExists = isEmailAlreadyRegistered(value);
-            if (emailExists) {
-                throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
-            }
+    private void checkFieldDuplicate(String field, String value) {
+        if ("username".equals(field) && existsByUsername(value)) {
+            throw new IllegalArgumentException("이미 등록된 유저ID입니다.");
+        } else if ("nickname".equals(field) && existsByEmail(value)) {
+            throw new IllegalArgumentException("이미 등록된 닉네임입니다.");
+        } else if ("email".equals(field) && existsByNickname(value)) {
+            throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
         }
-        return null;
     }
 
     @Transactional
@@ -113,11 +92,13 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public boolean isEmailAlreadyRegistered(String email) {
+    public boolean existsByUsername(String username) { return userRepository.existsByEmail(username); }
+
+    public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
 
-    public boolean isNicknameAlreadyRegistered(String nickname) {
+    public boolean existsByNickname(String nickname) {
         return userRepository.existsByNickname(nickname);
     }
 
