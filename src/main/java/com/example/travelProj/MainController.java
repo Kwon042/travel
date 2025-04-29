@@ -22,9 +22,11 @@ public class MainController {
 
     @GetMapping("/")
     public String showMainPage(@AuthenticationPrincipal SiteUser user, Model model, HttpSession session) {
-        SiteUser updatedUser = userService.findUserById(user.getId());
-        session.setAttribute("user", updatedUser);
-        model.addAttribute("user", updatedUser);
+        if (user != null) {
+            SiteUser updatedUser = userService.findUserById(user.getId());
+            session.setAttribute("user", updatedUser);
+            model.addAttribute("user", updatedUser);
+        }
 
 //        // 랜덤 여행지를 가져와서 모델에 추가
 //        List<AttractionResponse> randomAttractions = attractionService.getRandomAttractions();

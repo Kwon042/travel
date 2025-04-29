@@ -50,10 +50,11 @@ document.addEventListener("DOMContentLoaded", function() {
                 replyForm.classList.remove("active"); // 폼 닫기
             }
             // 좋아요 버튼 클릭
-            if (target.classList.contains("comment-like-button")) {
-                const likeIcon = target.querySelector('.comment-like-icon');
+            const likeButton = target.closest(".comment-like-button");
+            if (likeButton) {
+                const likeIcon = likeButton.querySelector('.comment-like-icon');
                 const commentId = likeIcon.getAttribute('data-comment-id');
-                toggleLike(commentId, target);
+                toggleLike(commentId, likeButton);
             }
         });
     }

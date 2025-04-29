@@ -35,8 +35,8 @@ h2 {
 }
 
 .mypage-profile-image {
-    width: 100px;
-    height: 100px;
+    width: 100px !important;
+    height: 100px !important;
     border-radius: 50%;
     object-fit: cover;
     border: 1px solid black;
