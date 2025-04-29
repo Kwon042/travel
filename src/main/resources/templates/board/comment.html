@@ -18,7 +18,7 @@
     </h2>
     <hr style="border: 1px solid #5b30a4; margin: 20px 0;"> <!-- 구분선 추가 -->
     <div th:each="comment : ${comments}">
-        <div class="comment">
+        <div class="comment" th:data-comment-id="${comment.id}">
             <div class="comment-header">
                 <div class="profile-pic"
                      th:style="'background-image: url(' + ${comment.profileImageUrl} + ');'">
@@ -47,8 +47,7 @@
                     <span th:id="'comment-like-icon-' + ${comment.id}" class="comment-like-icon"
                           th:text="${comment.likeStatus != null and comment.likeStatus ? '💜' : '🤍'}"
                           th:data-comment-id="${comment.id}"
-                          style="margin-right: 4px;">
-                        🤍
+                          style="margin-right: 8px;">
                     </span>
                     <span th:id="'commentLikeCount_' + ${comment.id}" th:text="${comment.likesCount}">0</span>
                 </button>

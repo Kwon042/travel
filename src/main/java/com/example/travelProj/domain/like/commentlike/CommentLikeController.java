@@ -17,11 +17,13 @@ public class CommentLikeController {
     private final CommentLikeService commentLikeService;
 
     @PostMapping("/{commentId}")
-    public ResponseEntity<Map<String, Object>> toggleLike(@PathVariable Long commentId, @AuthenticationPrincipal SiteUser user) {
+    public ResponseEntity<Map<String, Object>> toggleLike(@PathVariable Long commentId,
+                                                          @AuthenticationPrincipal SiteUser user) {
         boolean likeStatus = commentLikeService.toggleLike(commentId, user);  // 좋아요 상태 토글
         long likeCount = commentLikeService.countLikes(commentId);  // 좋아요 수
 
         Map<String, Object> response = new HashMap<>();
+        response.put("success", true);  // 성공 여부 추가
         response.put("likeStatus", likeStatus);  // 좋아요 상태
         response.put("likesCount", likeCount);  // 좋아요 수
 
@@ -32,6 +34,19 @@ public class CommentLikeController {
     public ResponseEntity<?> removeLike(@PathVariable Long commentId, @AuthenticationPrincipal SiteUser user) {
         commentLikeService.removeLike(commentId, user);
         return ResponseEntity.ok().body("Like removed successfully.");
+    }
+
+    @GetMapping("/{commentId}/status")
+    public ResponseEntity<Map<String, Object>> getLikeStatus(@PathVariable Long commentId,
+                                                             @AuthenticationPrincipal SiteUser user) {
+        Map<String, Object> response = new HashMap<>();
+        boolean likeStatus = commentLikeService.isLikedByUser(commentId, user);
+        long likesCount = commentLikeService.countLikes(commentId);
+
+        response.put("success", true);
+        response.put("likeStatus", likeStatus);
+        response.put("likesCount", likesCount);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{commentId}/count")

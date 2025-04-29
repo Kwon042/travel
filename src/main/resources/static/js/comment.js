@@ -58,7 +58,41 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     }
+    restoreLikeStatus();
 });
+
+// 로컬 스토리지에서 좋아요 상태를 복원하는 함수
+function restoreLikeStatus() {
+    const commentIds = document.querySelectorAll('.comment');  // 댓글의 ID가 포함된 요소를 모두 찾음
+    commentIds.forEach(comment => {
+        const commentId = comment.getAttribute('data-comment-id');
+        if (!commentId) return;
+
+        const likeIcon = comment.querySelector('.comment-like-icon');
+        const likeCountElement = document.getElementById('commentLikeCount_' + commentId);
+
+        // 서버에서 최신 좋아요 상태를 받아옴
+        fetch(`/comment/likes/${commentId}/status`)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.success) {
+                    // 서버에서 받은 상태로 아이콘 변경
+                    likeIcon.textContent = data.likeStatus ? '💜' : '🤍';
+
+                    // 좋아요 수 업데이트
+                    if (likeCountElement) {
+                        likeCountElement.textContent = data.likesCount;
+                    }
+
+                    // 로컬 스토리지에 최신 상태 저장
+                    localStorage.setItem(`likeStatus_${commentId}`, data.likeStatus);
+                }
+            })
+            .catch(error => {
+                console.error('좋아요 상태 가져오기 실패:', error);
+            });
+    });
+}
 
 function submitComment(reviewBoardId) {
     const content = document.querySelector('#commentContent').value;
@@ -215,23 +249,32 @@ function toggleLike(commentId, target) {
     fetch(`/comment/likes/${commentId}`, {
         method: 'POST',
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('좋아요 처리에 실패했습니다.');
+        }
+        return response.json();
+    })
     .then(data => {
-        if (data.success) {
+        console.log('응답 데이터:', data);  // 응답 데이터 확인
+
+        if (data && data.success) {
             const likeIcon = target.querySelector('.comment-like-icon');
             const likeCountElement = document.getElementById('commentLikeCount_' + commentId);
 
-            // 데이터 값 확인
-            console.log('현재 좋아요 상태:', data.likeStatus);
-            console.log('현재 좋아요 수:', data.likesCount);
+            // 좋아요 상태에 따라 아이콘 변경
+            if (likeIcon) {
+                likeIcon.textContent = data.likeStatus ? '💜' : '🤍';
 
-            if (data.likeStatus) {
-                likeIcon.textContent = '💜';
-            } else {
-                likeIcon.textContent = '🤍';
+                localStorage.setItem(`likeStatus_${commentId}`, data.likeStatus);
             }
 
-            likeCountElement.textContent = data.likesCount; // 좋아요 수 업데이트
+            // 좋아요 수 변경
+            if (likeCountElement) {
+                likeCountElement.textContent = data.likesCount;
+            }
+        } else {
+            console.error('좋아요 처리 실패', data.message);
         }
     })
     .catch(error => {

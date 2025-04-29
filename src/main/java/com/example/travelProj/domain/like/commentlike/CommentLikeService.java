@@ -42,6 +42,10 @@ public class CommentLikeService {
         commentLikeRepository.deleteByCommentAndUser(comment, user);
     }
 
+    public boolean isLikedByUser(Long commentId, SiteUser user) {
+        return commentLikeRepository.findByCommentIdAndUserId(commentId, user.getId()).isPresent();
+    }
+
     public long countLikes(Long commentId) {
         Comment comment = commentService.getCommentById(commentId);
         return commentLikeRepository.countByComment(comment);
