@@ -194,10 +194,15 @@ function getEmojiByContentTypeId(contentTypeId) {
 // 모달 내용 설정 함수
 function setModalContent(modalBody, detail, emoji, infoHtml) {
     modalBody.innerHTML = `
-        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-            <h4 style="margin: 0;">${emoji} ${detail.title || '제목 없음'}</h4>
-            <img id="bookmarkIcon" class="bookmark-icon" src="/images/bookmark-white_icon.png" alt="즐겨찾기">
-            <img src="${detail.firstimage || '/images/no-image.png'}" alt="이미지" class="detail-image" style="width: 150px; height: 100px; object-fit: cover;">
+        <div class="modal-header-container">
+            <h4 class="modal-title-text">${emoji} ${detail.title || '제목 없음'}</h4>
+            <div class="bookmark-image-group">
+                <img id="bookmarkIcon" class="bookmark-icon"
+                     src="/images/bookmark-white_icon.png"
+                     data-attraction-id="${detail.contentId}"
+                     alt="즐겨찾기">
+                <img src="${detail.firstimage || '/images/no-image.png'}" alt="이미지" class="detail-image">
+            </div>
         </div>
         <hr style="border: none; border-top: 2px solid black; margin: 10px 0;">
         <p style="margin: 0;"><strong>주소</strong></p>
@@ -217,37 +222,50 @@ function setModalContent(modalBody, detail, emoji, infoHtml) {
     `;
 }
 
-// 즐겨찾기 상태 토글 함수
-function setBookmarkToggleEvent() {
-    document.getElementById('bookmarkIcon').addEventListener('click', function() {
-        const bookmarkIcon = document.getElementById('bookmarkIcon');
+let currentAttractionId = 1; // 클라이언트에서 관리하는 ID (시작 값은 1)
 
-        // 북마크 이미지 상태 토글
-        if (bookmarkIcon.src.includes('bookmark-white_icon.png')) {
-            bookmarkIcon.src = '/images/bookmark-icon.png';  // 선택된 상태
-            console.log('즐겨찾기 추가됨');
-        } else {
-            bookmarkIcon.src = '/images/bookmark-white_icon.png';  // 선택 해제된 상태
-            console.log('즐겨찾기 제거됨');
-        }
-    });
+function getNextAttractionId() {
+    return currentAttractionId++;  // ID 증가시키고 반환
 }
 
-// 좋아요 처리 함수 (API 호출 방식으로 구현 가능)
-function likeAttraction(contentId) {
-    fetch(`/api/attraction/like/${contentId}`, {
-        method: 'POST'
-    })
-    .then(response => {
-        if (response.ok) {
-            alert('좋아요를 눌렀습니다!');
-        } else {
-            alert('이미 좋아요를 누른 관광지입니다.');
+// 즐겨찾기 상태 토글 함수
+function setBookmarkToggleEvent() {
+    const bookmarkIcons = document.querySelectorAll('.bookmark-icon');
+
+    bookmarkIcons.forEach(bookmarkIcon => {
+        // 고유 ID가 없으면 자동으로 생성
+        let attractionId = bookmarkIcon.dataset.attractionId;
+
+        if (!attractionId) {
+            attractionId = getNextAttractionId();  // 고유 ID 생성
+            bookmarkIcon.dataset.attractionId = attractionId;  // 아이콘에 고유 ID 저장
         }
-    })
-    .catch(error => {
-        console.error('좋아요 실패:', error);
-        alert('좋아요 처리 중 오류가 발생했습니다.');
+
+        console.log('Attraction ID:', attractionId);  // 고유 ID 확인
+
+        bookmarkIcon.addEventListener('click', function () {
+            const isBookmarked = bookmarkIcon.src.includes('bookmark-icon.png');  // 현재 북마크 상태 체크
+
+            if (isBookmarked) {
+                // 즐겨찾기 제거
+                fetch(`/api/bookmarks/${attractionId}`, { method: 'DELETE' })
+                    .then(res => {
+                        if (res.ok) {
+                            bookmarkIcon.src = '/images/bookmark-white_icon.png';
+                            console.log('즐겨찾기 제거됨');
+                        }
+                    });
+            } else {
+                // 즐겨찾기 추가
+                fetch(`/api/bookmarks/${attractionId}`, { method: 'POST' })
+                    .then(res => {
+                        if (res.ok) {
+                            bookmarkIcon.src = '/images/bookmark-icon.png';
+                            console.log('즐겨찾기 추가됨');
+                        }
+                    });
+            }
+        });
     });
 }
 

@@ -13,6 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 // 검색 > 상세보기용 dto
 public class AttractionDetailResponse {
+    private Long contentId;
     private String title;
     private String addr1;
     private String tel;
@@ -21,6 +22,7 @@ public class AttractionDetailResponse {
     private List<Info> infoList;
 
     public AttractionDetailResponse(JsonNode mainItemNode, JsonNode itemsArrayNode) {
+        this.contentId = mainItemNode.path("contentid").asLong();
         this.title = mainItemNode.path("title").asText("");
         this.addr1 = mainItemNode.path("addr1").asText("");
         this.tel = mainItemNode.path("tel").asText("");

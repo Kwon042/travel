@@ -130,16 +130,6 @@ input:-webkit-autofill {
     display: inline;  /* 선택된 버튼에서만 체크 표시 보이기 */
 }
 
-.detail-image {
-    width: 200px;
-    height: 150px;
-    object-fit: cover;
-    border: 1px solid #dcdcdc; /* 옅은 회색 테두리 */
-    border-radius: 4px; /* 둥근 테두리 */
-    padding: 2px; /* 테두리와 이미지 사이에 간격 추가 */
-    margin-bottom: 10px;
-}
-
 .spinner-container {
     position: fixed;
     top: 50%;
@@ -172,10 +162,40 @@ input:-webkit-autofill {
     text-align: center;
 }
 
+.modal-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* 맨 위로 정렬 */
+    gap: 10px;
+}
+
+.modal-title-text {
+    margin: 0;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.bookmark-image-group {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start; /* 위쪽 정렬 */
+    gap: 5px;
+}
+
 .bookmark-icon {
     cursor: pointer;
     width: 20px;
     height: 20px;
-    margin-left: 70px;
+    margin-top: 2px;
+    margin-right: 5px;
 }
 
+.detail-image {
+    width: 200px;
+    height: 150px;
+    object-fit: cover;
+    border: 1px solid #dcdcdc; /* 옅은 회색 테두리 */
+    border-radius: 4px; /* 둥근 테두리 */
+    padding: 2px; /* 테두리와 이미지 사이에 간격 추가 */
+    margin-bottom: 10px;
+}

@@ -14,7 +14,6 @@ import java.util.Random;
 @Service
 public class AttractionService {
 
-    private final AttractionRepository attractionRepository;
     private final ApiService apiService;
 
     public List<AttractionResponse> getRandomAttractions() {
@@ -46,11 +45,5 @@ public class AttractionService {
         return attractions.stream()
                 .limit(100)
                 .toList();
-    }
-
-    // 특정 ID의 관광지 정보 조회
-    public Attraction getAttractionById(Long id) {
-        return attractionRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 관광지가 존재하지 않습니다."));
     }
 }
