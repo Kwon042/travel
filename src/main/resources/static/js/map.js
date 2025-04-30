@@ -127,6 +127,7 @@ function fetchAndShowDetail(contentId, fallbackImage, contentTypeId) {
     fetch(`/api/attraction/detail/${contentId}/${contentTypeId}`)
         .then(res => res.json())
         .then(detail => {
+            detail.contentTypeId = contentTypeId;
             console.log(detail); // 디버깅을 위해 로그 추가
             if (!detail.firstimage || detail.firstimage === '') {
                 detail.firstimage = fallbackImage;
@@ -141,11 +142,28 @@ function fetchAndShowDetail(contentId, fallbackImage, contentTypeId) {
 
 function showDetailModal(detail) {
     const modalBody = document.getElementById('modalBody');
-    let infoHtml = '';
 
-    // infoList가 존재하는 경우에만 반복문 실행
-    if (Array.isArray(detail.infoList) && detail.infoList.length > 0) {
-        detail.infoList.forEach(info => {
+    // infoList 처리
+    let infoHtml = getInfoHtml(detail.infoList);
+
+    const emoji = getEmojiByContentTypeId(String(detail.contentTypeId));
+
+    // 모달 내용 설정
+    setModalContent(modalBody, detail, emoji, infoHtml);
+
+    // 부트스트랩 모달 띄우기
+    const modal = new bootstrap.Modal(document.getElementById('attractionModal'));
+    modal.show();
+
+    // 즐겨찾기 이미지 클릭 시 상태 변경
+    setBookmarkToggleEvent();
+}
+
+// infoList HTML 생성 함수
+function getInfoHtml(infoList) {
+    let infoHtml = '';
+    if (Array.isArray(infoList) && infoList.length > 0) {
+        infoList.forEach(info => {
             infoHtml += `
                 <div>
                     <hr style="border: none; border-top: 1px solid black; margin: 10px 0;">
@@ -157,13 +175,28 @@ function showDetailModal(detail) {
     } else {
         infoHtml = '<p>추가 정보가 없습니다.</p>';
     }
+    return infoHtml;
+}
 
-    const emoji = getEmojiByContentTypeId(detail.contentTypeId);
+function getEmojiByContentTypeId(contentTypeId) {
+    const emojiMap = {
+        "12": "🗽",  // 관광지
+        "14": "🏕️",  // 문화시설
+        "15": "🎡",  // 축제
+        "28": "🤿",  // 레포츠
+        "32": "🏨",  // 숙박
+        "38": "🛒",  // 쇼핑
+        "39": "🍽️",  // 음식점
+    };
+    return emojiMap[contentTypeId] || "";
+}
 
-    // 모달의 내용 설정
+// 모달 내용 설정 함수
+function setModalContent(modalBody, detail, emoji, infoHtml) {
     modalBody.innerHTML = `
         <div style="display: flex; justify-content: space-between; align-items: flex-start;">
             <h4 style="margin: 0;">${emoji} ${detail.title || '제목 없음'}</h4>
+            <img id="bookmarkIcon" class="bookmark-icon" src="/images/bookmark-white_icon.png" alt="즐겨찾기">
             <img src="${detail.firstimage || '/images/no-image.png'}" alt="이미지" class="detail-image" style="width: 150px; height: 100px; object-fit: cover;">
         </div>
         <hr style="border: none; border-top: 2px solid black; margin: 10px 0;">
@@ -182,10 +215,22 @@ function showDetailModal(detail) {
         <h5 style="margin-top: 10px; margin-bottom: 10px;">시설 정보</h5>
         ${infoHtml}
     `;
+}
 
-    // 부트스트랩 모달을 사용하여 모달 띄우기
-    const modal = new bootstrap.Modal(document.getElementById('attractionModal'));
-    modal.show();
+// 즐겨찾기 상태 토글 함수
+function setBookmarkToggleEvent() {
+    document.getElementById('bookmarkIcon').addEventListener('click', function() {
+        const bookmarkIcon = document.getElementById('bookmarkIcon');
+
+        // 북마크 이미지 상태 토글
+        if (bookmarkIcon.src.includes('bookmark-white_icon.png')) {
+            bookmarkIcon.src = '/images/bookmark-icon.png';  // 선택된 상태
+            console.log('즐겨찾기 추가됨');
+        } else {
+            bookmarkIcon.src = '/images/bookmark-white_icon.png';  // 선택 해제된 상태
+            console.log('즐겨찾기 제거됨');
+        }
+    });
 }
 
 // 좋아요 처리 함수 (API 호출 방식으로 구현 가능)
@@ -217,17 +262,4 @@ function showLoading() {
 
 function hideLoading() {
     document.getElementById("loadingSpinner").style.display = "none";
-}
-
-function getEmojiByContentTypeId(contentTypeId) {
-    const emojiMap = {
-        "12": "🗽",  // 관광지
-        "14": "🏕️",  // 문화시설
-        "15": "🎡",  // 축제
-        "28": "🤿",  // 레포츠
-        "32": "🏨",  // 숙박
-        "38": "🛒",  // 쇼핑
-        "39": "🍽️",  // 음식점
-    };
-    return emojiMap[contentTypeId] || "";
 }

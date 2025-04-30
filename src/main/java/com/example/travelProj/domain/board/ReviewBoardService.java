@@ -1,19 +1,17 @@
 package com.example.travelProj.domain.board;
 
 import com.example.travelProj.domain.image.imageboard.ImageBoard;
-import com.example.travelProj.domain.image.imageboard.ImageBoardRepository;
 import com.example.travelProj.domain.image.imageboard.ImageBoardService;
 import com.example.travelProj.domain.region.Region;
 import com.example.travelProj.domain.region.RegionRepository;
 import com.example.travelProj.domain.user.SiteUser;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class ReviewBoardService {
@@ -135,7 +134,12 @@ public class ReviewBoardService {
 
     @Transactional
     public void deleteReviewBoard(Long id) {
-        reviewBoardRepository.deleteById(id);
+        try {
+            imageBoardService.deleteImage(id);
+        } catch (Exception e) {
+            log.warn("이미지 삭제 중 오류 (무시됨): {}", e.getMessage());
+        }
+        reviewBoardRepository.deleteById(id); // 게시글 삭제
     }
 
     // 특정 지역의 게시글 조회

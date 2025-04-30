@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -35,6 +36,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/board")
@@ -215,7 +217,7 @@ public class ReviewBoardController {
     @DeleteMapping("/reviewBoard/delete/{id}")
     public ResponseEntity<Void> deleteReviewBoard(@PathVariable Long id,
                                                   @AuthenticationPrincipal SiteUser currentUser) {
-        reviewBoardLikeService.removeAllLikes(id); // 모든 좋아요 삭제
+        reviewBoardLikeService.removeAllLikes(id);
         reviewBoardService.deleteReviewBoard(id);
         return ResponseEntity.ok().build();
     }
