@@ -1,6 +1,7 @@
 package com.example.travelProj.domain.admin;
 
 import com.example.travelProj.domain.like.boardlike.ReviewBoardLikeService;
+import com.example.travelProj.domain.like.commentlike.CommentLikeService;
 import com.example.travelProj.domain.user.SiteUser;
 import com.example.travelProj.domain.user.UserRole;
 import com.example.travelProj.domain.user.UserService;
@@ -25,8 +26,9 @@ public class AdminController {
 
     private final UserService userService;
     private final ReviewBoardService reviewBoardService;
-    private final CommentService commentService;
     private final ReviewBoardLikeService reviewBoardLikeService;
+    private final CommentService commentService;
+    private final CommentLikeService commentLikeService;
 
     @GetMapping("/dashboard")
     public String dashboard(@AuthenticationPrincipal SiteUser user, Model model) {
@@ -34,7 +36,8 @@ public class AdminController {
         long totalAdmins = userService.countAdmins();
         long totalPosts = reviewBoardService.countPosts();
         long totalComments = commentService.countComments();
-        long totalLikes = reviewBoardLikeService.countTotalLikes();
+        long totalBoardsLikes = reviewBoardLikeService.countTotalLikes();
+        long totalCommentsLikes = commentLikeService.countTotalLikes();
 
         Iterable<SiteUser> users = userService.findAllUsers();
         Iterable<SiteUser> userList = userService.findByRole(UserRole.USER);
@@ -49,7 +52,8 @@ public class AdminController {
         model.addAttribute("users", users);
         model.addAttribute("userList", userList);
         model.addAttribute("adminList", adminList);
-        model.addAttribute("totalLikes", totalLikes);
+        model.addAttribute("totalBoardsLikes", totalBoardsLikes);
+        model.addAttribute("totalCommentsLikes", totalCommentsLikes);
 
         return "admin/dashboard";
     }

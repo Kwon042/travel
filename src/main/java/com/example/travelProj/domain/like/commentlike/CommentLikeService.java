@@ -50,4 +50,7 @@ public class CommentLikeService {
         Comment comment = commentService.getCommentById(commentId);
         return commentLikeRepository.countByComment(comment);
     }
+
+    public long countTotalLikes() { return commentLikeRepository.countTotalLikes(); }
+
 }
