@@ -16,15 +16,16 @@ public class AttractionBookmarkController {
     @PostMapping("/{attractionId}")
     public ResponseEntity<?> addBookmark(@PathVariable Long attractionId,
                                          @AuthenticationPrincipal SiteUser user,
-                                         @PathVariable String contentId) {
-        attractionBookmarkService.addBookmark(attractionId, user, contentId);
+                                         @RequestParam String contentTypeId) {
+        attractionBookmarkService.addBookmark(attractionId, user, contentTypeId);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{attractionId}")
     public ResponseEntity<?> removeBookmark(@PathVariable Long attractionId,
-                                            @AuthenticationPrincipal SiteUser user) {
-        attractionBookmarkService.removeBookmark(attractionId, user);
+                                            @AuthenticationPrincipal SiteUser user,
+                                            @RequestParam String contentTypeId) {
+        attractionBookmarkService.removeBookmark(attractionId, user, contentTypeId);
         return ResponseEntity.ok().build();
     }
 

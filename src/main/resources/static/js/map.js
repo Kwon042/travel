@@ -200,6 +200,7 @@ function setModalContent(modalBody, detail, emoji, infoHtml) {
                 <img id="bookmarkIcon" class="bookmark-icon"
                      src="/images/bookmark-white_icon.png"
                      data-attraction-id="${detail.contentId}"
+                     data-content-type-id="${detail.contentTypeId}"
                      alt="즐겨찾기">
                 <img src="${detail.firstimage || '/images/no-image.png'}" alt="이미지" class="detail-image">
             </div>
@@ -235,20 +236,33 @@ function setBookmarkToggleEvent() {
     bookmarkIcons.forEach(bookmarkIcon => {
         // 고유 ID가 없으면 자동으로 생성
         let attractionId = bookmarkIcon.dataset.attractionId;
+        const contentTypeId = bookmarkIcon.dataset.contentTypeId;
 
         if (!attractionId) {
             attractionId = getNextAttractionId();  // 고유 ID 생성
             bookmarkIcon.dataset.attractionId = attractionId;  // 아이콘에 고유 ID 저장
         }
 
-        console.log('Attraction ID:', attractionId);  // 고유 ID 확인
+        // 서버에서 즐겨찾기 상태 확인
+        fetch(`/api/bookmarks/${attractionId}/status?contentTypeId=${contentTypeId}`)
+            .then(response => response.json())
+            .then(isBookmarked => {
+                if (isBookmarked) {
+                    bookmarkIcon.src = '/images/bookmark-icon.png';
+                } else {
+                    bookmarkIcon.src = '/images/bookmark-white_icon.png';
+                }
+            });
 
+        // 클릭 이벤트 리스너
         bookmarkIcon.addEventListener('click', function () {
             const isBookmarked = bookmarkIcon.src.includes('bookmark-icon.png');  // 현재 북마크 상태 체크
 
             if (isBookmarked) {
                 // 즐겨찾기 제거
-                fetch(`/api/bookmarks/${attractionId}`, { method: 'DELETE' })
+                fetch(`/api/bookmarks/${attractionId}?contentTypeId=${detail.contentTypeId}`, {
+                     method: 'DELETE'
+                })
                     .then(res => {
                         if (res.ok) {
                             bookmarkIcon.src = '/images/bookmark-white_icon.png';
@@ -257,7 +271,9 @@ function setBookmarkToggleEvent() {
                     });
             } else {
                 // 즐겨찾기 추가
-                fetch(`/api/bookmarks/${attractionId}`, { method: 'POST' })
+                fetch(`/api/bookmarks/${attractionId}?contentTypeId=${contentTypeId}`, {
+                    method: 'POST'
+                })
                     .then(res => {
                         if (res.ok) {
                             bookmarkIcon.src = '/images/bookmark-icon.png';
