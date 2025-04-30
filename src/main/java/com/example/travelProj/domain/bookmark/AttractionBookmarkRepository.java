@@ -10,5 +10,5 @@ public interface AttractionBookmarkRepository extends JpaRepository<AttractionBo
     // 특정 관광지에 대한 북마크 개수 조회
     long countByAttractionId(Long attractionId);
     boolean existsByAttractionIdAndUser(Long attractionId, SiteUser user);
-    void deleteByAttractionIdAndUserAndContentTypeId(Long attractionId, SiteUser user, String contentTypeId);
+    void deleteByAttractionIdAndUserAndContentTypeIdAndAreaCode(Long attractionId, SiteUser user, String contentTypeId, String areaCode);
 }

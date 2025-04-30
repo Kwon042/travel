@@ -201,6 +201,7 @@ function setModalContent(modalBody, detail, emoji, infoHtml) {
                      src="/images/bookmark-white_icon.png"
                      data-attraction-id="${detail.contentId}"
                      data-content-type-id="${detail.contentTypeId}"
+                     data-area-code="${detail.areaCode}"
                      alt="즐겨찾기">
                 <img src="${detail.firstimage || '/images/no-image.png'}" alt="이미지" class="detail-image">
             </div>
@@ -237,6 +238,7 @@ function setBookmarkToggleEvent() {
         // 고유 ID가 없으면 자동으로 생성
         let attractionId = bookmarkIcon.dataset.attractionId;
         const contentTypeId = bookmarkIcon.dataset.contentTypeId;
+        const areaCode = bookmarkIcon.dataset.areaCode;
 
         if (!attractionId) {
             attractionId = getNextAttractionId();  // 고유 ID 생성
@@ -244,7 +246,7 @@ function setBookmarkToggleEvent() {
         }
 
         // 서버에서 즐겨찾기 상태 확인
-        fetch(`/api/bookmarks/${attractionId}/status?contentTypeId=${contentTypeId}`)
+        fetch(`/api/bookmarks/${attractionId}/status?contentTypeId=${contentTypeId}&areaCode=${areaCode}`)
             .then(response => response.json())
             .then(isBookmarked => {
                 if (isBookmarked) {
@@ -260,7 +262,7 @@ function setBookmarkToggleEvent() {
 
             if (isBookmarked) {
                 // 즐겨찾기 제거
-                fetch(`/api/bookmarks/${attractionId}?contentTypeId=${detail.contentTypeId}`, {
+                fetch(`/api/bookmarks/${attractionId}?contentTypeId=${contentTypeId}&areaCode=${areaCode}`, {
                      method: 'DELETE'
                 })
                     .then(res => {
@@ -271,7 +273,7 @@ function setBookmarkToggleEvent() {
                     });
             } else {
                 // 즐겨찾기 추가
-                fetch(`/api/bookmarks/${attractionId}?contentTypeId=${contentTypeId}`, {
+                fetch(`/api/bookmarks/${attractionId}?contentTypeId=${contentTypeId}&areaCode=${areaCode}`, {
                     method: 'POST'
                 })
                     .then(res => {

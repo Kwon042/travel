@@ -91,6 +91,44 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // 🔹 마이페이지에서 북마크한 관광지 목록 가져오기
+    function loadBookmarks() {
+        // 사용자가 북마크한 관광지 목록 가져오기
+        fetch(`/api/bookmarks/list`)
+            .then(response => response.json())
+            .then(bookmarks => {
+                console.log("Bookmarked list:", bookmarks); // 이 부분으로 반환된 데이터 확인
+
+                if (bookmarks.length === 0) {
+                    alert("You have no bookmarked attractions.");
+                    return;
+                }
+
+                // 북마크된 관광지 목록을 UI에 표시
+                const bookmarkContainer = document.getElementById('bookmarks'); // 북마크 목록을 표시할 HTML 요소
+                bookmarkContainer.innerHTML = ''; // 기존 목록을 초기화
+
+                bookmarks.forEach(bookmark => {
+                    // 각 북마크된 관광지 정보를 UI에 추가
+                    const bookmarkElement = document.createElement('div');
+                    bookmarkElement.classList.add('bookmark-item');
+                    bookmarkElement.innerHTML = `
+                        <h3>${bookmark.name}</h3>
+                        <p>${bookmark.description}</p>
+                        <button onclick="removeBookmark(${bookmark.contentId})">Remove</button>
+                    `;
+                    bookmarkContainer.appendChild(bookmarkElement);
+                });
+            })
+            .catch(error => {
+                console.error("An error occurred while fetching the bookmarks:", error);
+                alert("An error occurred while fetching the bookmarks.");
+            });
+    }
+
+    // 페이지 로드 시 북마크 목록 로드
+    loadBookmarks();
+
     // 🔹 비밀번호 수정 폼 보이기/숨기기
     function togglePasswordForm() {
         const form = document.getElementById('changePasswordForm');
@@ -331,4 +369,5 @@ document.addEventListener("DOMContentLoaded", function () {
     window.closeErrorModal = closeErrorModal;
     window.showErrorModal = showErrorModal;
     window.changePassword = changePassword;
+    window.loadBookmarks = loadBookmarks;
 });

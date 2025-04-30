@@ -47,9 +47,9 @@
         </tr>
     </table>
 
-    <h3>My favorites</h3>
-    <ul class="my-favorites" id="favouritePlaces">
-
+    <h3>My bookmarks</h3>
+    <ul class="my-bookmarks" id="bookmarks">
+        <!-- 북마크 항목들이 여기에 동적 추가 -->
     </ul>
     <button id="deleteAccountButton" class="delete-account-button"
             th:text="${#authentication.authorities.?[authority == 'ROLE_ADMIN'].size() > 0} ? '관리자 탈퇴' : '회원 탈퇴'">

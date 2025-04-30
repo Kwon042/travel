@@ -99,17 +99,6 @@ h3 {
     color: #333;
 }
 
-.my-favorites {
-    margin-left: 10px;
-    font-size: 0.6em;
-}
-
-/* 찜한 여행지 목록 스타일 */
-#favouritePlaces {
-    list-style-type: none;
-    padding: 0;
-}
-
 /* 프로필 이미지 수정 폼 */
 #profileImageFormBlock {
     display: none; /* 초기에는 숨김 */
