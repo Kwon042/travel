@@ -78,6 +78,25 @@ function loadAttractions() {
         });
 }
 
+function fetchAndShowDetail(contentId, fallbackImage, contentTypeId, areaCode) {
+    console.log('상세보기 요청 - contentId:', contentId, 'contentTypeId:', contentTypeId, 'areaCode:', areaCode);
+
+    fetch(`/api/attraction/detail/${contentId}/${contentTypeId}?areaCode=${areaCode}`)
+        .then(res => res.json())
+        .then(detail => {
+            detail.contentTypeId = contentTypeId;
+            console.log(detail); // 디버깅을 위해 로그 추가
+            if (!detail.firstimage || detail.firstimage === '') {
+                detail.firstimage = fallbackImage;
+            }
+            showDetailModal(detail);
+        })
+        .catch(error => {
+            console.error('상세정보 로딩 실패:', error);
+            alert('상세정보를 불러오는 데 실패했습니다.');
+        });
+}
+
 function displayMarkersOnMap(data) {
     // 기존 마커 제거
     markers.forEach(marker => marker.setMap(null));
@@ -105,7 +124,7 @@ function displayMarkersOnMap(data) {
             <div class="kakao-map-info-window-content">
                 <strong>${item.title}</strong>
                 <img src="${imageUrl}" alt="${item.title}">
-                <button onclick="fetchAndShowDetail(${item.contentId}, '${imageUrl}', ${item.contentTypeId})">상세보기</button>
+                <button onclick="fetchAndShowDetail(${item.contentId}, '${imageUrl}', ${item.contentTypeId}, ${item.areaCode})">상세보기</button>
             </div>
         `;
 
@@ -121,23 +140,6 @@ function displayMarkersOnMap(data) {
             activeInfoWindow = infowindow;
         });
     });
-}
-
-function fetchAndShowDetail(contentId, fallbackImage, contentTypeId) {
-    fetch(`/api/attraction/detail/${contentId}/${contentTypeId}`)
-        .then(res => res.json())
-        .then(detail => {
-            detail.contentTypeId = contentTypeId;
-            console.log(detail); // 디버깅을 위해 로그 추가
-            if (!detail.firstimage || detail.firstimage === '') {
-                detail.firstimage = fallbackImage;
-            }
-            showDetailModal(detail);
-        })
-        .catch(error => {
-            console.error('상세정보 로딩 실패:', error);
-            alert('상세정보를 불러오는 데 실패했습니다.');
-        });
 }
 
 function showDetailModal(detail) {
@@ -237,8 +239,8 @@ function setBookmarkToggleEvent() {
     bookmarkIcons.forEach(bookmarkIcon => {
         // 고유 ID가 없으면 자동으로 생성
         let attractionId = bookmarkIcon.dataset.attractionId;
-        const contentTypeId = bookmarkIcon.dataset.contentTypeId;
-        const areaCode = bookmarkIcon.dataset.areaCode;
+        let contentTypeId = bookmarkIcon.dataset.contentTypeId;
+        let areaCode = bookmarkIcon.dataset.areaCode;
 
         if (!attractionId) {
             attractionId = getNextAttractionId();  // 고유 ID 생성

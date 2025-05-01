@@ -34,8 +34,9 @@ public class ApiController {
     @GetMapping("/detail/{contentId}/{contentTypeId}")
     public ResponseEntity<AttractionDetailResponse> getAttractionDetail(
             @PathVariable Long contentId,
-            @PathVariable String contentTypeId) {
-        AttractionDetailResponse detail = apiService.fetchDetailInfo(contentId, contentTypeId);
+            @PathVariable String contentTypeId,
+            @RequestParam String areaCode) {
+        AttractionDetailResponse detail = apiService.fetchDetailInfo(contentId, contentTypeId, areaCode);
         if (detail == null) {
             return ResponseEntity.notFound().build();
         }

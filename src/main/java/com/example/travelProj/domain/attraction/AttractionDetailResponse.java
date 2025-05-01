@@ -20,9 +20,13 @@ public class AttractionDetailResponse {
     private String overview;
     private String firstimage;
     private List<Info> infoList;
+    private String areaCode;
 
-    public AttractionDetailResponse(JsonNode mainItemNode, JsonNode itemsArrayNode) {
+    public AttractionDetailResponse(JsonNode mainItemNode, JsonNode itemsArrayNode, String areaCode) {
+        System.out.println("mainItemNode: " + mainItemNode.toPrettyString());
+
         this.contentId = mainItemNode.path("contentid").asLong();
+        this.areaCode = areaCode;
         this.title = mainItemNode.path("title").asText("");
         this.addr1 = mainItemNode.path("addr1").asText("");
         this.tel = mainItemNode.path("tel").asText("");

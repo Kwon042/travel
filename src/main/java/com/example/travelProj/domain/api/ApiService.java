@@ -41,8 +41,10 @@ public class ApiService {
         String apiResponse = fetchAttractionsByRegion(areaCode, contentTypeId);
 
         System.out.println(apiResponse);
+        System.out.println("areaCode: " + areaCode);
+        System.out.println("contentTypeId: " + contentTypeId);
 
-        return parseApiResponse(apiResponse);
+        return parseApiResponse(apiResponse, areaCode);
     }
 
     // 지역 코드로 관광지 목록을 요청
@@ -78,7 +80,7 @@ public class ApiService {
     }
 
     // 응답 JSON 파싱 후 AttractionResponse 리스트로 변환
-    private List<AttractionResponse> parseApiResponse(String apiResponse) {
+    private List<AttractionResponse> parseApiResponse(String apiResponse, String areaCode) {
         List<AttractionResponse> attractions = new ArrayList<>();
         try {
             JsonNode root = objectMapper.readTree(apiResponse);
@@ -99,11 +101,11 @@ public class ApiService {
 
             if (itemsNode.isArray()) {
                 for (JsonNode item : itemsNode) {
-                    AttractionResponse attraction = convertToAttraction(item);
+                    AttractionResponse attraction = convertToAttraction(item, areaCode);
                     if (attraction != null) attractions.add(attraction);
                 }
             } else if (itemsNode.isObject()) {
-                AttractionResponse attraction = convertToAttraction(itemsNode);
+                AttractionResponse attraction = convertToAttraction(itemsNode, areaCode);
                 if (attraction != null) attractions.add(attraction);
             }
 
@@ -115,7 +117,7 @@ public class ApiService {
     }
 
     // 단일 JsonNode를 AttractionResponse로 변환
-    private AttractionResponse convertToAttraction(JsonNode item) {
+    private AttractionResponse convertToAttraction(JsonNode item, String areaCode) {
         String title = item.path("title").asText(null);
         if (title == null || title.isBlank()) return null;
 
@@ -127,11 +129,11 @@ public class ApiService {
         Long contentId = item.path("contentid").asLong(0);
         String contentTypeId = item.path("contenttypeid").asText("");
 
-        return new AttractionResponse(title, firstImage, addr, description, mapx, mapy, contentId, contentTypeId);
+        return new AttractionResponse(title, firstImage, addr, description, mapx, mapy, areaCode, contentId, contentTypeId);
     }
 
     // 상세정보 - 메인
-    public AttractionDetailResponse fetchDetailInfo(Long contentId, String contentTypeId) {
+    public AttractionDetailResponse fetchDetailInfo(Long contentId, String contentTypeId, String areaCode) {
         try {
             JsonNode mainItemNode = fetchCommonInfo(contentId, contentTypeId);
             if (mainItemNode == null || mainItemNode.isMissingNode()) return null;
@@ -147,7 +149,7 @@ public class ApiService {
 
             logger.debug("Additional Info JSON:\n{}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(infoListNode));
 
-            return new AttractionDetailResponse(mainItemNode, infoListNode);
+            return new AttractionDetailResponse(mainItemNode, infoListNode, areaCode);
         } catch (Exception e) {
             logger.error("Failed to fetch detail info", e);
             return null;

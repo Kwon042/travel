@@ -4,6 +4,7 @@ import com.example.travelProj.domain.attraction.AttractionDetailResponse;
 import com.example.travelProj.domain.attraction.AttractionResponse;
 import com.example.travelProj.domain.api.ApiService;
 import com.example.travelProj.domain.user.SiteUser;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,7 @@ public class AttractionBookmarkService {
     }
 
     // 즐겨찾기 추가
+    @Transactional
     public void addBookmark(Long attractionId, SiteUser user, String contentTypeId, String areaCode) {
         // 이미 북마크한 관광지인 경우 추가하지 않음
         if (attractionBookmarkRepository.existsByAttractionIdAndUser(attractionId, user)) {
@@ -34,6 +36,7 @@ public class AttractionBookmarkService {
     }
 
     // 즐겨찾기 제거
+    @Transactional
     public void removeBookmark(Long attractionId, SiteUser user, String contentTypeId, String areaCode) {
         // 북마크가 존재하는 경우에만 삭제
         attractionBookmarkRepository.deleteByAttractionIdAndUserAndContentTypeIdAndAreaCode(attractionId, user, contentTypeId, areaCode);

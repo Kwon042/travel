@@ -5,11 +5,11 @@ import com.example.travelProj.domain.attraction.AttractionDetailResponse;
 import com.example.travelProj.domain.attraction.AttractionResponse;
 import com.example.travelProj.domain.user.SiteUser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -28,10 +28,13 @@ public class AttractionBookmarkController {
                                          @AuthenticationPrincipal SiteUser user,
                                          @RequestParam String contentTypeId,
                                          @RequestParam String areaCode) {
-        System.out.println("Adding bookmark for attractionId: " + attractionId + ", areaCode: " + areaCode);
-
-        attractionBookmarkService.addBookmark(attractionId, user, contentTypeId, areaCode);
-        return ResponseEntity.ok().build();
+        try {
+            attractionBookmarkService.addBookmark(attractionId, user, contentTypeId, areaCode);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            e.printStackTrace();  // 예외 로그 출력
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while adding bookmark");
+        }
     }
 
     @DeleteMapping("/{attractionId}")
@@ -39,8 +42,13 @@ public class AttractionBookmarkController {
                                             @AuthenticationPrincipal SiteUser user,
                                             @RequestParam String contentTypeId,
                                             @RequestParam String areaCode) {
-        attractionBookmarkService.removeBookmark(attractionId, user, contentTypeId, areaCode);
-        return ResponseEntity.ok().build();
+        try {
+            attractionBookmarkService.removeBookmark(attractionId, user, contentTypeId, areaCode);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            e.printStackTrace();  // 예외 로그 출력
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while removing bookmark");
+        }
     }
 
     @GetMapping("/list")
@@ -53,7 +61,7 @@ public class AttractionBookmarkController {
         List<CompletableFuture<AttractionDetailResponse>> detailFutures = bookmarkedAttractions.stream()
                 .map(attractionResponse ->
                         CompletableFuture.supplyAsync(() ->
-                                apiService.fetchDetailInfo(attractionResponse.getContentId(), attractionResponse.getContentTypeId())
+                                apiService.fetchDetailInfo(attractionResponse.getContentId(), attractionResponse.getContentTypeId(), attractionResponse.getAreaCode())
                         )
                 )
                 .collect(Collectors.toList());
@@ -87,7 +95,7 @@ public class AttractionBookmarkController {
 
         // 각 관광지에 대한 상세 정보를 조회
         List<AttractionDetailResponse> bookmarkDetails = bookmarkedAttractions.stream()
-                .map(attractionResponse -> apiService.fetchDetailInfo(attractionResponse.getContentId(), attractionResponse.getContentTypeId()))
+                .map(attractionResponse -> apiService.fetchDetailInfo(attractionResponse.getContentId(), attractionResponse.getContentTypeId(), attractionResponse.getAreaCode()))
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(bookmarkDetails);
