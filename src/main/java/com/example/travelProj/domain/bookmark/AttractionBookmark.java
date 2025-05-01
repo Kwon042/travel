@@ -29,4 +29,16 @@ public class AttractionBookmark {
         this.contentTypeId = contentTypeId;
         this.areaCode = areaCode;
     }
+
+    // toString() 메서드 오버라이드
+    @Override
+    public String toString() {
+        return "AttractionBookmark{" +
+                "attractionId=" + attractionId +
+                ", contentTypeId='" + contentTypeId + '\'' +
+                ", user=" + user +
+                ", areaCode='" + areaCode + '\'' +
+                '}';
+    }
+
 }

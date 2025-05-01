@@ -32,11 +32,12 @@ public class ApiService {
 
     // 지역명을 기반으로 관광지 검색
     public List<AttractionResponse> searchAttractionByRegion(String areaCode, String contentTypeId) {
+        System.out.println("Requesting API with areaCode: " + areaCode + " and contentTypeId: " + contentTypeId);
+
         if (areaCode == null || areaCode.isBlank()) {
             return Collections.emptyList();
         }
         System.out.println("AAA");
-
         // 지역 코드로 관광지 검색
         String apiResponse = fetchAttractionsByRegion(areaCode, contentTypeId);
 
@@ -50,8 +51,6 @@ public class ApiService {
     // 지역 코드로 관광지 목록을 요청
     private String fetchAttractionsByRegion(String areaCode, String contentTypeId) {
         try {
-            logger.info("Region search request - Region code: {}", areaCode);
-
             String response = webClient.get()
                     .uri(uriBuilder -> uriBuilder
                             .scheme("http")

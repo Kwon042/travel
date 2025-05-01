@@ -122,6 +122,15 @@ public class SiteUser implements UserDetails {
         return true; // 사용자 활성화 여부, 기본적으로 true로 설정
     }
 
+    // toString() 메서드 오버라이드
+    @Override
+    public String toString() {
+        return "SiteUser{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
 
 
 }
