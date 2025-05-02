@@ -117,7 +117,7 @@ function displayMarkersOnMap(data) {
         marker.setMap(map);
         markers.push(marker);
 
-        const imageUrl = item.firstImage?.trim() ? item.firstImage : '/images/no-image.png';
+        const imageUrl = item.firstimage?.trim() ? item.firstimage : '/images/no-image.png';
 
         // 인포윈도우 내용
         const infowindowContent = `

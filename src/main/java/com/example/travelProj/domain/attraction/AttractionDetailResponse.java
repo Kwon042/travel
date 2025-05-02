@@ -31,8 +31,9 @@ public class AttractionDetailResponse {
         this.addr1 = mainItemNode.path("addr1").asText("");
         this.tel = mainItemNode.path("tel").asText("");
         this.overview = mainItemNode.path("overview").asText("");
-        this.firstimage = mainItemNode.path("firstimage").asText("");
-
+        if (mainItemNode.has("firstimage")) {
+            this.firstimage = mainItemNode.get("firstimage").asText();
+        }
         this.infoList = new ArrayList<>();
         if (itemsArrayNode != null && itemsArrayNode.isArray()) {
             for (JsonNode infoNode : itemsArrayNode) {

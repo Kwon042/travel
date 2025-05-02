@@ -26,13 +26,14 @@ public class AttractionBookmarkService {
 
     // 즐겨찾기 추가
     @Transactional
-    public void addBookmark(Long attractionId, SiteUser user, String contentTypeId, String areaCode) {
+    public void addBookmark(Long attractionId, SiteUser user, String contentTypeId, String areaCode, String firstimage) {
         // 이미 북마크한 관광지인 경우 추가하지 않음
         if (attractionBookmarkRepository.existsByAttractionIdAndUser(attractionId, user)) {
             return;
         }
         // 새로 북마크 추가
-        attractionBookmarkRepository.save(new AttractionBookmark(user, attractionId, contentTypeId, areaCode));
+        String imageUrl = (firstimage == null || firstimage.trim().isEmpty()) ? "/images/no-image.png" : firstimage;
+        attractionBookmarkRepository.save(new AttractionBookmark(user, attractionId, contentTypeId, areaCode, firstimage));
     }
 
     // 즐겨찾기 제거

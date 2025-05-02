@@ -27,9 +27,10 @@ public class AttractionBookmarkController {
     public ResponseEntity<?> addBookmark(@PathVariable Long attractionId,
                                          @AuthenticationPrincipal SiteUser user,
                                          @RequestParam String contentTypeId,
-                                         @RequestParam String areaCode) {
+                                         @RequestParam String areaCode,
+                                         @RequestParam(required = false) String firstimage) {
         try {
-            attractionBookmarkService.addBookmark(attractionId, user, contentTypeId, areaCode);
+            attractionBookmarkService.addBookmark(attractionId, user, contentTypeId, areaCode, firstimage);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             e.printStackTrace();  // 예외 로그 출력
@@ -53,26 +54,7 @@ public class AttractionBookmarkController {
 
     @GetMapping("/list")
     public ResponseEntity<List<AttractionDetailResponse>> getBookmarkedList(@AuthenticationPrincipal SiteUser user) {
-        // 사용자가 북마크한 관광지 목록을 가져옴
-        List<AttractionResponse> bookmarkedAttractions = bookmarkApiService.getUserBookmarkedAttractions(user);
-        System.out.println("Bookmarked attractions: " + bookmarkedAttractions);
-
-        // 각 관광지에 대한 상세 정보를 비동기 방식으로 조회 (병렬 처리)
-        List<CompletableFuture<AttractionDetailResponse>> detailFutures = bookmarkedAttractions.stream()
-                .map(attractionResponse ->
-                        CompletableFuture.supplyAsync(() ->
-                                apiService.fetchDetailInfo(attractionResponse.getContentId(), attractionResponse.getContentTypeId(), attractionResponse.getAreaCode())
-                        )
-                )
-                .collect(Collectors.toList());
-
-        // 모든 비동기 작업을 기다리고 결과를 반환
-        List<AttractionDetailResponse> bookmarkDetails = detailFutures.stream()
-                .map(CompletableFuture::join)  // join()을 사용하여 각 작업의 결과를 기다림
-                .collect(Collectors.toList());
-
-        System.out.println("Bookmark details: " + bookmarkDetails);
-
+        List<AttractionDetailResponse> bookmarkDetails = bookmarkApiService.getUserBookmarkedDetails(user);
         return ResponseEntity.ok(bookmarkDetails);
     }
 
@@ -91,15 +73,11 @@ public class AttractionBookmarkController {
 
     @GetMapping("/my")
     public ResponseEntity<List<AttractionDetailResponse>> getMyBookmarks(@AuthenticationPrincipal SiteUser user) {
-        List<AttractionResponse> bookmarkedAttractions = bookmarkApiService.getUserBookmarkedAttractions(user);
-
-        // 각 관광지에 대한 상세 정보를 조회
-        List<AttractionDetailResponse> bookmarkDetails = bookmarkedAttractions.stream()
-                .map(attractionResponse -> apiService.fetchDetailInfo(attractionResponse.getContentId(), attractionResponse.getContentTypeId(), attractionResponse.getAreaCode()))
-                .collect(Collectors.toList());
+        List<AttractionDetailResponse> bookmarkDetails = bookmarkApiService.getUserBookmarkedDetails(user);
 
         return ResponseEntity.ok(bookmarkDetails);
     }
+
 
 
 

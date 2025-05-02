@@ -112,9 +112,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     // 각 북마크된 관광지 정보를 UI에 추가
                     const bookmarkElement = document.createElement('div');
                     bookmarkElement.classList.add('bookmark-item');
+                    const imageUrl = bookmark.firstimage?.trim() ? bookmark.firstimage : '/images/no-image.png';
+
                     bookmarkElement.innerHTML = `
-                        <h3>${bookmark.name}</h3>
-                        <p>${bookmark.description}</p>
+                        <h3>${bookmark.title}</h3>
+                        <img src="${imageUrl}"
+                             alt="이미지" class="bookmark-image">
                         <button onclick="removeBookmark(${bookmark.contentId})">Remove</button>
                     `;
                     bookmarkContainer.appendChild(bookmarkElement);

@@ -120,7 +120,9 @@ public class ApiService {
         String title = item.path("title").asText(null);
         if (title == null || title.isBlank()) return null;
 
-        String firstImage = item.path("firstimage").asText("");
+        String firstimage = item.path("firstimage").asText("");
+        logger.debug("firstimage: {}", firstimage);  // 이미지 값 확인
+
         String addr = item.path("addr1").asText("");
         String description = item.path("description").asText("");
         double mapx = item.path("mapx").asDouble(0.0);
@@ -128,7 +130,7 @@ public class ApiService {
         Long contentId = item.path("contentid").asLong(0);
         String contentTypeId = item.path("contenttypeid").asText("");
 
-        return new AttractionResponse(title, firstImage, addr, description, mapx, mapy, areaCode, contentId, contentTypeId);
+        return new AttractionResponse(title, firstimage, addr, description, mapx, mapy, areaCode, contentId, contentTypeId);
     }
 
     // 상세정보 - 메인
