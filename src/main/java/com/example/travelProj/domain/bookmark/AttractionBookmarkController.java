@@ -27,10 +27,9 @@ public class AttractionBookmarkController {
     public ResponseEntity<?> addBookmark(@PathVariable Long attractionId,
                                          @AuthenticationPrincipal SiteUser user,
                                          @RequestParam String contentTypeId,
-                                         @RequestParam String areaCode,
-                                         @RequestParam(required = false) String firstimage) {
+                                         @RequestParam String areaCode) {
         try {
-            attractionBookmarkService.addBookmark(attractionId, user, contentTypeId, areaCode, firstimage);
+            attractionBookmarkService.addBookmark(attractionId, user, contentTypeId, areaCode);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             e.printStackTrace();  // 예외 로그 출력

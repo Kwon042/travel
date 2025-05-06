@@ -51,6 +51,22 @@
     <ul class="my-bookmarks" id="bookmarks">
         <!-- 북마크 항목들이 여기에 동적 추가 -->
     </ul>
+
+    <!-- Modal -->
+    <div class="modal" id="attractionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-detail-header">
+                    <button type="button" class="close-button" data-bs-dismiss="modal" aria-label="Close">X</button>
+                </div>
+                <hr style="border: none; border-top: 2px solid black; margin: 10px 0;">
+                <div class="modal-body" id="modalBody">
+                    <!-- detail js -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <button id="deleteAccountButton" class="delete-account-button"
             th:text="${#authentication.authorities.?[authority == 'ROLE_ADMIN'].size() > 0} ? '관리자 탈퇴' : '회원 탈퇴'">
     </button>

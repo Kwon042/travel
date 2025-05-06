@@ -108,18 +108,43 @@ document.addEventListener("DOMContentLoaded", function () {
                 const bookmarkContainer = document.getElementById('bookmarks'); // 북마크 목록을 표시할 HTML 요소
                 bookmarkContainer.innerHTML = ''; // 기존 목록을 초기화
 
-                bookmarks.forEach(bookmark => {
+                bookmarks.forEach((bookmark, index) => {
                     // 각 북마크된 관광지 정보를 UI에 추가
                     const bookmarkElement = document.createElement('div');
                     bookmarkElement.classList.add('bookmark-item');
+                    const displayIndex = index + 1;
                     const imageUrl = bookmark.firstimage?.trim() ? bookmark.firstimage : '/images/no-image.png';
 
                     bookmarkElement.innerHTML = `
-                        <h3>${bookmark.title}</h3>
-                        <img src="${imageUrl}"
-                             alt="이미지" class="bookmark-image">
-                        <button onclick="removeBookmark(${bookmark.contentId})">Remove</button>
+                        <span class="bookmark-id">${displayIndex}</span>
+                        <span class="bookmark-title">${bookmark.title}</span>
+                        <img src="${imageUrl}" alt="이미지" class="bookmark-image">
+                        <button class="remove-button"
+                                data-attraction-id="${bookmark.contentId}"
+                                data-content-type-id="${bookmark.contentTypeId}"
+                                data-area-code="${bookmark.areaCode}"
+                                data-id="${bookmark.contentId}">Remove</button>
                     `;
+                    // 제목 클릭 시 상세 정보 모달 띄우기
+                    const titleElement = bookmarkElement.querySelector('.bookmark-title');
+                    titleElement.addEventListener('click', () => {
+                        showDetailModal(bookmark); // 제목 클릭 시 showDetailModal 함수 호출
+                    });
+
+                    // 이미지 클릭 시 상세 정보 모달 띄우기
+                    const imageElement = bookmarkElement.querySelector('.bookmark-image');
+                    imageElement.addEventListener('click', () => {
+                        showDetailModal(bookmark); // 이미지 클릭 시 showDetailModal 함수 호출
+                    });
+
+                    // 삭제 버튼 클릭 이벤트 추가
+                    const removeButton = bookmarkElement.querySelector('.remove-button');
+                    removeButton.addEventListener('click', function() {
+                        const contentId = this.getAttribute('data-id');
+                        const contentTypeId = this.getAttribute('data-content-type-id');
+                        const areaCode = this.getAttribute('data-area-code');
+                        removeBookmark(contentId, contentTypeId, areaCode);
+                    });
                     bookmarkContainer.appendChild(bookmarkElement);
                 });
             })
@@ -131,6 +156,102 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 페이지 로드 시 북마크 목록 로드
     loadBookmarks();
+
+    // 북마크 삭제 함수
+    function removeBookmark(contentId, contentTypeId, areaCode) {
+        // API 호출하여 북마크 삭제
+        fetch(`/api/bookmarks/${contentId}?contentTypeId=${contentTypeId}&areaCode=${areaCode}`, {
+            method: 'DELETE'
+        })
+        .then(res => {
+            if (res.ok) {
+                console.log('북마크가 성공적으로 제거되었습니다.');
+                // 북마크가 삭제되면 목록을 새로 로드하여 UI 갱신
+                loadBookmarks(); // UI 갱신을 위해 북마크 목록 다시 로드
+            } else {
+                console.error('북마크 제거 실패');
+            }
+        })
+        .catch(error => {
+            console.error('에러 발생:', error);
+        });
+    }
+
+    // showDetailModal 함수 정의
+    function showDetailModal(detail) {
+        const modalBody = document.getElementById('modalBody');
+
+        // infoList 처리
+        let infoHtml = getInfoHtml(detail.infoList);
+
+        const emoji = getEmojiByContentTypeId(String(detail.contentTypeId));
+
+        // 모달 내용 설정
+        setModalContent(modalBody, detail, emoji, infoHtml);
+
+        // 부트스트랩 모달 띄우기
+        const modal = new bootstrap.Modal(document.getElementById('attractionModal'));
+        modal.show();
+    }
+
+    // infoList HTML 생성 함수
+    function getInfoHtml(infoList) {
+        let infoHtml = '';
+        if (Array.isArray(infoList) && infoList.length > 0) {
+            infoList.forEach(info => {
+                infoHtml += `
+                    <div>
+                        <hr style="border: none; border-top: 1px solid black; margin: 10px 0;">
+                        <strong>${info.infoName || '정보 없음'}</strong>
+                        <p>${info.infoText || '정보 없음'}</p>
+                    </div>
+                `;
+            });
+        } else {
+            infoHtml = '<p>추가 정보가 없습니다.</p>';
+        }
+        return infoHtml;
+    }
+
+    function getEmojiByContentTypeId(contentTypeId) {
+        const emojiMap = {
+            "12": "🗽",  // 관광지
+            "14": "🏕️",  // 문화시설
+            "15": "🎡",  // 축제
+            "28": "🤿",  // 레포츠
+            "32": "🏨",  // 숙박
+            "38": "🛒",  // 쇼핑
+            "39": "🍽️",  // 음식점
+        };
+        return emojiMap[contentTypeId] || "";
+    }
+
+    // 모달 내용 설정 함수
+    function setModalContent(modalBody, detail, emoji, infoHtml) {
+        modalBody.innerHTML = `
+            <div class="modal-header-container">
+                <h4 class="modal-title-text">${emoji} ${detail.title || '제목 없음'}</h4>
+                <div class="image-group">
+                    <img src="${detail.firstimage || '/images/no-image.png'}" alt="이미지" class="detail-image">
+                </div>
+            </div>
+            <hr style="border: none; border-top: 2px solid black; margin: 10px 0;">
+            <p style="margin: 0;"><strong>주소</strong></p>
+            <p style="margin: 0;">${detail.addr1 || '정보 없음'}</p>
+            <hr style="border: none; border-top: 1px solid black; margin: 10px 0;">
+
+            <p style="margin: 0;"><strong>전화번호</strong></p>
+            <p style="margin: 0;">${detail.tel || '정보 없음'}</p>
+            <hr style="border: none; border-top: 1px solid black; margin: 10px 0;">
+
+            <p style="margin: 0;"><strong>설명</strong></p>
+            <p style="margin: 0;">${detail.overview || '설명 없음'}</p>
+            <hr style="border: none; border-top: 2px solid black; margin: 10px 0;">
+
+            <h5 style="margin-top: 10px; margin-bottom: 10px;">시설 정보</h5>
+            ${infoHtml}
+        `;
+    }
 
     // 🔹 비밀번호 수정 폼 보이기/숨기기
     function togglePasswordForm() {

@@ -14,6 +14,7 @@ import java.util.List;
 // 검색 > 상세보기용 dto
 public class AttractionDetailResponse {
     private Long contentId;
+    private String contentTypeId;
     private String title;
     private String addr1;
     private String tel;
@@ -26,13 +27,14 @@ public class AttractionDetailResponse {
         System.out.println("mainItemNode: " + mainItemNode.toPrettyString());
 
         this.contentId = mainItemNode.path("contentid").asLong();
+        this.contentTypeId = mainItemNode.path("contenttypeid").asText("");
         this.areaCode = areaCode;
         this.title = mainItemNode.path("title").asText("");
         this.addr1 = mainItemNode.path("addr1").asText("");
         this.tel = mainItemNode.path("tel").asText("");
         this.overview = mainItemNode.path("overview").asText("");
         if (mainItemNode.has("firstimage")) {
-            this.firstimage = mainItemNode.get("firstimage").asText();
+            this.firstimage = mainItemNode.get("firstimage").asText("");
         }
         this.infoList = new ArrayList<>();
         if (itemsArrayNode != null && itemsArrayNode.isArray()) {

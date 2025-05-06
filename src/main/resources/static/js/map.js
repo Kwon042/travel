@@ -204,6 +204,7 @@ function setModalContent(modalBody, detail, emoji, infoHtml) {
                      data-attraction-id="${detail.contentId}"
                      data-content-type-id="${detail.contentTypeId}"
                      data-area-code="${detail.areaCode}"
+                     data-firstimage="${detail.firstimage || ''}"
                      alt="즐겨찾기">
                 <img src="${detail.firstimage || '/images/no-image.png'}" alt="이미지" class="detail-image">
             </div>
