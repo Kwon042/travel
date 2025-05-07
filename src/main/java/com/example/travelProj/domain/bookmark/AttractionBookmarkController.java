@@ -21,7 +21,6 @@ public class AttractionBookmarkController {
 
     private final AttractionBookmarkService attractionBookmarkService;
     private final BookmarkApiService bookmarkApiService;
-    private final ApiService apiService;
 
     @PostMapping("/{attractionId}")
     public ResponseEntity<?> addBookmark(@PathVariable Long attractionId,

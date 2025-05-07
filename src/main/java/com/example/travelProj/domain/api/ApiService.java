@@ -37,7 +37,6 @@ public class ApiService {
         if (areaCode == null || areaCode.isBlank()) {
             return Collections.emptyList();
         }
-        System.out.println("AAA");
         // 지역 코드로 관광지 검색
         String apiResponse = fetchAttractionsByRegion(areaCode, contentTypeId);
 
