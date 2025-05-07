@@ -66,4 +66,9 @@ public class AttractionDetailResponse {
             return infoText;
         }
     }
+
+    // static 메서드 'of' 추가
+    public static AttractionDetailResponse of(JsonNode common, JsonNode intro, JsonNode infoList, String areaCode) {
+        return new AttractionDetailResponse(common, infoList, areaCode);
+    }
 }

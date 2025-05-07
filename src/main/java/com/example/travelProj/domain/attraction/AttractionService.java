@@ -2,9 +2,11 @@ package com.example.travelProj.domain.attraction;
 
 import com.example.travelProj.domain.api.ApiService;
 import com.example.travelProj.domain.api.RegionMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -46,4 +48,18 @@ public class AttractionService {
                 .limit(100)
                 .toList();
     }
+
+    public AttractionDetailResponse getAttractionDetail(Long contentId, String contentTypeId, String areaCode) throws IOException {
+        // 1. 지역기반 관광지 검색 (검색된 관광지 목록)
+        List<AttractionResponse> attractions = apiService.searchAttractionByRegion(areaCode, contentTypeId);
+        // 2. 각 관광지의 세부 정보를 가져오기
+        JsonNode common = apiService.fetchCommonInfo(contentId, contentTypeId);
+        JsonNode intro = apiService.fetchAdditionalInfo(contentId, contentTypeId);
+        JsonNode infoList = apiService.fetchAdditionalInfo(contentId, contentTypeId);
+        // 3. AttractionDetailResponse로 반환
+        return AttractionDetailResponse.of(common, intro, infoList, areaCode);
+    }
+
+
+
 }

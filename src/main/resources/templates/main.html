@@ -25,7 +25,10 @@
       <h2><span class="emoji"></span> 오늘의 추천 여행지</h2>
       <div class="row justify-content-center">
         <div th:each="attraction : ${randomAttractions}" class="col-md-4">
-          <div class="card mb-4">
+          <div class="card mb-4 attraction-card"
+               th:data-content-id="${attraction.contentId}"
+               th:data-content-type-id="${attraction.contentTypeId}"
+               th:data-area-code="${attraction.areaCode}">
             <img th:src="@{${attraction.firstimage != null and !attraction.firstimage.isEmpty() ? attraction.firstimage : '/images/travel.jpg'}}"
                  class="card-img-top" alt="관광지 이미지">
             <div class="card-body">
@@ -36,6 +39,21 @@
         </div>
       </div>
       <footer th:replace="~{layout/footer}"></footer>
+    </div>
+  </div>
+
+  <!-- 모달 -->
+  <div class="modal fade" id="attractionModal" tabindex="-1" aria-labelledby="attractionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="attractionModalLabel">상세정보</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+        </div>
+        <div class="modal-body" id="modalBody">
+          <!-- js -->
+        </div>
+      </div>
     </div>
   </div>
 

@@ -158,7 +158,7 @@ public class ApiService {
     }
 
     // 상세정보 - 기본적인  정보만
-    private JsonNode fetchCommonInfo(Long contentId, String contentTypeId) throws IOException {
+    public JsonNode fetchCommonInfo(Long contentId, String contentTypeId) throws IOException {
         String response = webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .scheme("http")
@@ -190,7 +190,7 @@ public class ApiService {
     }
 
     // 상세정보 - 부가적인 정보
-    private JsonNode fetchAdditionalInfo(Long contentId, String contentTypeId) throws IOException {
+    public JsonNode fetchAdditionalInfo(Long contentId, String contentTypeId) throws IOException {
         String response = webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .scheme("http")

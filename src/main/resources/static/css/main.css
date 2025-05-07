@@ -53,3 +53,7 @@ h2 {
     font-weight: bold;
 }
 
+.attraction-card {
+    cursor: pointer;
+}
+
