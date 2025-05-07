@@ -93,65 +93,108 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 🔹 마이페이지에서 북마크한 관광지 목록 가져오기
     function loadBookmarks() {
-        // 사용자가 북마크한 관광지 목록 가져오기
         fetch(`/api/bookmarks/list`)
             .then(response => response.json())
             .then(bookmarks => {
-                console.log("Bookmarked list:", bookmarks); // 이 부분으로 반환된 데이터 확인
+                console.log("Bookmarked list:", bookmarks);
+
+                const bookmarkContainer = document.getElementById('bookmarks');
+                bookmarkContainer.innerHTML = '';
 
                 if (bookmarks.length === 0) {
-                    alert("You have no bookmarked attractions.");
+                    showEmptyMessage(bookmarkContainer);
                     return;
                 }
 
-                // 북마크된 관광지 목록을 UI에 표시
-                const bookmarkContainer = document.getElementById('bookmarks'); // 북마크 목록을 표시할 HTML 요소
-                bookmarkContainer.innerHTML = ''; // 기존 목록을 초기화
-
-                bookmarks.forEach((bookmark, index) => {
-                    // 각 북마크된 관광지 정보를 UI에 추가
-                    const bookmarkElement = document.createElement('div');
-                    bookmarkElement.classList.add('bookmark-item');
-                    const displayIndex = index + 1;
-                    const imageUrl = bookmark.firstimage?.trim() ? bookmark.firstimage : '/images/no-image.png';
-
-                    bookmarkElement.innerHTML = `
-                        <span class="bookmark-id">${displayIndex}</span>
-                        <span class="bookmark-title">${bookmark.title}</span>
-                        <img src="${imageUrl}" alt="이미지" class="bookmark-image">
-                        <button class="remove-button"
-                                data-attraction-id="${bookmark.contentId}"
-                                data-content-type-id="${bookmark.contentTypeId}"
-                                data-area-code="${bookmark.areaCode}"
-                                data-id="${bookmark.contentId}">Remove</button>
-                    `;
-                    // 제목 클릭 시 상세 정보 모달 띄우기
-                    const titleElement = bookmarkElement.querySelector('.bookmark-title');
-                    titleElement.addEventListener('click', () => {
-                        showDetailModal(bookmark); // 제목 클릭 시 showDetailModal 함수 호출
-                    });
-
-                    // 이미지 클릭 시 상세 정보 모달 띄우기
-                    const imageElement = bookmarkElement.querySelector('.bookmark-image');
-                    imageElement.addEventListener('click', () => {
-                        showDetailModal(bookmark); // 이미지 클릭 시 showDetailModal 함수 호출
-                    });
-
-                    // 삭제 버튼 클릭 이벤트 추가
-                    const removeButton = bookmarkElement.querySelector('.remove-button');
-                    removeButton.addEventListener('click', function() {
-                        const contentId = this.getAttribute('data-id');
-                        const contentTypeId = this.getAttribute('data-content-type-id');
-                        const areaCode = this.getAttribute('data-area-code');
-                        removeBookmark(contentId, contentTypeId, areaCode);
-                    });
-                    bookmarkContainer.appendChild(bookmarkElement);
-                });
+                const grouped = groupBookmarksByType(bookmarks);
+                renderGroupedBookmarks(grouped, bookmarkContainer);
             })
             .catch(error => {
                 console.error("An error occurred while fetching the bookmarks:", error);
                 alert("An error occurred while fetching the bookmarks.");
             });
+    }
+
+    function groupBookmarksByType(bookmarks) {
+        const grouped = {};
+        bookmarks.forEach(bookmark => {
+            const typeId = bookmark.contentTypeId;
+            if (!grouped[typeId]) {
+                grouped[typeId] = [];
+            }
+            grouped[typeId].push(bookmark);
+        });
+        return grouped;
+    }
+
+    function renderGroupedBookmarks(grouped, container) {
+        Object.keys(grouped).forEach(typeId => {
+            const emoji = getEmojiByContentTypeId(typeId);
+            const groupTitle = document.createElement('h5');
+            groupTitle.classList.add('bookmark-group-title');
+            groupTitle.textContent = `${emoji} ${getTypeLabelById(typeId)}`;
+            container.appendChild(groupTitle);
+
+            grouped[typeId].forEach((bookmark, index) => {
+                const bookmarkElement = createBookmarkElement(bookmark, emoji, index);
+                container.appendChild(bookmarkElement);
+            });
+        });
+    }
+
+    function createBookmarkElement(bookmark, emoji, index) {
+        const bookmarkElement = document.createElement('div');
+        bookmarkElement.classList.add('bookmark-item');
+
+        const displayIndex = index + 1;
+        const imageUrl = bookmark.firstimage?.trim() ? bookmark.firstimage : '/images/no-image.png';
+
+        bookmarkElement.innerHTML = `
+            <span class="bookmark-id">${displayIndex}</span>
+            <span class="bookmark-title">
+                <span class="check">✔</span>${bookmark.title}
+            </span>
+            <img src="${imageUrl}" alt="이미지" class="bookmark-image">
+            <button class="remove-button"
+                    data-attraction-id="${bookmark.contentId}"
+                    data-content-type-id="${bookmark.contentTypeId}"
+                    data-area-code="${bookmark.areaCode}"
+                    data-id="${bookmark.contentId}">Remove</button>
+        `;
+
+        bookmarkElement.querySelector('.bookmark-title').addEventListener('click', () => {
+            showDetailModal(bookmark);
+        });
+
+        bookmarkElement.querySelector('.bookmark-image').addEventListener('click', () => {
+            showDetailModal(bookmark);
+        });
+
+        bookmarkElement.querySelector('.remove-button').addEventListener('click', function () {
+            const contentId = this.getAttribute('data-id');
+            const contentTypeId = this.getAttribute('data-content-type-id');
+            const areaCode = this.getAttribute('data-area-code');
+            removeBookmark(contentId, contentTypeId, areaCode);
+        });
+
+        return bookmarkElement;
+    }
+
+    function getTypeLabelById(contentTypeId) {
+        const labelMap = {
+            "12": "관광지",
+            "14": "문화시설",
+            "15": "축제/공연",
+            "28": "레포츠",
+            "32": "숙박",
+            "38": "쇼핑",
+            "39": "음식점"
+        };
+        return labelMap[contentTypeId] || "기타";
+    }
+
+    function showEmptyMessage(container) {
+        container.innerHTML = "<p>북마크된 관광지가 없습니다.</p>";
     }
 
     // 페이지 로드 시 북마크 목록 로드
