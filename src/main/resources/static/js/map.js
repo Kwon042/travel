@@ -210,19 +210,19 @@ function setModalContent(modalBody, detail, emoji, infoHtml) {
             </div>
         </div>
         <hr style="border: none; border-top: 2px solid black; margin: 10px 0;">
-        <p style="margin: 0;"><strong>주소</strong></p>
+        <p style="margin: 0;"><strong class="highlight">주소</strong></p>
         <p style="margin: 0;">${detail.addr1 || '정보 없음'}</p>
         <hr style="border: none; border-top: 1px solid black; margin: 10px 0;">
 
-        <p style="margin: 0;"><strong>전화번호</strong></p>
+        <p style="margin: 0;"><strong class="highlight">전화번호</strong></p>
         <p style="margin: 0;">${detail.tel || '정보 없음'}</p>
         <hr style="border: none; border-top: 1px solid black; margin: 10px 0;">
 
-        <p style="margin: 0;"><strong>설명</strong></p>
+        <p style="margin: 0;"><strong class="highlight">설명</strong></p>
         <p style="margin: 0;">${detail.overview || '설명 없음'}</p>
         <hr style="border: none; border-top: 2px solid black; margin: 10px 0;">
 
-        <h5 style="margin-top: 10px; margin-bottom: 10px;">시설 정보</h5>
+        <h5 style="margin-top: 10px; margin-bottom: 10px; background-color: #ffff99; display: inline;">시설 정보</h5>
         ${infoHtml}
     `;
 }

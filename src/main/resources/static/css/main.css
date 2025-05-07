@@ -6,11 +6,13 @@ body {
 
 /* 랜덤 관광 명소 제목 스타일 */
 h2 {
-    margin-top: 20px;
-    text-align: center; /* 중앙 정렬 */
-    margin: 30px 0; /* 상하 여백 */
-    font-size: 2.5rem; /* 제목 크기 조정 */
-    color: #6a0dad; /* 제목 색상 */
+    font-family: 'Gowun Batang', serif;
+    font-size: 2rem;
+    color: #4a148c;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
 }
 
 /* 카드 스타일 */
@@ -44,5 +46,10 @@ h2 {
     .col-md-4 {
         margin-bottom: 20px; /* 하단 여백 */
     }
+}
+
+.spinner-border {
+    font-family: 'Gowun Batang', serif;
+    font-weight: bold;
 }
 

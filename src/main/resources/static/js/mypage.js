@@ -132,7 +132,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const emoji = getEmojiByContentTypeId(typeId);
             const groupTitle = document.createElement('h5');
             groupTitle.classList.add('bookmark-group-title');
-            groupTitle.textContent = `${emoji} ${getTypeLabelById(typeId)}`;
+            groupTitle.textContent = `${emoji}   ${getTypeLabelById(typeId)}`;
             container.appendChild(groupTitle);
 
             grouped[typeId].forEach((bookmark, index) => {
@@ -273,25 +273,25 @@ document.addEventListener("DOMContentLoaded", function () {
     function setModalContent(modalBody, detail, emoji, infoHtml) {
         modalBody.innerHTML = `
             <div class="modal-header-container">
-                <h4 class="modal-title-text">${emoji} ${detail.title || '제목 없음'}</h4>
+                <h4 class="modal-title-text">${detail.title || '제목 없음'}</h4>
                 <div class="image-group">
                     <img src="${detail.firstimage || '/images/no-image.png'}" alt="이미지" class="detail-image">
                 </div>
             </div>
             <hr style="border: none; border-top: 2px solid black; margin: 10px 0;">
-            <p style="margin: 0;"><strong>주소</strong></p>
+            <p style="margin: 0;"><strong class="highlight-detail">주소</strong></p>
             <p style="margin: 0;">${detail.addr1 || '정보 없음'}</p>
             <hr style="border: none; border-top: 1px solid black; margin: 10px 0;">
 
-            <p style="margin: 0;"><strong>전화번호</strong></p>
+            <p style="margin: 0;"><strong class="highlight-detail">전화번호</strong></p>
             <p style="margin: 0;">${detail.tel || '정보 없음'}</p>
             <hr style="border: none; border-top: 1px solid black; margin: 10px 0;">
 
-            <p style="margin: 0;"><strong>설명</strong></p>
+            <p style="margin: 0;"><strong class="highlight-detail">설명</strong></p>
             <p style="margin: 0;">${detail.overview || '설명 없음'}</p>
             <hr style="border: none; border-top: 2px solid black; margin: 10px 0;">
 
-            <h5 style="margin-top: 10px; margin-bottom: 10px;">시설 정보</h5>
+            <h5 style="margin-top: 10px; margin-bottom: 10px; background-color: #ffff99; display: inline;">시설 정보</h5>
             ${infoHtml}
         `;
     }

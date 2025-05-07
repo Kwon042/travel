@@ -1,4 +1,10 @@
+h2 {
+    font-family: 'Gowun Batang', serif;
+    font-weight: bold;
+}
+
 .submit-button {
+    font-family: 'Gowun Batang', serif;
     color: #5b30a4;
     background-color: transparent;
     border: 1px solid #d3d3d3;

@@ -110,6 +110,7 @@
 
 /* 게시판 제목 */
 #region-title {
+    font-family: 'Gowun Batang', serif;
     font-size: 1.8em; /* 제목 크기 증가 */
     font-weight: bold;
     margin-bottom: 10px;
@@ -143,6 +144,7 @@
 
 /* 글쓰기 버튼 스타일 */
 .write-button {
+    font-family: 'Gowun Batang', serif;
     color: black;
     background-color: transparent;
     border: 1px solid #d3d3d3;
@@ -169,6 +171,8 @@
 .travel-table th a {
     text-decoration: none; /* 기본 밑줄 제거 */
     color: black; /* 텍스트 색상 검정 */
+    font-family: 'Gowun Batang', serif;
+    font-weight: bold;
 }
 
 .travel-table th a:hover {

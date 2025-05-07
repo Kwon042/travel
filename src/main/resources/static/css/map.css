@@ -61,8 +61,19 @@
     cursor: pointer;
 }
 
+h2 {
+    font-family: 'Gowun Batang', serif;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #4a148c;
+    text-align: center;
+    margin-top: 15px !important;
+    margin-bottom: 15px !important;
+}
+
 .search-area {
     display: flex;
+    font-family: 'Gowun Batang', serif;
     justify-content: center;
     margin-bottom: 20px;
 }
@@ -90,6 +101,7 @@ input:-webkit-autofill {
 
 .category-buttons {
     display: flex;
+    font-family: 'Gowun Batang', serif;
     overflow-x: auto;
     padding: 5px;
     gap: 10px;  /* 아이템 사이 간격 */
@@ -198,4 +210,9 @@ input:-webkit-autofill {
     border-radius: 4px; /* 둥근 테두리 */
     padding: 2px; /* 테두리와 이미지 사이에 간격 추가 */
     margin-bottom: 10px;
+}
+
+.highlight {
+  background-color: #ffff99;
+  display: inline;
 }

@@ -32,6 +32,7 @@ header {
 .right-nav {
     display: flex; /* Flexbox 사용 */
     align-items: center; /* 수직 중앙 정렬 */
+    font-family: 'Gowun Batang', serif;
 }
 
 /* 링크 스타일 */
@@ -39,6 +40,7 @@ header {
     color: white; /* 링크 색상 */
     margin-left: 15px; /* 링크 간의 간격 */
     text-decoration: none; /* 밑줄 제거 */
+    font-family: 'Gowun Batang', serif;
 }
 
 .right-nav a:hover {

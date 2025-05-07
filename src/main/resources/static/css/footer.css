@@ -11,6 +11,8 @@ html, body {
 
 /* 📌 푸터 스타일 */
 footer {
+    font-family: 'Gowun Batang', serif;
+    font-weight: bold;
     position: absolute; /* 절대 위치 설정 */
     bottom: 0; /* 화면 하단에 위치 */
     left: 0; /* 왼쪽 정렬 */
