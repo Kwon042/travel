@@ -43,7 +43,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // 지역기반 API에서 이미지를 가져오는 함수
 function fetchImageFromRegionAPI(contentId, contentTypeId, areaCode) {
-    return fetch(`/api/attraction/region-image/${contentId}/${contentTypeId}?areaCode=${areaCode}`)
+    // 수정된 API URL 구조에 맞춰 fetch 요청
+    return fetch(`/api/attractions/search?areaCode=${areaCode}&contentTypeId=${contentTypeId}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('지역기반 API 요청 실패');
@@ -51,8 +52,9 @@ function fetchImageFromRegionAPI(contentId, contentTypeId, areaCode) {
             return response.json();
         })
         .then(data => {
-            if (data && data.firstimage) {
-                return data.firstimage; // 지역기반 API에서 가져온 이미지 URL 반환
+            // 데이터가 존재하고 이미지가 있는 경우
+            if (data && data.length > 0 && data[0].firstimage) {
+                return data[0].firstimage; // 첫 번째 관광지에서 이미지 URL 반환
             }
             return null; // 이미지가 없으면 null 반환
         })
