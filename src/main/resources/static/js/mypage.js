@@ -19,13 +19,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 🔹 프로필 이미지 모달 열기
     function openProfileImageModal() {
-
         const modal = document.getElementById('profileImageModal');
         const input = document.getElementById('profileImageInput');
 
         if (modal) {
-            modal.classList.remove('hidden');  // 'hidden' 클래스를 제거
-            modal.classList.add('show'); // 'show' 클래스를 추가하여 모달 표시
+            modal.style.display = 'flex'; // flex로 모달 표시
         }
     }
 
@@ -33,10 +31,10 @@ document.addEventListener("DOMContentLoaded", function () {
     function closeProfileImageModal() {
         const modal = document.getElementById('profileImageModal');
         const input = document.getElementById('profileImageInput');
+
         if (modal) {
-            modal.classList.add('hidden'); // 모달 닫기
-            modal.classList.remove('show');
-            input.value = '';  // 파일 입력 초기화
+            modal.style.display = 'none'; // 모달 숨기기
+            input.value = ''; // 파일 입력 초기화
         } else {
             console.error("Unable to find the modal.");
         }
@@ -311,14 +309,14 @@ document.addEventListener("DOMContentLoaded", function () {
         switch (field) {
             case 'nickname':
                 modalContent += `
-                    <h4>닉네임 수정</h4>
+                    <h4><span class="highlight">닉네임 수정</span></h4>
                     <input type="text" id="editNickname" placeholder="새 닉네임" required>
                     <button id="saveNickname">저장</button>
                 `;
                 break;
             case 'email':
                 modalContent += `
-                    <h4>이메일 수정</h4>
+                    <h4><span class="highlight">이메일 수정</span></h4>
                     <input type="email" id="editEmail" placeholder="새 이메일" required>
                     <button id="saveEmail">저장</button>
                 `;
@@ -431,12 +429,11 @@ document.addEventListener("DOMContentLoaded", function () {
         modal.classList.remove('hidden'); // 모달 열기
         }
 
-    // 비밀번호 수정 모달 열기 (DOMContentLoaded 이벤트 안에 정의- window. 붙어야)
+    // 비밀번호 수정 모달 열기
     window.openChangePasswordModal = function() {
         const modal = document.getElementById('changePasswordModal');
         if (modal) {
-            modal.classList.remove('hidden'); // 'hidden' 클래스를 제거하여 모달 열기
-            modal.classList.add('show'); // 'show' 클래스를 추가하여 모달 표시
+            modal.style.display = 'flex'; // 모달을 flex로 표시
         }
     }
 
@@ -444,8 +441,7 @@ document.addEventListener("DOMContentLoaded", function () {
     window.closeChangePasswordModal = function() {
         const modal = document.getElementById('changePasswordModal');
         if (modal) {
-            modal.classList.add('hidden'); // 모달 닫기
-            modal.classList.remove('show'); // 필요하면 'show' 클래스 제거
+            modal.style.display = 'none'; // 모달을 숨김
             document.getElementById('currentPassword').value = '';
             document.getElementById('newPassword').value = '';
             document.getElementById('newPasswordConfirm').value = '';
@@ -502,30 +498,35 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // 회원 탈퇴 버튼 클릭 이벤트
-    document.getElementById('deleteAccountButton').addEventListener('click', function () {
-        if (confirm("Are you sure you want to delete your account?")) {
-            fetch('/user/deleteAccount', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Account deletion failed.");
-                }
-                return response.json();
-            })
-            .then(data => {
-                alert(data.message); // 서버에서 받은 응답 메시지 알림
-                window.location.href = "/";
-            })
-            .catch(error => {
-                console.error("Error during upload: ", error);
-                alert("An error occurred during the upload.");
-            });
-        }
-    });
+    const deleteButton = document.getElementById('deleteAccountButton');
+    console.log(deleteButton);
+    if (deleteButton) {
+        deleteButton.addEventListener('click', function () {
+            alert("Button clicked!");
+            if (confirm("Are you sure you want to delete your account?")) {
+                fetch('/user/deleteAccount', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Account deletion failed.");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert(data.message);
+                    window.location.href = "/";
+                })
+                .catch(error => {
+                    console.error("Error during account deletion: ", error);
+                    alert("An error occurred while deleting your account.");
+                });
+            }
+        });
+    }
 
     // 전역 등록
     window.openProfileImageModal = openProfileImageModal;

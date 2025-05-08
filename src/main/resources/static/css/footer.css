@@ -7,6 +7,8 @@ html, body {
 .wrap-container {
     position: relative; /* 푸터의 절대 위치를 위한 기준 설정 */
     min-height: 100vh; /* 화면 최소 높이 설정 */
+    padding-bottom: 60px;
+    box-sizing: border-box;
 }
 
 /* 📌 푸터 스타일 */

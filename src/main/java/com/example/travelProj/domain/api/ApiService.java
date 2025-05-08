@@ -32,7 +32,7 @@ public class ApiService {
 
     // 지역명을 기반으로 관광지 검색
     public List<AttractionResponse> searchAttractionByRegion(String areaCode, String contentTypeId) {
-        System.out.println("Requesting API with areaCode: " + areaCode + " and contentTypeId: " + contentTypeId);
+        // System.out.println("Requesting API with areaCode: " + areaCode + " and contentTypeId: " + contentTypeId);
 
         if (areaCode == null || areaCode.isBlank()) {
             return Collections.emptyList();
@@ -40,9 +40,9 @@ public class ApiService {
         // 지역 코드로 관광지 검색
         String apiResponse = fetchAttractionsByRegion(areaCode, contentTypeId);
 
-        System.out.println(apiResponse);
-        System.out.println("areaCode: " + areaCode);
-        System.out.println("contentTypeId: " + contentTypeId);
+//        System.out.println(apiResponse);
+//        System.out.println("areaCode: " + areaCode);
+//        System.out.println("contentTypeId: " + contentTypeId);
 
         return parseApiResponse(apiResponse, areaCode);
     }
@@ -68,7 +68,7 @@ public class ApiService {
                     .block();
 
             JsonNode root = objectMapper.readTree(response);
-            logger.debug("API response: {}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(root));
+            // logger.debug("API response: {}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(root));
             return response;
 
         } catch (Exception e) {
@@ -120,7 +120,7 @@ public class ApiService {
         if (title == null || title.isBlank()) return null;
 
         String firstimage = item.path("firstimage").asText("");
-        logger.debug("firstimage: {}", firstimage);  // 이미지 값 확인
+        // logger.debug("firstimage: {}", firstimage);  // 이미지 값 확인
 
         String addr = item.path("addr1").asText("");
         String description = item.path("description").asText("");
@@ -143,11 +143,11 @@ public class ApiService {
                 mainItemNode = mainItemNode.get(0);
             }
 
-            logger.debug("Main Detail JSON:\n{}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(mainItemNode));
+            // logger.debug("Main Detail JSON:\n{}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(mainItemNode));
 
             JsonNode infoListNode = fetchAdditionalInfo(contentId, contentTypeId);
 
-            logger.debug("Additional Info JSON:\n{}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(infoListNode));
+            // logger.debug("Additional Info JSON:\n{}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(infoListNode));
 
             return new AttractionDetailResponse(mainItemNode, infoListNode, areaCode);
         } catch (Exception e) {
@@ -175,7 +175,7 @@ public class ApiService {
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
-        logger.debug("Received response: {}", response);  // 응답 로그 추가
+        // logger.debug("Received response: {}", response);  // 응답 로그 추가
 
 
         JsonNode root = objectMapper.readTree(response);

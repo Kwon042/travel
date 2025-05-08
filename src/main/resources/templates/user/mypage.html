@@ -11,48 +11,62 @@
 
 </head>
 <body style="font-family: 'Gowun Batang', serif;">
-<header th:replace="~{layout/header}"></header>
-<div class="container">
-    <h2 class="highlight">My profile</h2>
-    <table class="info-table">
-        <tr>
-            <td><strong>Profile Picture</strong></td>
-            <td></td>
-            <td class="text-end">
-                <img th:src="${user.profileImageUrl}"
-                     alt="Profile Image"
-                     class="profile-image mypage-profile-image"
-                     onclick="openProfileImageModal()">
-            </td>
-        </tr>
-        <tr>
-            <td><strong>Username</strong></td>
-            <td><span th:text="${user.username}"></span></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td><strong>Nickname</strong></td>
-            <td><span id="currentNickname" th:text="${user.nickname}"></span></td>
-            <td class="text-end"><span class="action-button" onclick="openEditModal('nickname')">></span></td>
-        </tr>
-        <tr>
-            <td><strong>Email</strong></td>
-            <td><span id="currentEmail" th:text="${user.email}"></span></td>
-            <td class="text-end"><span class="action-button" onclick="openEditModal('email')">></span></td>
-        </tr>
-        <tr>
-            <td><strong>Password</strong></td>
-            <td>**********</td>
-            <td class="text-end">
-                <span class="action-button" onclick="openChangePasswordModal()">></span>
-            </td>
-        </tr>
-    </table>
+    <header th:replace="~{layout/header}"></header>
+    <div class="container">
+        <h2 class="highlight">My profile</h2>
+        <table class="info-table">
+            <tr>
+                <td><strong>Profile Picture</strong></td>
+                <td></td>
+                <td class="text-end">
+                    <img th:src="${user.profileImageUrl}"
+                         alt="Profile Image"
+                         class="profile-image mypage-profile-image"
+                         onclick="openProfileImageModal()">
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Username</strong></td>
+                <td><span th:text="${user.username}"></span></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><strong>Nickname</strong></td>
+                <td><span id="currentNickname" th:text="${user.nickname}"></span></td>
+                <td class="text-end"><span class="action-button" onclick="openEditModal('nickname')">></span></td>
+            </tr>
+            <tr>
+                <td><strong>Email</strong></td>
+                <td><span id="currentEmail" th:text="${user.email}"></span></td>
+                <td class="text-end"><span class="action-button" onclick="openEditModal('email')">></span></td>
+            </tr>
+            <tr>
+                <td><strong>Password</strong></td>
+                <td>**********</td>
+                <td class="text-end">
+                    <span class="action-button" onclick="openChangePasswordModal()">></span>
+                </td>
+            </tr>
+        </table>
 
-    <h3 class="highlight">My bookmarks</h3>
-    <ul class="my-bookmarks" id="bookmarks">
-        <!-- 북마크 항목들이 여기에 동적 추가 -->
-    </ul>
+        <h3 class="highlight">My bookmarks</h3>
+        <ul class="my-bookmarks" id="bookmarks">
+            <!-- 북마크 항목들이 여기에 동적 추가 -->
+        </ul>
+
+        <div class="mypage-delete-button">
+            <button id="deleteAccountButton"
+                    class="delete-account-button"
+                    th:text="${#authentication.authorities.?[authority == 'ROLE_ADMIN'].size() > 0} ? '관리자 탈퇴' : '회원 탈퇴'">
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/mypage.js"></script>
+    <script>
+        const currentUserId = "${user.id}";
+    </script>
 
     <!-- Modal -->
     <div class="modal" id="attractionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -69,15 +83,11 @@
         </div>
     </div>
 
-    <button id="deleteAccountButton" class="delete-account-button"
-            th:text="${#authentication.authorities.?[authority == 'ROLE_ADMIN'].size() > 0} ? '관리자 탈퇴' : '회원 탈퇴'">
-    </button>
-
     <!-- 프로필 이미지 업로드 모달 -->
     <div id="profileImageModal" class="modal hidden">
         <div class="modal-content">
             <span class="close" onclick="closeProfileImageModal()">&times;</span>
-            <h4>프로필 이미지 업로드</h4>
+            <h4><span class="highlight">프로필 이미지 업로드</span></h4>
             <input type="file" id="profileImageInput" accept="image/*">
             <button onclick="uploadProfileImage()">업로드</button>
         </div>
@@ -86,7 +96,7 @@
     <div id="changePasswordModal" class="modal hidden">
         <div class="modal-content">
             <span class="close" onclick="closeChangePasswordModal()">&times;</span>
-            <h4>비밀번호 수정</h4>
+            <h4><span class="highlight">비밀번호 수정</span></h4>
             <input type="password" id="currentPassword" placeholder="현재 비밀번호" required>
             <input type="password" id="newPassword" placeholder="새 비밀번호" required>
             <input type="password" id="newPasswordConfirm" placeholder="새 비밀번호 확인" required>
@@ -115,13 +125,7 @@
             <p id="errorMessage"></p>
         </div>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/js/mypage.js"></script>
-<script>
-    const currentUserId = "${user.id}";
-</script>
+    <footer th:replace="~{layout/footer}"></footer>
 </body>
-<footer th:replace="~{layout/footer}"></footer>
 </html>

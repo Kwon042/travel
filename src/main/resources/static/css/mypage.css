@@ -63,43 +63,6 @@ h2 {
     text-decoration: underline;
 }
 
-/* 비밀번호 수정 폼 */
-#changePasswordForm {
-    margin-top: 20px;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-}
-
-#changePasswordForm label {
-    font-size: 16px;
-    margin-bottom: 5px;
-    display: block;
-}
-
-#changePasswordForm input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-}
-
-#changePasswordForm button {
-    padding: 10px 15px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 5px;
-}
-
-#changePasswordForm button:hover {
-    background-color: #218838;
-}
 
 /* 찜한 여행지 목록 */
 h3 {
@@ -128,6 +91,10 @@ h3 {
     padding: 3px 6px;
     border-radius: 2px;
     float: right;  /* 버튼을 우측에 정렬 */
+}
+
+.mypage-delete-button {
+    margin-bottom: 40px; /* 푸터에 안 붙도록 여유 공간 */
 }
 
 .text-end {
@@ -170,6 +137,21 @@ h3 {
     border: none;
     font-size: 20px;
     cursor: pointer;
+}
+
+/* input 간격 추가 */
+.modal-content input {
+    margin-bottom: 10px; /* 각 input 칸 아래에 10px 간격 추가 */
+    padding: 10px; /* padding을 추가해 더 넓게 */
+    width: 100%; /* input 너비를 100%로 설정하여 모달 내용에 맞게 조정 */
+    box-sizing: border-box; /* padding이 포함된 크기 계산 */
+    border: 1px solid #ccc; /* 경계선 추가 */
+    border-radius: 5px; /* 모서리 둥글게 */
+}
+
+/* input 마지막 칸 간격 제거 */
+.modal-content input:last-child {
+    margin-bottom: 0;
 }
 
 /* 모달 내용 텍스트 스타일 */
