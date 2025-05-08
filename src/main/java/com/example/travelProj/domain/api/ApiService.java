@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -31,6 +32,7 @@ public class ApiService {
     private String apiKey;
 
     // 지역명을 기반으로 관광지 검색
+    @Cacheable(value = "regionSearchCache", key = "#areaCode + '_' + #contentTypeId")
     public List<AttractionResponse> searchAttractionByRegion(String areaCode, String contentTypeId) {
         // System.out.println("Requesting API with areaCode: " + areaCode + " and contentTypeId: " + contentTypeId);
 
@@ -48,6 +50,7 @@ public class ApiService {
     }
 
     // 지역 코드로 관광지 목록을 요청
+    @Cacheable(value = "detailInfoCache", key = "#contentId")
     private String fetchAttractionsByRegion(String areaCode, String contentTypeId) {
         try {
             String response = webClient.get()
