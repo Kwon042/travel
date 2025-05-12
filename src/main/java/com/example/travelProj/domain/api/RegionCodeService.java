@@ -88,7 +88,7 @@ public class RegionCodeService {
                         .uri(uriBuilder -> uriBuilder
                                 .scheme("https")
                                 .host("apis.data.go.kr")
-                                .path("/B551011/KorService1/areaCode1")
+                                .path("/B551011/KorService2/areaCode2")
                                 .queryParam("serviceKey", apiKey)
                                 .queryParam("_type", "json")
                                 .queryParam("MobileOS", "ETC")

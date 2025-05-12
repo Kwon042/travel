@@ -57,7 +57,7 @@ public class ApiService {
                     .uri(uriBuilder -> uriBuilder
                             .scheme("http")
                             .host("apis.data.go.kr")
-                            .path("/B551011/KorService1/areaBasedList1")
+                            .path("/B551011/KorService2/areaBasedList2")
                             .queryParam("serviceKey", apiKey)
                             .queryParam("areaCode", areaCode)
                             .queryParam("MobileOS", "ETC")
@@ -71,7 +71,7 @@ public class ApiService {
                     .block();
 
             JsonNode root = objectMapper.readTree(response);
-            // logger.debug("API response: {}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(root));
+            logger.debug("API response: {}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(root));
             return response;
 
         } catch (Exception e) {
@@ -146,11 +146,11 @@ public class ApiService {
                 mainItemNode = mainItemNode.get(0);
             }
 
-            // logger.debug("Main Detail JSON:\n{}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(mainItemNode));
+             logger.debug("Main Detail JSON:\n{}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(mainItemNode));
 
             JsonNode infoListNode = fetchAdditionalInfo(contentId, contentTypeId);
 
-            // logger.debug("Additional Info JSON:\n{}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(infoListNode));
+             logger.debug("Additional Info JSON:\n{}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(infoListNode));
 
             return new AttractionDetailResponse(mainItemNode, infoListNode, areaCode);
         } catch (Exception e) {
@@ -165,7 +165,7 @@ public class ApiService {
                 .uri(uriBuilder -> uriBuilder
                         .scheme("http")
                         .host("apis.data.go.kr")
-                        .path("/B551011/KorService1/detailCommon1")
+                        .path("/B551011/KorService2/detailCommon2")
                         .queryParam("serviceKey", apiKey)
                         .queryParam("MobileOS", "ETC")
                         .queryParam("MobileApp", "TestApp")
@@ -197,7 +197,7 @@ public class ApiService {
                 .uri(uriBuilder -> uriBuilder
                         .scheme("http")
                         .host("apis.data.go.kr")
-                        .path("/B551011/KorService1/detailInfo1")
+                        .path("/B551011/KorService2/detailInfo2")
                         .queryParam("serviceKey", apiKey)
                         .queryParam("MobileOS", "ETC")
                         .queryParam("MobileApp", "TestApp")
